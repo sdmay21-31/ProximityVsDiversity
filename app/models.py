@@ -1,6 +1,14 @@
 from django.db import models
 
-# Create your models here.
+
+# Put query functions here
+class NodeQuerySet(models.QuerySet):
+    def example_query(self, *args, **kwargs):
+        """ Filter time_id is less than or equeal to 200"""
+        return self.filter(time_id__lte=200)
+
+
+# Put class based attributes here
 class Node(models.Model):
     file_id = models.IntegerField(db_index=True)
     node_id = models.IntegerField(db_index=True)
@@ -48,3 +56,20 @@ class Node(models.Model):
     merger_type = models.FloatField()
     bin_num = models.FloatField()
     time_id = models.AutoField(primary_key=True)
+    # Set the manager
+    objects = NodeQuerySet.as_manager()
+
+    # Properties
+    @property
+    def __str__(self):
+        return 'Node: {}'.format(self.time_id)
+
+    @property
+    def id(self):
+        """ Example Property: Return Node primary key """
+        return self.time_id
+
+    # Functions
+    def get_id(self, *args, **kwargs):
+        """ Example method: Return Node primary key """
+        return self.time_id
