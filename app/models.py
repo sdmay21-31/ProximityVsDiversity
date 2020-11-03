@@ -2,8 +2,8 @@ from django.db import models
 
 # Create your models here.
 class Node(models.Model):
-    file_id = models.FloatField()
-    node_id = models.FloatField()
+    file_id = models.IntegerField(db_index=True)
+    node_id = models.IntegerField(db_index=True)
     tphys = models.FloatField()
     kstar_1 = models.FloatField()
     mass0_1 = models.FloatField()
@@ -47,4 +47,4 @@ class Node(models.Model):
     bin_state = models.FloatField()
     merger_type = models.FloatField()
     bin_num = models.FloatField()
-    time_id = models.FloatField()
+    time_id = models.IntegerField()
