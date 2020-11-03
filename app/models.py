@@ -47,4 +47,4 @@ class Node(models.Model):
     bin_state = models.FloatField()
     merger_type = models.FloatField()
     bin_num = models.FloatField()
-    time_id = models.IntegerField()
+    time_id = models.AutoField(primary_key=True)
