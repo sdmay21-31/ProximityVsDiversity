@@ -15,7 +15,13 @@ Move into the project
 ```sh
 $ cd ProximityVsDiversity
 ```
-It is recommended that you create a virtual environment for your django project. This will allow you to isolate your python environmnet and package during development.
+Now make a copy of the .env.example and name it .env
+```sh
+$ cp .env.example .env
+```
+Then go to [This Site](https://miniwebtool.com/django-secret-key-generator/) to create a SECRET_KEY that you will put in your .env file.
+
+Next, it is recommended that you create a virtual environment for your django project. This will allow you to isolate your python environmnet and package during development.
 ```sh
 $ python3 -m pip install virtualenv
 $ python3 -m venv environment_name
