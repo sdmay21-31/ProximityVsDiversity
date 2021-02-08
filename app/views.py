@@ -10,7 +10,20 @@ def index(request, *args, **kwargs):
     }
     return render(request, 'index.html', context)
 
-def AlgoRequestView(FormView):
-    form_class = AlgoRequestForm
+#View for the algorithim request form
+def AlgoRequestView(request):
 
-    
+    #Create and algorithim form based on recieved data
+    form = AlgoRequestForm(request)
+
+    #Assign clean data to attributes
+    if form.isValid():
+        attribute1 = form.cleaned_data['attribute1']
+        attribute2 = form.cleaned_data['attribute2']
+        attribute3 = form.cleaned_data['attribute3']
+
+            #Create context from cleaned data
+            contex = 
+        return render(request, 'index.html', context)
+    else
+        return
