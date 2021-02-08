@@ -11,13 +11,15 @@
             {{ example_data }}
         </div>
     </div>
-    <div class="relative inline-block">
-      <button onClick="" class="bg-white p-4 text-xl rounded-lg">Select Function</button>
-      <div id="functionDropdown" class="hidden absolute bg-white min-w-max z-1">
-        <a href="#">Function 1</a>
-        <a href="#">Function 2</a>
-        <a href="#">Function 3</a>
-      </div>
-    </div>
+    <form>
+      <label for="functionSelect">Select a Function:</label>
+      <select name="functionSelect" id="functionSelect">
+          <option value="func1">Function 1</option>
+          <option value="func2">Function 2</option>
+          <option value="func3">Function 3</option>
+      </select>
+      <br>
+      <input type="submit" value="Submit Function Selection">
+    </form>
 </div>
 {% endblock %}
