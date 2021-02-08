@@ -22,8 +22,11 @@ def AlgoRequestView(request):
         attribute2 = form.cleaned_data['attribute2']
         attribute3 = form.cleaned_data['attribute3']
 
-            #Create context from cleaned data
-            contex = 
+            #Create context from cleaned data (NOTE: Currently placeholder and not correct)
+            contex = {
+                [attribute1,attribute2,attribute3]: example_algo()[:10]
+            }
         return render(request, 'index.html', context)
     else
-        return
+        #Place holder error return
+        return render(request, 'index.html', "ERROR MESSAGE")
