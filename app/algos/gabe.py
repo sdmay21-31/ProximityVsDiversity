@@ -1,9 +1,4 @@
-import tarfile
-import urllib
-import base64
-import io
 import numpy as np
-import matplotlib
 import pandas as pd
 import seaborn as sns
 
@@ -14,11 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score, adjusted_rand_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
-
-
-matplotlib.use('agg') #noq
-plt = matplotlib.pyplot
-
+from app.matplot import plt, plot_to_uri
 
 
 def run(values):
@@ -100,10 +91,4 @@ def run(values):
     scat.set_title(
         "Clustering of space dirt"
     )
-    fig = plt.gcf()
-    buf = io.BytesIO()
-    fig.savefig(buf,format='png')
-    buf.seek(0)
-    string = base64.b64encode(buf.read())
-    uri = urllib.parse.quote(string)
-    return uri
+    return plot_to_uri(plt)
