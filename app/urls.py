@@ -19,5 +19,5 @@ from app import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('', views.AlgoRequestView, name="nodeForm")
+    path('', views.AlgoRequestView, name="AlgoRequestView")
 ]

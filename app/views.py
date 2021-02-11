@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.views import FormView
 
 from app.algos import example_algo
 from app.forms import AlgoRequestForm
@@ -14,19 +13,26 @@ def index(request, *args, **kwargs):
 #View for the algorithim request form
 def AlgoRequestView(request):
 
-    #Create and algorithim form based on recieved data
-    form = AlgoRequestForm(request)
+    #Check for request method and respond accordingly
+    if request.method == 'GET':
+        return render(request, 'nodeForm.html')
 
-    #Assign clean data to attributes
-    if form.isValid():
-        attribute1 = form.cleaned_data['attribute1']
-        attribute2 = form.cleaned_data['attribute2']
-        attribute3 = form.cleaned_data['attribute3']
+    else: #POST Request
 
-            #Create context from cleaned data (NOTE: Currently placeholder and not correct)
-        context = {
-            "attribute1": attribute1,
-            "attribute2": attribute2,
-            "attribute3": attribute3,
-        }
-        return render(request, 'nodeForm.html', context)
+        #Create and algorithim form based on recieved data
+        form = AlgoRequestForm(request)
+
+        #Assign clean data to attributes
+        if form.isValid():
+            attribute1 = form.cleaned_data['attribute1']
+            attribute2 = form.cleaned_data['attribute2']
+            attribute3 = form.cleaned_data['attribute3']
+
+            #Create context from cleaned data
+            context = {
+                "attribute1": attribute1,
+                "attribute2": attribute2,
+                "attribute3": attribute3,
+            }
+            #Send the context to the correct html page
+            return render(request, 'nodeForm.html', context)
