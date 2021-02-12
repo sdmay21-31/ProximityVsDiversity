@@ -1,25 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Proximity Vs. Diversity{% endblock %}
 {% block content %}
+<script>
+function promptWeight(value){
+	var weight = prompt("Please enter a weight for this attribute(0-1)","0.8");
+	if(weight === null){
+		return;
+	}
+	/*something like this to remove each attribute when they are selected Or we can check the list of attributes for the selected attribute and return an error message.
+	var optionToRemove = getElementById("Attribute");
+	optionToRemove.remove(1);
+	*/// We also need some type of 0-1 check for the weight but that is pretty easy to implement at any time
+	var ul = document.getElementById("list");
+	var li = document.createElement("li");
+	li.appendChild(document.createTextNode("Attribute: " + value.value + " W: " + weight));
+	ul.appendChild(li);
+}
+</script>
+
 <div class="flex flex-col justify-center items-center min-h-screen bg-gray-800">
-    <div class="bg-white p-5 text-2xl rounded-lg">
-        Astrophysicists vs. Data
+  <div class="bg-white rounded-lg p-3">
+    <div class="Skeleton Panel">
+      Skeleton Panel
+      <form onsubmit="promptWeight(Attribute);return false">
+      <label for="Attribute">Choose an Attribute:</label>
+        <select name="Attribute" id="Attribute">
+          <option value="" selected disabled hidden>Attributes</option>
+          <option value="stuff1">stuff1</option>
+          <option value="stuff2">stuff2</option>
+          <option value="stuff3">stuff3</option>
+          <option value="stuff4">stuff4</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">
+      </form>
     </div>
-    <div class="text-gray-800 hover:text-white">
-        <h2 class="text-lg"> Example Context Usage </h2>
-        <div class="max-w-sm">
-            {{ example_data }}
-        </div>
-    </div>
-    <form>
-      <label for="functionSelect">Select a Function:</label>
-      <select name="functionSelect" id="functionSelect">
-          <option value="func1">Function 1</option>
-          <option value="func2">Function 2</option>
-          <option value="func3">Function 3</option>
-      </select>
-      <br>
-      <input type="submit" value="Submit Function Selection">
-    </form>
+  <div class="list">
+    <h2>A list of attributes:</h2>
+    <ul id = "list">
+    </ul>
+  </div>
+  </div>
 </div>
 {% endblock %}
