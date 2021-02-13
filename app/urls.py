@@ -19,5 +19,5 @@ from app import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('', views.AlgoRequestView, name="AlgoRequestView")
+    path('algo/', views.AlgoRequestView, name="algo-request")
 ]
