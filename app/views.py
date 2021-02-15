@@ -6,5 +6,5 @@ def index(request, *args, **kwargs):
     context = {
         'example_data': example_algo()[:10]
     }
-    context['data'] = gabe.run(['mass0_1', 'lumin_1'])
+    context['data'], context['centroids'] = gabe.run(['mass0_1', 'lumin_1'])
     return render(request, 'index.html', context)

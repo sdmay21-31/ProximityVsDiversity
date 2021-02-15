@@ -1,10 +1,15 @@
 import urllib
 import base64
 import io
-import matplotlib
 
-matplotlib.use('agg') #noq
-plt = matplotlib.pyplot
+import matplotlib
+matplotlib.use('agg')
+    
+from matplotlib import pyplot as plt
+
+def get_plt():
+    plt.close()
+    return plt
 
 
 def plot_to_uri(plt):
