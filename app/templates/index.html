@@ -16,6 +16,7 @@ function promptProxWeight(value){
 	var btn = document.createElement("BUTTON");
 	btn.innerHTML = "X";
 	btn.className = "bg-red-500 rounded-lg p-1";
+	btn.onclick = function(){ul.removeChild(li);}
 	var txt = document.createTextNode("Attribute: " + value.value + " W: " + weight);
 	li.appendChild(txt);
 	li.appendChild(btn);
@@ -36,6 +37,7 @@ function promptDivWeight(value){
 	var btn = document.createElement("BUTTON");
 	btn.innerHTML = "X";
 	btn.className = "bg-red-500 rounded-lg p-1";
+	btn.onclick = function(){ul.removeChild(li);}
 	var txt = document.createTextNode("Attribute: " + value.value + " W: " + weight);
 	li.appendChild(txt);
 	li.appendChild(btn);
