@@ -6,8 +6,11 @@ import time
 import numpy as np
 from app.matplot import get_plt, plot_to_uri
 
-plt = get_plt()
 
+"""Major help from
+
+https://blog.newrelic.com/product-news/optimizing-k-means-clustering/
+"""
 
 
 def euclid_dist(t1, t2):
@@ -42,14 +45,15 @@ def k_means(data, num_clust, num_iter):
 
 
 def run(values):
-    n = 100 
-    ts_len = 50
+    plt = get_plt()
+    n = 2 # Number of entities observed
+    ts_len = 10000 # The number of times each entity is observed
 
-    phases = np.array(np.random.randint(0, 50, [n, 2]))
-    pure = np.sin([np.linspace(-np.pi * x[0], -np.pi * x[1], ts_len) for x in phases])
-    noise = np.array([np.random.normal(0, 1, ts_len) for x in range(n)])
+    phases = np.array(np.random.randint(0, 50, [n, 2])) # Create our attributes
+    pure = np.sin([np.linspace(-np.pi * x[0], -np.pi * x[1], ts_len) for x in phases]) # Make our attributes a sin wave
+    noise = np.array([np.random.normal(0, 1, ts_len) for x in range(n)]) # Create an array of random noise
 
-    signals = pure * noise
+    signals = pure * noise # Add some noise so it isn't exactly a sin wave
                
     # Normalize everything between 0 and 1
     signals += np.abs(np.min(signals))
@@ -57,4 +61,6 @@ def run(values):
 
     plt.plot(signals[0])
     centroids = k_means(signals, 100, 100)
+    print(centroids[0])
+    print(len(centroids))
     return (plot_to_uri(plt), centroids)
