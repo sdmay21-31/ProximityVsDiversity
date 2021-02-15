@@ -80,11 +80,14 @@ def run(values):
     plt.plot(signals)
     # plt.style.use('seaborn-bright')
     # plt.plot(signals)
-    centroids = k_means(signals, 10, 10)
+    centroids = k_means(signals, 100, 10)
     print(centroids)
-    t = []
+    x = []
+    y = []
     for index, c in enumerate(centroids):
-        plt.scatter(index * 1000, c[0])
+        x.append(index * 100)
+        y.append(c[0])
+    plt.plot(x, y)
     # plt.plot(t)
     # print(centroids)
     # for i in 
