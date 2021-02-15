@@ -58,28 +58,40 @@ def run(values):
     # print(signals)
     # print(signals[0])
     # print(signals[0][0])
-    node_keys=['mass0_1', 'mass0_2']
-    nodes = Node.objects.values_list(*node_keys)[:1000]
-    signals = []
-    signals.append([n[0] for n in nodes])
-    signals.append([n[1] for n in nodes])
+    node_keys=['mass0_1']
+    nodes = Node.objects.values_list(*node_keys)
+    # plt.plot(nodes)
+    # for index, node in enumerate(nodes):
+    #     plt.plot()
 
-    signals = np.array(signals)
+    # signals = []
+    # signals.append([n[0] for n in nodes])
+    # signals.append([n[1] for n in nodes])
 
-    print(signals)
+    signals = np.array(nodes)
+
+    # print(signals)
 
 
 
     # Normalize everything between 0 and 1
     signals += np.abs(np.min(signals))
     signals /= np.max(signals)
-    plt.style.use('seaborn-bright')
+    plt.plot(signals)
+    # plt.style.use('seaborn-bright')
     # plt.plot(signals)
-    centroids = k_means(signals, 50, 100)
+    centroids = k_means(signals, 10, 10)
     print(centroids)
-    print(len(centroids[0]))
-    print(len(centroids[1]))
-    plt.plot(centroids)
+    t = []
+    for index, c in enumerate(centroids):
+        plt.scatter(index * 1000, c[0])
+    # plt.plot(t)
+    # print(centroids)
+    # for i in 
+    # print(len(centroids[0]))
+    # print(len(centroids[1]))
+    # plt.plot(centroids[0])
+    # plt.plot(centroids[1])
     # plt.scatter(centroids)
     # plt.scatter([i for i in range(ts_len)], centroids[0])
     # plt.scatter([i for i in range(ts_len)], centroids[1])
