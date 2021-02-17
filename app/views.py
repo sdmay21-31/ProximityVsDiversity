@@ -36,3 +36,28 @@ def AlgoRequestView(request):
             }
             #Send the context to the correct html page
             return render(request, 'nodeForm.html', context)
+			
+
+# View for the database choice form
+def DatabaseChoiceView(request):
+
+    #Check for request method and respond accordingly
+    if request.method == 'GET':
+        return render(request, 'databaseChoiceForm.html')
+
+    else: #POST Request
+
+        #Create and algorithim form based on recieved data
+        form = AlgoRequestForm(request)
+
+        #Assign clean data to attributes
+        if form.isValid():
+            choice = form.cleaned_data['choice']
+
+            #Create context from cleaned data
+            context = {
+                "choice": choice,
+            }
+            #Send the context to the correct html page
+            return render(request, 'databaseChoiceForm.html', context)
+
