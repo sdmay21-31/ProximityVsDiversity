@@ -1,0 +1,58 @@
+Get a list of Django commands:
+python manage.py help
+
+Seed the 10000 database items:
+python manage.py seed
+
+Seed the entire database:
+python manage.py seed --full
+
+
+
+Useful queries for the shell:
+from app.models import Node
+n = Node(file_id = 0)
+n.file_id = 4552434
+
+Node.objects.values()
+
+set = Node.objects.exclude(file_id=19)
+set.values()
+
+set2 = Node.objects.exclude(file_id=20)
+set2.values()
+
+set3 = Node.objects.exclude(time_id__gt=5)
+set3.values()
+
+set4 = Node.objects.exclude(tphys__lte=0.8)
+set4.values()
+
+set5 = obj.order_by('time_id')
+set5.values()
+
+set6 = obj.order_by('node_id')
+set6.values()
+
+set7 = obj.order_by('tphys')
+set7.values()
+
+set8 = Node.objects.filter(merger_type=-1.0)
+set8.values()
+
+set9 = Node.objects.filter(merger_type=-1.0, menv_1__lte=0.01)
+set9.values()
+
+set10 = Node.objects.filter(merger_type=-1.0, menv_1__lte=0.01, time_id__lt=5)
+set10.values()
+
+set11 = Node.objects.reverse()
+set11.values()
+
+set12 = Node.objects.distinct('tphys')
+
+set13 = Node.objects.filter(tphys__lte=0.1)
+set13.values_list()
+
+
+
