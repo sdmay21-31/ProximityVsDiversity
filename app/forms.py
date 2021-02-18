@@ -14,5 +14,16 @@ class DatabaseChoiceForm(forms.Form):
         ('3', 'Database 3'),
     )
     
+    # For debugging purposes
+    #print(givenChoices)
+    #print(givenChoices[0])
+    #print(givenChoices[1])
+    #print(givenChoices[2])
+    #print(givenChoices[0][0])
+    #print(givenChoices[1][0])
+    #print(givenChoices[2][0])
+    
     choice = forms.MultipleChoiceField(choices = givenChoices)
+    
+    text = forms.CharField(label='text', max_length=100)
 

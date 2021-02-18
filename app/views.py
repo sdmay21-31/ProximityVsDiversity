@@ -40,24 +40,51 @@ def AlgoRequestView(request):
 
 # View for the database choice form
 def DatabaseChoiceView(request):
-
+    
     #Check for request method and respond accordingly
     if request.method == 'GET':
+        
+        # For debugging purposes
+        print("GET request...")
+        
         return render(request, 'databaseChoiceForm.html')
 
     else: #POST Request
-
+        
+        # For debugging purposes
+        print("POST request...")
+        
         #Create a database choice form based on recieved data
         form = DatabaseChoiceForm(request)
-
+        
+        # For debugging purposes
+        print("Is the form valid?")
+        
         #Assign clean data to attributes
         if form.isValid():
             choice = form.cleaned_data['choice']
-
+            text = form.cleaned_data['text']
+            
             #Create context from cleaned data
             context = {
-                "choice": choice,
+                'choice': choice,
+                'text': text,
             }
+            #context = {
+            #    'form': form,
+            #}
+            
+            # For debugging purposes
+            print("Yes...")
+            print("View Data: ")
+            print(choice)
+            print(choice[0])
+            print(choice[1])
+            print(choice[2])
+            print(choice[0][0])
+            print(choice[1][0])
+            print(choice[2][0])
+            
             #Send the context to the correct html page
             return render(request, 'databaseChoiceForm.html', context)
 

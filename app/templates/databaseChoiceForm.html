@@ -5,9 +5,13 @@
     <div class="bg-white p-5 text-2xl rounded-lg">
         Astrophysicists vs. Data
     </div>
-    <div class="text-gray-800 hover:text-white">
+    <div style="color:#FFFFFF;">
         <h2 class="text-lg"> Choice Form Test </h2>
-        <p>Choice: {{choice}} </p>
+        <p>Choice: </p>
+		<div class="bg-white">
+            {{ choice }}
+        </div>
+		<p>Text: {{ text }} </p>
     </div>
 </div>
 {% endblock %}
