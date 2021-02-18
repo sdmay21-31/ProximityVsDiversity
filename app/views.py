@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from app.algos import example_algo
-from app.forms import AlgoRequestForm
+from app.forms import AlgoRequestForm, DatabaseChoiceForm
 
 # Create your views here.
 def index(request, *args, **kwargs):
@@ -47,8 +47,8 @@ def DatabaseChoiceView(request):
 
     else: #POST Request
 
-        #Create and algorithim form based on recieved data
-        form = AlgoRequestForm(request)
+        #Create a database choice form based on recieved data
+        form = DatabaseChoiceForm(request)
 
         #Assign clean data to attributes
         if form.isValid():
