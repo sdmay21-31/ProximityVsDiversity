@@ -14,8 +14,8 @@ def index(request, *args, **kwargs):
 def AlgoRequestView(request):
 
     #Check for request method and respond accordingly
-    if request.method == 'GET':
-        return render(request, 'nodeForm.html')
+    if request.method == "GET":
+        return render(request, 'nodeForm.html',{'form': AlgoRequestForm()})
 
     else: #POST Request
 

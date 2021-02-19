@@ -19,6 +19,6 @@ from app import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('algoRequest/', views.AlgoRequestView, name="AlgoRequestView"),
+    path('algo/', views.AlgoRequestView, name="algo-request"),
     path('databaseChoice/', views.DatabaseChoiceView, name="DatabaseChoiceView")
 ]
