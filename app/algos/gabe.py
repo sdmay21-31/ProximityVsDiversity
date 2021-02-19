@@ -5,7 +5,8 @@ from app.models import Node
 import time
 import numpy as np
 from app.matplot import get_plt, plot_to_uri
-
+from sklearn.datasets import make_blobs
+from sklearn.cluster import KMeans
 
 """Major help from
 
@@ -15,11 +16,11 @@ https://blog.newrelic.com/product-news/optimizing-k-means-clustering/
 
 def euclid_dist(t1, t2):
          return np.sqrt(((t1-t2)**2).sum())
+         
 def k_means(data, num_clust, num_iter):
     centroids = data[np.random.randint(0, data.shape[0], num_clust)]
     # How many times we want to run kmeans
-    for n in range(num_iter): 
-        print('Iteration ' + str(n))
+    for n in range(num_iter):
         assignments={}
         for index, i_node in enumerate(data):
             min_dist = float('inf') 
@@ -47,45 +48,46 @@ def k_means(data, num_clust, num_iter):
 
 def run(values):
     plt = get_plt()
-    n = 2 # Number of entities observed
-    ts_len = 1000 # The number of times each entity is observed
 
-    phases = np.array(np.random.randint(0, 50, [n, 2])) # Create our attributes
-    pure = np.sin([np.linspace(-np.pi * x[0], -np.pi * x[1], ts_len) for x in phases]) # Make our attributes a sin wave
-    noise = np.array([np.random.normal(0, 1, ts_len) for x in range(n)]) # Create an array of random noise
-    # print(pure)
-    signals = pure * noise # Add some noise so it isn't exactly a sin wave
-    # print(signals)
-    # print(signals[0])
-    # print(signals[0][0])
-    node_keys=['mass0_1']
+    node_keys = ['node_id', 'mass0_1', 'lumin_1']
     nodes = Node.objects.values_list(*node_keys)
-    # plt.plot(nodes)
-    # for index, node in enumerate(nodes):
-    #     plt.plot()
 
-    # signals = []
-    # signals.append([n[0] for n in nodes])
-    # signals.append([n[1] for n in nodes])
+    good_nodes = []
+    node_ids = set()
+    for n in nodes:
+        if not n[0] in node_ids:
+            good_nodes.append([n[1], n[2]])
+            node_ids.add(n[0])
 
-    signals = np.array(nodes)
-
-    # print(signals)
+    print(np.array(good_nodes))
 
 
+    X, y_true = make_blobs(n_samples=300, centers=4,
+                       cluster_std=0.60, random_state=0)
+    X = np.array(good_nodes)
+    plt.scatter(X[:, 0], X[:, 1], s=50);
 
-    # Normalize everything between 0 and 1
-    signals += np.abs(np.min(signals))
-    signals /= np.max(signals)
-    plt.plot(signals)
+    kmeans = KMeans(n_clusters=4)
+    kmeans.fit(X)
+    y_kmeans = kmeans.predict(X)
+    plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+    centers = kmeans.cluster_centers_
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+
+    return (plot_to_uri(plt), [])
+    
+    # Normalize each eattribute to 1
+     
+    
     # plt.style.use('seaborn-bright')
     # plt.plot(signals)
-    centroids = k_means(signals, 100, 10)
+    centroids = k_means(signals, 50, 10)
     print(centroids)
     x = []
     y = []
     for index, c in enumerate(centroids):
-        x.append(index * 100)
+        x.append(index * 200)
         y.append(c[0])
     plt.plot(x, y)
     # plt.plot(t)
