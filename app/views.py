@@ -23,7 +23,7 @@ def AlgoRequestView(request):
         form = AlgoRequestForm(request)
 
         #Assign clean data to attributes
-        if form.isValid():
+        if form.is_valid():
             attribute1 = form.cleaned_data['attribute1']
             attribute2 = form.cleaned_data['attribute2']
             attribute3 = form.cleaned_data['attribute3']
@@ -47,7 +47,9 @@ def DatabaseChoiceView(request):
         # For debugging purposes
         print("GET request...")
         
-        return render(request, 'databaseChoiceForm.html')
+        form = DatabaseChoiceForm()
+        
+        return render(request, 'databaseChoiceForm.html', {'form': form})
 
     else: #POST Request
         
@@ -55,20 +57,19 @@ def DatabaseChoiceView(request):
         print("POST request...")
         
         #Create a database choice form based on recieved data
-        form = DatabaseChoiceForm(request)
+        form = DatabaseChoiceForm(request.POST)
         
         # For debugging purposes
         print("Is the form valid?")
         
         #Assign clean data to attributes
-        if form.isValid():
+        if form.is_valid():
             choice = form.cleaned_data['choice']
-            text = form.cleaned_data['text']
             
             #Create context from cleaned data
             context = {
+                'form': form,
                 'choice': choice,
-                'text': text,
             }
             #context = {
             #    'form': form,
@@ -79,12 +80,7 @@ def DatabaseChoiceView(request):
             print("View Data: ")
             print(choice)
             print(choice[0])
-            print(choice[1])
-            print(choice[2])
-            print(choice[0][0])
-            print(choice[1][0])
-            print(choice[2][0])
             
             #Send the context to the correct html page
-            return render(request, 'databaseChoiceForm.html', {'form': form})
+            return render(request, 'databaseChoiceForm.html', context)
 
