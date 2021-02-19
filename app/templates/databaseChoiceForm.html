@@ -5,13 +5,15 @@
     <div class="bg-white p-5 text-2xl rounded-lg">
         Astrophysicists vs. Data
     </div>
-    <div style="color:#FFFFFF;">
-        <h2 class="text-lg"> Choice Form Test </h2>
-        <p>Choice: </p>
-		<div class="bg-white">
-            {{ choice }}
-        </div>
-		<p>Text: {{ text }} </p>
+    <div style="color:#FF0000;">
+        <h2 class="text-lg"> Choose a Database </h2>
+        
+        <form action="/your-name/" method="post">
+            <label for="databaseChoice">Choice: </label>
+            <input id="databaseChoice" type="text" name="databaseChoice" value="{{ choice }}">
+            <input type="submit" value="OK">
+        </form>
+        
     </div>
 </div>
 {% endblock %}

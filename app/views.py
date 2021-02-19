@@ -86,5 +86,5 @@ def DatabaseChoiceView(request):
             print(choice[2][0])
             
             #Send the context to the correct html page
-            return render(request, 'databaseChoiceForm.html', context)
+            return render(request, 'databaseChoiceForm.html', {'form': form})
 
