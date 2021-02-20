@@ -41,6 +41,8 @@ def AlgoRequestView(request):
 # View for the database choice form
 def DatabaseChoiceView(request):
     
+    databasePage = "DatabaseOnePage.html"
+    
     #Check for request method and respond accordingly
     if request.method == 'GET':
         
@@ -59,28 +61,68 @@ def DatabaseChoiceView(request):
         #Create a database choice form based on recieved data
         form = DatabaseChoiceForm(request.POST)
         
-        # For debugging purposes
-        print("Is the form valid?")
-        
         #Assign clean data to attributes
         if form.is_valid():
+            
+            databaseName = "DatabaseOne"
+            
             choice = form.cleaned_data['choice']
+            
+            if (choice == 2):
+                databaseName = "DatabaseTwo"
+            
+            if (choice == 3):
+                databaseName = "DatabaseThree"
             
             #Create context from cleaned data
             context = {
                 'form': form,
-                'choice': choice,
+				'databaseName': databaseName,
             }
-            #context = {
-            #    'form': form,
-            #}
             
-            # For debugging purposes
-            print("Yes...")
-            print("View Data: ")
-            print(choice)
-            print(choice[0])
+            databasePage = databaseName + "Page.html"
             
             #Send the context to the correct html page
             return render(request, 'databaseChoiceForm.html', context)
+
+# View for the database page that was chosen
+def DatabasePageView(request):
+    
+    databasePage = "DatabaseOnePage.html"
+    
+    #Check for request method and respond accordingly
+    if request.method == 'GET':
+        
+        form = DatabaseChoiceForm()
+        
+        return render(request, databasePage)
+
+    else: #POST Request
+        
+        #Create a database choice form based on recieved data
+        form = DatabaseChoiceForm(request.POST)
+        
+        #Assign clean data to attributes
+        if form.is_valid():
+            
+            databaseName = "DatabaseOne"
+            
+            choice = form.cleaned_data['choice']
+            
+            if (choice == 2):
+                databaseName = "DatabaseTwo"
+            
+            if (choice == 3):
+                databaseName = "DatabaseThree"
+            
+            #Create context from cleaned data
+            context = {
+                'choice': choice,
+				'databaseName': databaseName,
+            }
+            
+            databasePage = databaseName + "Page.html"
+            
+            #Send the context to the correct html page
+            return render(request, databasePage, context)
 

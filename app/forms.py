@@ -55,12 +55,6 @@ class DatabaseChoiceForm(forms.Form):
         ('3', 'Database 3'),
     )
     
-    # For debugging purposes
-    print(givenChoices)
-    print(givenChoices[0])
-    print(givenChoices[1])
-    print(givenChoices[2])
-    
     choice = forms.ChoiceField(choices = givenChoices)
     
 
