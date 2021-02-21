@@ -41,30 +41,29 @@ def AlgoRequestView(request):
 # View for the database choice form
 def DatabaseChoiceView(request):
     
-    databasePage = "DatabaseOnePage.html"
+    #Set default redirection page for now...
+    databaseName = "DatabaseOne"
     
     #Check for request method and respond accordingly
     if request.method == 'GET':
         
-        # For debugging purposes
-        print("GET request...")
-        
         form = DatabaseChoiceForm()
         
-        return render(request, 'databaseChoiceForm.html', {'form': form})
-
-    else: #POST Request
+        #Create context from cleaned data
+        context = {
+            'form': form,
+            'databaseName': databaseName,
+        }
         
-        # For debugging purposes
-        print("POST request...")
+        return render(request, 'databaseChoiceForm.html', context)
+        
+    else: #POST Request
         
         #Create a database choice form based on recieved data
         form = DatabaseChoiceForm(request.POST)
         
         #Assign clean data to attributes
         if form.is_valid():
-            
-            databaseName = "DatabaseOne"
             
             choice = form.cleaned_data['choice']
             
@@ -80,8 +79,6 @@ def DatabaseChoiceView(request):
 				'choice': choice,
 				'databaseName': databaseName,
             }
-            
-            databasePage = databaseName + "Page.html"
             
             #Send the context to the correct html page
             return render(request, 'databaseChoiceForm.html', context)
