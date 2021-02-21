@@ -68,15 +68,16 @@ def DatabaseChoiceView(request):
             
             choice = form.cleaned_data['choice']
             
-            if (choice == 2):
+            if choice == "2":
                 databaseName = "DatabaseTwo"
             
-            if (choice == 3):
+            if choice == "3":
                 databaseName = "DatabaseThree"
             
             #Create context from cleaned data
             context = {
                 'form': form,
+				'choice': choice,
 				'databaseName': databaseName,
             }
             
@@ -105,15 +106,22 @@ def DatabasePageView(request):
         #Assign clean data to attributes
         if form.is_valid():
             
-            databaseName = "DatabaseOne"
+            # For debugging purposes
+            print("Form data: " + str(form.cleaned_data))
             
+            databaseName = "DatabaseOne"
+            #databaseName = form.cleaned_data['DatabaseOne']
             choice = form.cleaned_data['choice']
             
-            if (choice == 2):
+            if choice == "2":
                 databaseName = "DatabaseTwo"
             
-            if (choice == 3):
+            if choice == "3":
                 databaseName = "DatabaseThree"
+            
+            # For debugging purposes
+            print("Choice = " + choice)
+            print("Database Name = " + databaseName)
             
             #Create context from cleaned data
             context = {
