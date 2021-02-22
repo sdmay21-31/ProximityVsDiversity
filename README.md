@@ -9,7 +9,7 @@ Getting Started
 =====
 First you want to clone the project
 ```sh
-$ git clone https://github.com/ghuinker/proximity-vs-diversity.git
+$ git clone https://github.com/sdmay21-31/ProximityVsDiversity.git
 ```
 Move into the project
 ```sh
