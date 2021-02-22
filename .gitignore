@@ -136,8 +136,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Ben's Personal Note Files
-serverRunShortCut.txt
-usefulDjangoQueries.txt
-
 # End of https://www.gitignore.io/api/django
