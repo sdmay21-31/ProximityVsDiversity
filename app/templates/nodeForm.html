@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Proximity Vs. Diversity Node Attribute Redirect{% endblock %}
+{% block content %}
+<div class="flex flex-col justify-center items-center min-h-screen bg-gray-800">
+    <div class="bg-white p-5 text-2xl rounded-lg">
+        Astrophysicists vs. Data
+        <form method="POST" action="{% url 'algo-request' %}">{% csrf_token %}
+            {{form}}
+            <input type="submit" value="Submit"></input>
+        </form>
+    </div>
+</div>
+{% endblock %}
