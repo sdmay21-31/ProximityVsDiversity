@@ -18,7 +18,7 @@ nav {
     /* max-width: 800px; */
     max-height: 50%;
     padding-right: 2em;
-    border-right: 2px solid black;
+    border-right: 2px solid lightslategrey;
 }
 .dropdown-container {
     position: relative;
@@ -234,4 +234,9 @@ nav {
 .summary {
     flex: 5;
     padding-left: 2em;
+}
+
+.chart {
+    width: calc(100% - 2rem - 2rem);
+    margin: 2rem;
 }

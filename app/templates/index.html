@@ -41,7 +41,12 @@
 			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button>
 		</div>
 	</div>
-	<div class="summary"></div>
+	<div class="summary">
+		<p style="font-size:2rem;">Summary</p>
+	</div>
+</div>
+<div class="chart">
+	<p style="font-size:2rem;">Chart</p>
 </div>
 {% endblock %}
 
@@ -113,13 +118,13 @@
 		// fetch.then(
 		// attrList = arr;
 		document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
-		document.querySelector("#card-prox").innerHTML += genListGroup(attrList, true);
-		document.querySelector("#card-div").innerHTML += genListGroup(attrList, false);
+		document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
+		document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
 		// document.querySelector("#card-prox .list-group").innerHTML += genListGroup(attrList, true);
 		// document.querySelector("#card-div .list-group").innerHTML += genListGroup(attrList, false);
 		// );
 	}
-	function genListGroup(attrArr, isProxAttr) {
+	function genListItemsForType(attrArr, isProxAttr) {
 		return attrArr.map((attr, ind) => {
 			return genListItem(ind, isProxAttr, attr);
 		}).join("");
@@ -179,6 +184,9 @@
 			const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			console.log(proxWeights, divWeights);
+			// TODO: Make a POST request
+			// TODO: Create a summary from the request response
+			// TODO: Render chart
 		}
 	}
 	function exit(status) {
