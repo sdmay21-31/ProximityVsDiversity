@@ -21,7 +21,7 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('algo/', views.AlgoRequestView, name="algo-request"),
     path('databaseChoice/', views.DatabaseChoiceView, name="DatabaseChoiceView"),
-    path('databaseOne/', views.DatabasePageView, name="DatabaseOne"),
-    path('databaseTwo/', views.DatabasePageView, name="DatabaseTwo"),
-    path('databaseThree/', views.DatabasePageView, name="DatabaseThree"),
+    path('databaseOne/', views.DatabaseOneView, name="DatabaseOne"),
+    path('databaseTwo/', views.DatabaseTwoView, name="DatabaseTwo"),
+    path('databaseThree/', views.DatabaseThreeView, name="DatabaseThree"),
 ]

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from app.algos import example_algo
 from app.forms import AlgoRequestForm, DatabaseChoiceForm
@@ -41,9 +41,6 @@ def AlgoRequestView(request):
 # View for the database choice form
 def DatabaseChoiceView(request):
     
-    #Set default redirection page for now...
-    databaseName = "DatabaseOne"
-    
     #Check for request method and respond accordingly
     if request.method == 'GET':
         
@@ -52,7 +49,6 @@ def DatabaseChoiceView(request):
         #Create context from cleaned data
         context = {
             'form': form,
-            'databaseName': databaseName,
         }
         
         return render(request, 'databaseChoiceForm.html', context)
@@ -65,6 +61,7 @@ def DatabaseChoiceView(request):
         #Assign clean data to attributes
         if form.is_valid():
             
+            databaseName = "DatabaseOne"
             choice = form.cleaned_data['choice']
             
             if choice == "2":
@@ -73,61 +70,26 @@ def DatabaseChoiceView(request):
             if choice == "3":
                 databaseName = "DatabaseThree"
             
-            #Create context from cleaned data
-            context = {
-                'form': form,
-				'choice': choice,
-				'databaseName': databaseName,
-            }
-            
             #Send the context to the correct html page
-            return render(request, 'databaseChoiceForm.html', context)
+            return redirect(databaseName)
 
-# View for the database page that was chosen
-def DatabasePageView(request):
+# View for the database one page
+def DatabaseOneView(request):
     
     databasePage = "DatabaseOnePage.html"
     
-    #Check for request method and respond accordingly
-    if request.method == 'GET':
-        
-        form = DatabaseChoiceForm()
-        
-        return render(request, databasePage)
+    return render(request, databasePage)
 
-    else: #POST Request
-        
-        #Create a database choice form based on recieved data
-        form = DatabaseChoiceForm(request.POST)
-        
-        #Assign clean data to attributes
-        if form.is_valid():
-            
-            # For debugging purposes
-            print("Form data: " + str(form.cleaned_data))
-            
-            databaseName = "DatabaseOne"
-            #databaseName = form.cleaned_data['DatabaseOne']
-            choice = form.cleaned_data['choice']
-            
-            if choice == "2":
-                databaseName = "DatabaseTwo"
-            
-            if choice == "3":
-                databaseName = "DatabaseThree"
-            
-            # For debugging purposes
-            print("Choice = " + choice)
-            print("Database Name = " + databaseName)
-            
-            #Create context from cleaned data
-            context = {
-                'choice': choice,
-				'databaseName': databaseName,
-            }
-            
-            databasePage = databaseName + "Page.html"
-            
-            #Send the context to the correct html page
-            return render(request, databasePage, context)
+# View for the database two page
+def DatabaseTwoView(request):
+    
+    databasePage = "DatabaseTwoPage.html"
+    
+    return render(request, databasePage)
 
+# View for the database three page
+def DatabaseThreeView(request):
+    
+    databasePage = "DatabaseThreePage.html"
+    
+    return render(request, databasePage)
