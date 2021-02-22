@@ -36,6 +36,12 @@ NODE_ATTR_CHOICES = (
     ("32", "ecc"),
 )
 
+DATABASE_CHOICES = (
+    ('1', 'Database One'),
+    ('2', 'Database Two'),
+    ('3', 'Database Three'),
+)
+
 class AlgoRequestForm(forms.Form):
 
     #List and select wanted attr
@@ -49,12 +55,6 @@ class AlgoRequestForm(forms.Form):
     
 class DatabaseChoiceForm(forms.Form):
     
-    givenChoices = (
-        ('1', 'Database 1'),
-        ('2', 'Database 2'),
-        ('3', 'Database 3'),
-    )
-    
-    choice = forms.ChoiceField(choices = givenChoices)
+    choice = forms.ChoiceField(choices = DATABASE_CHOICES)
     
 

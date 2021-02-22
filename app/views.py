@@ -36,7 +36,15 @@ def AlgoRequestView(request):
             }
             #Send the context to the correct html page
             return render(request, 'nodeForm.html', context)
-			
+
+
+
+# Database names defined for database choice page
+DATABASE_NAMES = (
+    'DatabaseOne',
+    'DatabaseTwo',
+    'DatabaseThree',
+)
 
 # View for the database choice form
 def DatabaseChoiceView(request):
@@ -61,17 +69,14 @@ def DatabaseChoiceView(request):
         #Assign clean data to attributes
         if form.is_valid():
             
-            databaseName = "DatabaseOne"
             choice = form.cleaned_data['choice']
-            
-            if choice == "2":
-                databaseName = "DatabaseTwo"
-            
-            if choice == "3":
-                databaseName = "DatabaseThree"
+            choiceIndex = int(choice) - 1
+            databaseName = DATABASE_NAMES[choiceIndex]
             
             #Send the context to the correct html page
             return redirect(databaseName)
+
+
 
 # View for the database one page
 def DatabaseOneView(request):
