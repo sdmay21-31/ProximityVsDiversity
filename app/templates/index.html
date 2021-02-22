@@ -1,118 +1,222 @@
 {% extends 'base.html' %}
+
 {% block title %}Proximity Vs. Diversity{% endblock %}
+
 {% block content %}
-<script>
-function promptProxWeight(value){
-	var weight = prompt("Please enter a weight for this attribute(0-1)","0.8");
-	if(weight === null){
-		return;
-	}
-	/*something like this to remove each attribute when they are selected Or we can check the list of attributes for the selected attribute and return an error message.
-	var optionToRemove = getElementById("Attribute");
-	optionToRemove.remove(1);
-	*/// We also need some type of 0-1 check for the weight but that is pretty easy to implement at any time
-	var ul = document.getElementById("proxList");
-	var li = document.createElement("li");
-	var btn = document.createElement("BUTTON");
-	btn.innerHTML = "X";
-	btn.className = "bg-red-500 rounded-lg p-1";
-	btn.onclick = function(){ul.removeChild(li);}
-	var txt = document.createTextNode("Attribute: " + value.value + " W: " + weight);
-	li.appendChild(txt);
-	li.appendChild(btn);
-	ul.appendChild(li);
-}
-
-function promptDivWeight(value){
-	var weight = prompt("Please enter a weight for this attribute(0-1)","0.8");
-	if(weight === null){
-		return;
-	}
-	/*something like this to remove each attribute when they are selected Or we can check the list of attributes for the selected attribute and return an error message.
-	var optionToRemove = getElementById("Attribute");
-	optionToRemove.remove(1);
-	*/// We also need some type of 0-1 check for the weight but that is pretty easy to implement at any time
-	var ul = document.getElementById("divList");
-	var li = document.createElement("li");
-	var btn = document.createElement("BUTTON");
-	btn.innerHTML = "X";
-	btn.className = "bg-red-500 rounded-lg p-1";
-	btn.onclick = function(){ul.removeChild(li);}
-	var txt = document.createTextNode("Attribute: " + value.value + " W: " + weight);
-	li.appendChild(txt);
-	li.appendChild(btn);
-	ul.appendChild(li);
-}
-</script>
-
-<div class="flex flex-col justify-center items-center min-h-screen bg-gray-800">
-  <div class="bg-white rounded-lg p-3">
-    <div>
-      Proximity
-      <form onsubmit="promptProxWeight(Attribute);return false">
-      <label for="Attribute">Choose an Attribute:</label>
-        <select name="Attribute" id="Attribute">
-          <option value="" selected disabled hidden>Attributes</option>
-          <option value="kstar">kstar</option>
-          <option value="mass0">mass0</option>
-          <option value="mass">mass</option>
-          <option value="lumin">lumin</option>
-					<option value="rad">rad</option>
-					<option value="teff">teff</option>
-					<option value="massc">massC</option>
-					<option value="radc">radC</option>
-					<option value="menv">menv</option>
-					<option value="renv">renv</option>
-					<option value="epoch">epoch</option>
-					<option value="ospin">ospin</option>
-					<option value="deltam">deltam</option>
-					<option value="rrol">rrol</option>
-        </select>
-        <br><br>
-        <input type="submit" value="Submit" class="rounded-lg p-1">
-      </form>
-    </div>
-  <div class="list">
-    <h2>A list of attributes:</h2>
-    <ul id = "proxList">
-    </ul>
-  </div>
-  </div>
-
-	<div class="p-2"></div>
-
-	<div class="bg-white rounded-lg p-3">
-    <div>
-      Diversity
-      <form onsubmit="promptDivWeight(Attribute);return false">
-      <label for="Attribute">Choose an Attribute:</label>
-        <select name="Attribute" id="Attribute">
-          <option value="" selected disabled hidden>Attributes</option>
-					<option value="kstar">kstar</option>
-          <option value="mass0">mass0</option>
-          <option value="mass">mass</option>
-          <option value="lumin">lumin</option>
-					<option value="rad">rad</option>
-					<option value="teff">teff</option>
-					<option value="massc">massC</option>
-					<option value="radc">radC</option>
-					<option value="menv">menv</option>
-					<option value="renv">renv</option>
-					<option value="epoch">epoch</option>
-					<option value="ospin">ospin</option>
-					<option value="deltam">deltam</option>
-					<option value="rrol">rrol</option>
-        </select>
-        <br><br>
-        <input type="submit" value="Submit" class="rounded-lg p-1">
-      </form>
-    </div>
-  <div class="list">
-    <h2>A list of attributes:</h2>
-    <ul id = "divList">
-    </ul>
-  </div>
-  </div>
+<div class="columns">
+	<div class="data-input">
+		<div class="dropdown-container">
+			<button class="dropdown-button" onclick="toggleDropdown()">
+				<strong>Select Database</strong>
+				<i class="fas fa-chevron-down dropdown-button-icon"></i>
+			</button>
+			<div class="dropdown-options" id="database-options">
+				<p id="option0" class="dropdown-option" onclick="handleDropdownSelection(this)">DB Option 0</p>
+				<p id="option1" class="dropdown-option" onclick="handleDropdownSelection(this)">DB Option 1</p>
+				<p id="option2" class="dropdown-option" onclick="handleDropdownSelection(this)">DB Option 2</p>
+			</div>
+		</div>
+		<div class="data-cards" id="data-cards">
+			<div class="card" id="card-prox">
+				<div class="list-item card-header">
+					<p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
+				</div>
+				<div class="list-item attr-item">Select a Database</div>
+				<!-- <div class="list-group"></div> -->
+			</div>
+			<div class="card" id="card-div">
+				<div class="list-item card-header">
+					<p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
+				</div>
+				<div class="list-item attr-item">Select a Database</div>
+				<!-- <div class="list-group"></div> -->
+			</div>
+		</div>
+		<div class="process-button-container">
+			<div class="process-warning" style="color: red">
+				<i class="fas fa-exclamation-triangle"></i>
+				<span>At least 1 attribute must be selected</span>
+			</div>
+			<p>Select up to 3 attributes</p>
+			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button>
+		</div>
+	</div>
+	<div class="summary"></div>
 </div>
+{% endblock %}
 
+{% block scripts %}
+<script>
+	let proxIdsSelected = new Set();
+	let divIdsSelected = new Set();
+	let selectedDatabaseId = null;
+	const CHECKBOX = "cb"; const TEXTAREA = "ta";
+	let attrList = ["mass", "luminosity", "hydrogen", "radius"];
+	window.proxIdsSelected = proxIdsSelected;
+	window.divIdsSelected = divIdsSelected;
+	window.selectedDatabaseId = selectedDatabaseId;
+	function handleAttrClick(forProx) {
+		let arr = forProx ? proxIdsSelected : divIdsSelected;
+		return function(label) {
+			let taId = label.id.split("_");
+			taId[0] = "ta";
+			const taIdInd = parseInt(taId[2])
+			const textarea = document.querySelector(`#${taId.join("_")}`);
+			if (arr.has(taIdInd)) {
+				if (proxIdsSelected.size + divIdsSelected.size === 3) {
+					document.querySelectorAll(`.attr-item .list-item-cb:disabled:not([id$='_${taIdInd}'])`).forEach(function(e) {
+						const eIdInd = parseInt(e.id.split("_")[2]);
+						if (!proxIdsSelected.has(eIdInd) && !divIdsSelected.has(eIdInd)) {
+							e.removeAttribute("disabled");
+						}
+					});
+					document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
+				}
+				arr.delete(taIdInd);
+				textarea.setAttribute("disabled", "true");
+			} else {
+				if (proxIdsSelected.size + divIdsSelected.size >= 3) {
+					console.error("Why is handleAttrClick called when proxIdsSelected.size + divIdsSelected.size >= 3?");
+					return 0;
+				}
+				arr.add(taIdInd);
+				textarea.removeAttribute("disabled");
+				// don't need [id^='cb_'] because all checkbox ids start with that
+				document.querySelectorAll(`.attr-item .list-item-cb[id$='_${taIdInd}']:not(:checked)`).forEach(function(e) {
+					e.setAttribute("disabled", true);
+				});
+				if (proxIdsSelected.size + divIdsSelected.size === 3) {
+					document.querySelectorAll(".attr-item .list-item-cb:not(:checked)").forEach(function(e) {
+						e.setAttribute("disabled", true);
+					});
+				}
+			}
+			return 1;
+		}
+	}
+	function toggleDropdown() {
+		document.querySelector(".dropdown-options").classList.toggle("show");
+	}
+	function handleDropdownSelection(p) {
+		if (selectedDatabaseId) {
+			document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
+		}
+		selectedDatabaseId = p.id;
+		p.classList.add("selected");
+		document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
+		document.querySelector(".dropdown-options").classList.remove("show");
+		document.querySelector(".process-button").removeAttribute("disabled");
+		fetchAndDisplayCardsAttrs();
+	}
+	function fetchAndDisplayCardsAttrs() {
+		// TODO: fetch attributes
+		// fetch.then(
+		// attrList = arr;
+		document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
+		document.querySelector("#card-prox").innerHTML += genListGroup(attrList, true);
+		document.querySelector("#card-div").innerHTML += genListGroup(attrList, false);
+		// document.querySelector("#card-prox .list-group").innerHTML += genListGroup(attrList, true);
+		// document.querySelector("#card-div .list-group").innerHTML += genListGroup(attrList, false);
+		// );
+	}
+	function genListGroup(attrArr, isProxAttr) {
+		return attrArr.map((attr, ind) => {
+			return genListItem(ind, isProxAttr, attr);
+		}).join("");
+	}
+	function genListItem(id, isProx, attr) {
+		// Checks
+		if (typeof(id) !== "number" || id % 1 !== 0) { console.error("id should be whole number"); return null; }
+		if (typeof(isProx) !== "boolean") { console.error("isProx should be of boolean type"); return null; }
+		if (!attr) { console.error("attr is required"); return null; }
+		const title = isProx ? "Proximity Attributes" : "Diversity Attributes";
+		const type = isProx ? "prox" : "div";
+		const rowId = `row_${type}_${id}`;
+		const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(v=>`${v[0].toUpperCase()}${v.substr(1)}`).join(" ")}`;
+		// might not need checkboxId
+		const checkboxId = `cb_${type}_${id}`;
+		const textAreaId = `ta_${type}_${id}`;
+		const warningId = `w_${type}_${id}`;
+		// Return string of element
+		return (`
+			<div id="${rowId}" class="list-item attr-item">
+				<!-- checkbox & attribute -->
+				<div class="list-item-cbattr">
+					<label class="list-item-cbattr-label">
+						<input id="${checkboxId}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(${isProx})(this)">
+						<span><strong style="font-size:1rem;">${attrProperCase}</strong></span>
+					</label>
+				</div>
+				<!-- input -->
+				<input
+					id="${textAreaId}" class="list-item-weight" type="text" placeholder="Weight" disabled=true
+					onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+				/>
+				<!-- warning svg -->
+				<i id="${warningId}" class="fas fa-exclamation-triangle list-item-warning"></i>
+			</div>
+		`);
+	}
+	function process() {
+		if (proxIdsSelected.size + divIdsSelected.size === 0) {
+			document.querySelector(".process-warning").classList.add("show");
+		} else if (document.querySelector(".process-warning").classList.contains("show")) {
+			document.querySelector(".process-warning").classList.remove("show");
+		}
+		const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
+		const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
+		const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
+		const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
+		document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
+		if (proxNaN.length + divNaN.length !== 0) {
+			proxNaN.forEach(function(pair) {
+				document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
+			});
+			divNaN.forEach(function(pair) {
+				document.querySelector(`#row_div_${pair[0]} .list-item-warning`).classList.add("show");
+			});
+		} else {
+			const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
+			const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
+			console.log(proxWeights, divWeights);
+		}
+	}
+	function exit(status) {
+		// https://stackoverflow.com/a/550583
+    // http://kevin.vanzonneveld.net
+    // +   original by: Brett Zamir (http://brettz9.blogspot.com)
+    // +      input by: Paul
+    // +   bugfixed by: Hyam Singer (http://www.impact-computing.com/)
+    // +   improved by: Philip Peterson
+    // +   bugfixed by: Brett Zamir (http://brettz9.blogspot.com)
+    // %        note 1: Should be considered expirimental. Please comment on this function.
+    // *     example 1: exit();
+    // *     returns 1: null
+    var i;
+    if (typeof status === 'string') {
+			alert(status);
+    }
+    window.addEventListener('error', function (e) {e.preventDefault();e.stopPropagation();}, false);
+    var handlers = [
+			'copy', 'cut', 'paste',
+			'beforeunload', 'blur', 'change', 'click', 'contextmenu', 'dblclick', 'focus',
+			'keydown', 'keypress', 'keyup', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'resize', 'scroll',
+			'DOMNodeInserted', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMNodeInsertedIntoDocument', 'DOMAttrModified',
+			'DOMCharacterDataModified', 'DOMElementNameChanged', 'DOMAttributeNameChanged', 'DOMActivate', 'DOMFocusIn', 'DOMFocusOut',
+			'online', 'offline', 'textInput',
+			'abort', 'close', 'dragdrop', 'load', 'paint', 'reset', 'select', 'submit', 'unload'
+    ];
+    function stopPropagation (e) {
+			e.stopPropagation();
+			// e.preventDefault(); // Stop for the form controls, etc., too?
+    }
+    for (i = 0; i < handlers.length; i ++) {
+			window.addEventListener(handlers[i], function (e) {stopPropagation(e);}, true);
+    }
+    if (window.stop) {
+			window.stop();
+    }
+    throw '';
+	}
+</script>
 {% endblock %}

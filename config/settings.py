@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 import environ
+# import mimetypes
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -41,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'config',
-    'app'
+    'app',
+    'fontawesome-free'
 ]
 
 MIDDLEWARE = [
@@ -118,4 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_root = 'static'
+STATIC_ROOT = 'static'
+
+# Mimetypes
+# mimetypes.add_type("text/css", ".css", True)

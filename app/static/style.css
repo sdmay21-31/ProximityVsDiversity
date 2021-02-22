@@ -1,0 +1,237 @@
+nav {
+    background: white;
+}
+
+.columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 4rem 2rem 2rem 2rem;
+}
+
+.data-input {
+    position: relative;
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    min-width: 500px;
+    /* max-width: 800px; */
+    max-height: 50%;
+    padding-right: 2em;
+    border-right: 2px solid black;
+}
+.dropdown-container {
+    position: relative;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.dropdown-button {
+    position: relative;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    background-color: #ffc107;
+    font-size: 1.25rem;
+    text-align: start;
+}
+.dropdown-button-icon {
+    position: absolute;
+    float: inline-end;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+}
+.dropdown-button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(255 193 7 / 50%);
+}
+.dropdown-button:hover {
+    background-color: #d39e00;
+}
+/* .dropdown-options {
+    display: none;
+    width: 100%;
+    margin-top: 2px;
+    border: 1px solid grey;
+    border-radius: .2rem;
+    transition: all 0.25s ease;
+} */
+.dropdown-options {
+    position: absolute;
+    transform: translateY(0.2rem);
+    z-index: 100;
+    display: none;
+    width: 100%;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: .2rem;
+    transition: all 0.25s ease;
+}
+.dropdown-options.show {
+    display: block;
+}
+.dropdown-option {
+    width: 100%;
+    padding: 0.25rem 1rem;
+    cursor: pointer;
+}
+.dropdown-option:hover {
+    background-color: lightgrey;
+}
+.dropdown-option:first-child {
+	border-top-left-radius: 0.2rem;
+	border-top-right-radius: 0.2rem;
+}
+.dropdown-option:last-child {
+	margin-bottom: 0;
+	border-bottom-left-radius: 0.2rem;
+	border-bottom-right-radius: 0.2rem;
+}
+.dropdown-option.selected {
+    background-color: #007bff;
+    color: white;
+}
+.data-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.card {
+    position: relative;
+    width: 350px;
+    margin: 2rem auto 0 auto;
+    border-radius: .2rem;
+}
+.card-header {
+    width: 100%;
+    margin-bottom: -1px;
+    border: 1px solid grey;
+    border-top-left-radius: .2rem;
+    border-top-right-radius: .2rem;
+}
+.card-header:last-child {
+    border-bottom-left-radius: .2rem;
+    border-bottom-right-radius: .2rem;
+}
+.card-title {
+    position: relative;
+    font-size: 1.2rem;
+    float: start;
+    padding: 1rem 1rem;
+}
+
+.list-group {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    margin-bottom: -1px;
+    border: 1px solid grey;
+}
+.list-item:first-child {
+	border-top-left-radius: 0.2rem;
+	border-top-right-radius: 0.2rem;
+}
+.list-item:last-child {
+	margin-bottom: 0;
+	border-bottom-left-radius: 0.2rem;
+	border-bottom-right-radius: 0.2rem;
+}
+
+.list-item-cbattr {
+    height: 100%;
+    display: flex;
+    flex: 8;
+}
+.list-item-cbattr-label {
+    height: 100%;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.list-item-cb {
+    margin-right: 1em;
+    width: 1em;
+    height: 1em;
+    border-radius: 0.2rem;
+}
+.list-item-cb:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem lightskyblue;
+}
+.list-item-weight {
+    display: flex;
+    flex: 2;
+    width: 4em;
+    height: 100%;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.5;
+    border-bottom: 1px solid lightslategrey;
+    border-radius: 0.2rem;
+    background-clip: padding-box;
+    text-align: end;
+}
+.list-item-weight[disabled=true] {
+    background-color: lightgrey;
+    color: grey;
+}
+.list-item-warning {
+    display: none;
+    color: red;
+    margin-left: .5rem;
+}
+.list-item-warning.show {
+    display: block;
+}
+
+.process-button-container {
+    position: relative;
+    width: 80%;
+    margin: 2rem auto;
+    text-align: center;
+    color: lightslategrey;
+}
+.process-warning {
+    display: none;
+    color: red;
+}
+.process-warning.show {
+    display: block;
+}
+.process-button {
+    position: relative;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    background-color: #28a745;
+    font-size: 1.25rem;
+    color: white;
+}
+.process-button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(40 167 69 / 50%);
+}
+.process-button:not(:disabled):hover {
+    background-color: #1e7e34;
+}
+.process-button:disabled {
+    background-color: lightgrey;
+}
+
+.summary {
+    flex: 5;
+    padding-left: 2em;
+}
