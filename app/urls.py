@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app import views
+from app.views import *
 
 urlpatterns = [
-    path('', views.index, name="index"),
-    path('algo/', views.AlgoRequestView, name="algo-request")
+    path('', index, name="index"),
+    path('algo/', AlgoRequestView, name="algo-request"),
+    path('databaseChoice/', DatabaseChoiceView, name="DatabaseChoiceView"),
+    path('databaseOne/', DatabaseOneView, name=DATABASE_NAMES[0]),
+    path('databaseTwo/', DatabaseTwoView, name=DATABASE_NAMES[1]),
+    path('databaseThree/', DatabaseThreeView, name=DATABASE_NAMES[2]),
 ]

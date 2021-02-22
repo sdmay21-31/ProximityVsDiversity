@@ -36,6 +36,12 @@ NODE_ATTR_CHOICES = (
     ("32", "ecc"),
 )
 
+DATABASE_CHOICES = (
+    ('1', 'Database One'),
+    ('2', 'Database Two'),
+    ('3', 'Database Three'),
+)
+
 class AlgoRequestForm(forms.Form):
 
     #List and select wanted attr
@@ -47,3 +53,8 @@ class AlgoRequestForm(forms.Form):
     attribute2Value = forms.FloatField()
     attribute3Value = forms.FloatField()
     
+class DatabaseChoiceForm(forms.Form):
+    
+    choice = forms.ChoiceField(choices = DATABASE_CHOICES)
+    
+
