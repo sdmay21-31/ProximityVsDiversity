@@ -106,7 +106,6 @@ nav {
     border-radius: .2rem;
 }
 .card-header {
-	height: 45px;
     width: 100%;
     margin-bottom: -1px;
     border: 1px solid grey;
@@ -121,7 +120,7 @@ nav {
     position: relative;
     font-size: 1.2rem;
     float: start;
-    padding: 1rem 1rem;
+    padding: 0.6rem 1rem;
 }
 
 .list-group {
@@ -232,34 +231,39 @@ nav {
 .process-button:disabled {
     background-color: lightgrey;
 }
+.select-three {
+	margin-bottom: .3rem;
+}
 
 .summary {
     flex: 5;
-    padding-left: 2em;
+    display: flex;
+    flex-direction: column;
+    padding-left: calc(2em + 2px);
+    border-left: 2px solid lightslategrey;
+    margin-left: -2px;
+}
+.summary-title {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+.summary-box {
+    position: relative;
+	font-weight: bold;
+	width: 80%;
+	height: 125px;
+	margin-bottom: 2rem;
+    border: 2px solid grey;
+}
+.summary-box-title {
+    font-size: 1.5rem;
+    padding: 0 0.5rem;
+}
+.summary-attr-list {
+    padding: 0 0.5rem;
 }
 
 .chart {
     width: calc(100% - 2rem - 2rem);
     margin: 2rem;
-}
-
-.summary-proximity{
-	font-weight: bold;
-	position: absolute;
-	width: 40%;
-	height: 125px;
-    border: 3px solid grey;
-}
-
-.summary-diversity{
-	font-weight: bold;
-	position: absolute;
-	top: 30%;
-	width: 40%;
-	height: 125px;
-    border: 3px solid grey;
-}
-
-.select-three{
-	margin-bottom: .3rem;
 }

@@ -37,25 +37,23 @@
 				<i class="fas fa-exclamation-triangle"></i>
 				<span>At least 1 attribute must be selected</span>
 			</div>
-			<div class = "select-three">
-				<p>Select up to 3 attributes</p>
-			</div>
+			<p class="select-three">Select up to 3 attributes</p>
 			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button>
 		</div>
 	</div>
 	<div class="summary">
-		<u><p style="font-size:2rem;">Summary</p></u>
-		<div class="summary-proximity">
-			<p style="font-size:1.5rem;">Proximity Attributes and Weights</p>
+		<p class="summary-title" style="font-size:2rem;"><u>Summary</u></p>
+		<div class="summary-box summary-proximity">
+			<p class="summary-box-title">Proximity Attributes and Weights</p>
 			<div class="proximity-columns-weights">
-				<ul id = "proximityList">
+				<ul class="summary-attr-list" id="proximity-list">
 				</ul>
 			</div>
 		</div>
-		<div class="summary-diversity">
-			<p style="font-size:1.5rem;">Diversity Attributes and Weights</p>
+		<div class="summary-box summary-diversity">
+			<p class="summary-box-title">Diversity Attributes and Weights</p>
 			<div class="diversity-columns-weights">
-				<ul id = "diversityList">
+				<ul class="summary-attr-list" id="diversity-list">
 				</ul>
 			</div>
 		</div>
@@ -200,33 +198,35 @@
 			const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			console.log(proxWeights, divWeights);
-			var proxUl = document.getElementById("proximityList");
-			var divUl = document.getElementById("diversityList");
+			var proxUl = document.querySelector("#proximity-list");
+			var divUl = document.querySelector("#diversity-list");
 			var li;
 			proxUl.innerHTML = "";
 			divUl.innerHTML = "";
 			//summary creation for proximity
-			if(proxWeights.length === 0){
+			if (proxWeights.length === 0) {
 				li = document.createElement("li");
 				li.appendChild(document.createTextNode("No proximity attribute selected"));
 				proxUl.appendChild(li);	
-			}else
-				proxWeights.forEach(function(e){
+			} else {
+				proxWeights.forEach(function(e) {
 					li = document.createElement("li");
 					li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
 					proxUl.appendChild(li);				
 				});
-			//summary creation for diversity
-			if(divWeights.length === 0){
+			}
+			// summary creation for diversity
+			if (divWeights.length === 0) {
 				li = document.createElement("li");
 				li.appendChild(document.createTextNode("No diversity attribute selected"));
 				divUl.appendChild(li);	
-			}else
-				divWeights.forEach(function(e){
+			} else {
+				divWeights.forEach(function(e) {
 					li = document.createElement("li");
 					li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
 					divUl.appendChild(li);				
 				});
+			}
 			// TODO: Make a POST request
 			// TODO: Create a summary from the request response
 			// TODO: Render chart
