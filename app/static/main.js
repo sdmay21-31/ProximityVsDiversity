@@ -21,8 +21,8 @@ function handleAttrClick(forProx) {
             e.removeAttribute("disabled");
           }
         });
-        document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
       }
+      document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
       arr.delete(taIdInd);
       textarea.setAttribute("disabled", "true");
     } else {
@@ -57,6 +57,8 @@ function handleDropdownSelection(p) {
   document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
   document.querySelector(".dropdown-options").classList.remove("show");
   document.querySelector(".process-button").removeAttribute("disabled");
+  proxIdsSelected.clear();
+  divIdsSelected.clear();
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
