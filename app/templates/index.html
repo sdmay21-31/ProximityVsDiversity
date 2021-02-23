@@ -41,20 +41,16 @@
 			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button>
 		</div>
 	</div>
-	<div class="summary">
-		<p class="summary-title" style="font-size:2rem;"><u>Summary</u></p>
-		<div class="summary-box summary-proximity">
-			<p class="summary-box-title">Proximity Attributes and Weights</p>
-			<div class="proximity-columns-weights">
-				<ul class="summary-attr-list" id="proximity-list">
-				</ul>
+	<div class="summary-outer">
+		<div class="summary">
+			<p class="summary-title" style="font-size:2rem;">Summary</p>
+			<div class="summary-box summary-prox">
+				<p class="summary-box-title">Proximity Attributes and Weights</p>
+				<div class="summary-attr-ul-list prox-list"></div>
 			</div>
-		</div>
-		<div class="summary-box summary-diversity">
-			<p class="summary-box-title">Diversity Attributes and Weights</p>
-			<div class="diversity-columns-weights">
-				<ul class="summary-attr-list" id="diversity-list">
-				</ul>
+			<div class="summary-box summary-diversity">
+				<p class="summary-box-title">Diversity Attributes and Weights</p>
+				<div class="summary-attr-ul-list div-list"></div>
 			</div>
 		</div>
 	</div>
@@ -134,8 +130,6 @@
 		document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
 		document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
 		document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-		// document.querySelector("#card-prox .list-group").innerHTML += genListGroup(attrList, true);
-		// document.querySelector("#card-div .list-group").innerHTML += genListGroup(attrList, false);
 		// );
 	}
 	function genListItemsForType(attrArr, isProxAttr) {
@@ -151,7 +145,7 @@
 		const title = isProx ? "Proximity Attributes" : "Diversity Attributes";
 		const type = isProx ? "prox" : "div";
 		const rowId = `row_${type}_${id}`;
-		const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(v=>`${v[0].toUpperCase()}${v.substr(1)}`).join(" ")}`;
+		const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(v=>`${v[0].toUpperCase()}${v.slice(1)}`).join(" ")}`;
 		// might not need checkboxId
 		const checkboxId = `cb_${type}_${id}`;
 		const textAreaId = `ta_${type}_${id}`;
@@ -198,40 +192,65 @@
 			const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
 			console.log(proxWeights, divWeights);
-			var proxUl = document.querySelector("#proximity-list");
-			var divUl = document.querySelector("#diversity-list");
-			var li;
-			proxUl.innerHTML = "";
-			divUl.innerHTML = "";
-			//summary creation for proximity
-			if (proxWeights.length === 0) {
-				li = document.createElement("li");
-				li.appendChild(document.createTextNode("No proximity attribute selected"));
-				proxUl.appendChild(li);	
-			} else {
-				proxWeights.forEach(function(e) {
-					li = document.createElement("li");
-					li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
-					proxUl.appendChild(li);				
-				});
-			}
-			// summary creation for diversity
-			if (divWeights.length === 0) {
-				li = document.createElement("li");
-				li.appendChild(document.createTextNode("No diversity attribute selected"));
-				divUl.appendChild(li);	
-			} else {
-				divWeights.forEach(function(e) {
-					li = document.createElement("li");
-					li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
-					divUl.appendChild(li);				
-				});
-			}
 			// TODO: Make a POST request
 			// TODO: Create a summary from the request response
-			// TODO: Render chart
+			// fetch(`url`, {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Accept': 'application/json',
+			// 		'Content-Type': 'application/json'
+			// 	},
+			// 	body: JSON.stringify(data)
+			// }).then((response) => {
+			// 	return response.json;
+			// }).then((json) => {
+			//	// createSummary(json.data);
+				createSummary(undefined, proxWeights, divWeights);
+			//	// renderChart(json.chartBase64);
+			// });
 		}
 	}
+	/**
+	 * TODO: Extract info from data and add to summary
+	 */
+	function createSummary(data, proxWeights, divWeights) {
+		const proxList = document.querySelector(".prox-list");
+		const divList = document.querySelector(".div-list");
+		let li;
+		// Just leaving this here for the future
+		// `<p class="summary-attr-item"><span class="summary-attr-item-name">mass</span><span class="summary-attr-item-weight">1</span></p>`
+		proxList.innerHTML = "";
+		divList.innerHTML = "";
+		// summary creation for proximity
+		if (proxWeights.length === 0) {
+			li = document.createElement("li");
+			li.appendChild(document.createTextNode("No proximity attribute selected"));
+			proxList.appendChild(li);
+		} else {
+			proxWeights.forEach(function(e) {
+				li = document.createElement("li");
+				li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
+				proxList.appendChild(li);
+			});
+		}
+		// summary creation for diversity
+		if (divWeights.length === 0) {
+			li = document.createElement("li");
+			li.appendChild(document.createTextNode("No diversity attribute selected"));
+			divList.appendChild(li);
+		} else {
+			divWeights.forEach(function(e) {
+				li = document.createElement("li");
+				li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
+				divList.appendChild(li);				
+			});
+		}
+		// TODO: Extract info from data and add to summary
+	}
+	/**
+	 * TODO: render chart
+	 */
+	function renderChart(chartBase64) {}
 	function exit(status) {
 		// https://stackoverflow.com/a/550583
     // http://kevin.vanzonneveld.net
