@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import json
 
 
 from app.algos import example_algo
@@ -85,6 +86,25 @@ def AlgoRequestView(request):
             }
             #Send the context to the correct html page
             return render(request, 'nodeForm.html', context)
+
+#Alright, this is a start to JSON inputs from the possible frontend stuff
+def processAttr(request):
+    
+    #fail on non post request
+    if request.method != "POST":
+        return "ERROR WITH REQUEST"
+
+    #This is where the form input for json is created for the form
+    #Maybe? do we need a form if JSON exists?
+
+    #grab json attrs
+    proxAttr = json.loads(request.data.get("proxAttrs"))
+    divAttrs = json.loads(request.data.get("divAttrs"))
+
+    #Send data to db/algo
+
+    #This part is semi-tricky on how to implement, it depends upon algorithim input and should be dynamic
+    #lists are a good start to split attr/values and send them
 
 
 
