@@ -1,7 +1,11 @@
 let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
+let dbs = [];
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
+const urlGetDb = "http://localhost:8000/get/db/";
+const urlGetAttrBase = "http://localhost:8000/get/attr/";
+const urlProcess = "http://localhost:8000/post/process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
 window.proxIdsSelected = proxIdsSelected;
 window.divIdsSelected = divIdsSelected;
@@ -48,10 +52,44 @@ function handleAttrClick(forProx) {
 function toggleDropdown() {
   document.querySelector(".dropdown-options").classList.toggle("show");
 }
+function fetchDBsAndPopulateDropdown() {
+  fetch(urlGetDb, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(function(response) {
+    return response.json();
+  }).then(function(data) {
+    dbs = data.dbs;
+    if (dbs) {
+      populateDropdown();
+    } else {
+      console.error("There was a problem with the dbs array from the database");
+    }
+  }).catch(function(error) {
+    console.error("There was a problem fetching the database options");
+  });
+}
+function populateDropdown() {
+  const dropdown = document.querySelector("#database-options");
+  dropdown.innerHTML = "";
+  dbs.forEach(function(name, ind) {
+    const item = document.createElement("p");
+    item.id = `option_${ind}`;
+    item.classList.add("dropdown-option");
+    // item.onclick = handleDropdownSelection.bind(item);
+    item.onclick = function() { handleDropdownSelection(item) };
+    item.appendChild(document.createTextNode(name));
+    dropdown.appendChild(item);
+  });
+}
 function handleDropdownSelection(p) {
   if (selectedDatabaseId) {
     document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
   }
+  console.log(p);
   selectedDatabaseId = p.id;
   p.classList.add("selected");
   document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
@@ -62,13 +100,28 @@ function handleDropdownSelection(p) {
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
-  // TODO: fetch attributes
-  // fetch.then(
-  // attrList = arr;
-  document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
-  document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
-  document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-  // );
+  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(function(response) {
+    return response.json();
+  }).then(function(data) {
+    const attrList = data.attrs;
+    if (attrList && Array.isArray(attrList) && attrList.length > 0) {
+      document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
+      document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
+      document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
+      renderInputTime();
+    } else {
+      console.error("There was a problem with the attribute list from the endpoint");
+      console.error(data);
+    }
+  }).catch(function(reason) {
+    console.error("There was a problem fetching the attributes");
+  });
 }
 function genListItemsForType(attrArr, isProxAttr) {
   return attrArr.map((attr, ind) => {
@@ -98,19 +151,29 @@ function genListItem(id, isProx, attr) {
           <span><strong style="font-size:1rem;">${attrProperCase}</strong></span>
         </label>
       </div>
+      <!-- warning svg -->
+      <i id="${warningId}" class="fas fa-exclamation-triangle list-item-warning"></i>
       <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
       <input
         id="${textAreaId}" class="list-item-weight" type="text" placeholder="Weight" disabled=true
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
       />
-      <!-- warning svg -->
-      <i id="${warningId}" class="fas fa-exclamation-triangle list-item-warning"></i>
     </div>
   `);
 }
+function renderInputTime() {
+  document.querySelector("#input-time-container").innerHTML = `
+    <i class="input-time-warning" class="fas fa-exclamation-triangle"></i>
+    <input class="input-time" id="input-time" type="text" placeholder="Time"
+      onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+    />
+  `;
+}
 function process() {
+  let errorSomewhere = false;
   if (proxIdsSelected.size + divIdsSelected.size === 0) {
     document.querySelector(".process-warning").classList.add("show");
+    errorSomewhere = true;
   } else if (document.querySelector(".process-warning").classList.contains("show")) {
     document.querySelector(".process-warning").classList.remove("show");
   }
@@ -118,7 +181,9 @@ function process() {
   const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
   const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
+  const time = parseInt(document.querySelector(".input-time").value);
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
+  document.querySelector(".input-time-warning").classList.remove("show");
   if (proxNaN.length + divNaN.length !== 0) {
     proxNaN.forEach(function(pair) {
       document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
@@ -126,10 +191,16 @@ function process() {
     divNaN.forEach(function(pair) {
       document.querySelector(`#row_div_${pair[0]} .list-item-warning`).classList.add("show");
     });
-  } else {
+    errorSomewhere = true;
+  }
+  if (isNaN(time)) {
+    document.querySelector(".input-time-warning").classList.add("show");
+    errorSomewhere = true;
+  }
+  if (!errorSomewhere) {
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
-    console.log(proxWeights, divWeights);
+    console.log(time, proxWeights, divWeights);
     // TODO: Make a POST request
     // TODO: Create a summary from the request response
     // fetch(`url`, {
@@ -229,3 +300,4 @@ function exit(status) {
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+fetchDBsAndPopulateDropdown();
