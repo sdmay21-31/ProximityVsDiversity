@@ -14,6 +14,9 @@ def index(request, *args, **kwargs):
 def dummyDB(request, *args, **kwargs):
     return JsonResponse({'dbs': ['hello_world', 'yay_me', 'im_london_tipton']})
 
+def dummyPost(request, *args, **kwargs):
+    return request
+    
 def dummyAttr(request, db):
     dbToAttrs = {
         "hello_world":["goodbye", "hello", "world", "earth"],
