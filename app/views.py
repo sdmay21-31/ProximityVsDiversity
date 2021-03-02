@@ -14,8 +14,10 @@ def index(request, *args, **kwargs):
 def dummyDB(request, *args, **kwargs):
     return JsonResponse({'dbs': ['hello_world', 'yay_me', 'im_london_tipton']})
 
-def dummyPost(request, *args, **kwargs):
-    return request
+def dummyPost(request):
+    print(request.body)
+    return JsonResponse({'test': 'i dont understand python'})
+    #the dummyPost above prints the request body to the command prompt
     
 def dummyAttr(request, db):
     dbToAttrs = {

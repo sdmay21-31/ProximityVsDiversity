@@ -200,50 +200,33 @@ function process() {
   if (!errorSomewhere) {
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
+    var proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
+    var divAttrs= divWeights.map(e=>({name:e[0],weight:e[1]}));
     console.log(time, proxWeights, divWeights);
     // TODO: Make a POST request
     // TODO: Create a summary from the request response
-    /*fetch(urlProcess, { This is commented out because it will return a 403 error due to CSRF token stuff that I do not quite understand
+    fetch(urlProcess, {
 		method: 'POST',
 		headers: {
-			//'X-CSRFToken': csrf_token, This is so the post request will actually work, I ran out of time to work on this so I am just going to leave this here
+			'X-CSRFToken': csrf, 
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(createBody(proxWeights,divWeights,time))
-		//JSON.stringify({
-		//	time: time,
-		//	proxAttrs: proxWeights,
-		//	divAttrs: divWeights
-		//})
+		body:
+		JSON.stringify({
+			time: time,
+			proxAttrs: proxAttrs,
+			divAttrs: divAttrs
+		})
 	}).then((response) => {
 			return response.json;
 	}).then((json) => {
+			console.log(json);
 	//	// createSummary(json.data);
 	  createSummary(undefined, proxWeights, divWeights);
 	//	// renderChart(json.chartBase64);
-	})		*/
+	})		
   }
-}
-//I used this function to create the body for the POST request above
-function createBody(proxWeights, divWeights, time){
-	var t = '{ "time" :'+ time +',';
-	var proxAttrs='"proxAttrs" : [';
-	var divAttrs='"divAttrs" : [';
-	let i = 0;
-	proxWeights.forEach(function(e) {
-      if(i+1 != proxWeights.length) proxAttrs+='{ "name":'+e[0]+', "weight":'+e[1]+' },';
-	  else{proxAttrs+='{ "name":'+e[0]+', "weight":'+e[1]+' } ],'};
-	  i++
-    });
-	i=0;
-	divWeights.forEach(function(e) {
-      if(i+1 != divWeights.length) divAttrs+='{ "name":'+e[0]+', "weight":'+e[1]+' },';
-	  else{divAttrs+='{ "name":'+e[0]+', "weight":'+e[1]+' } ],}'};
-	  i++
-    });
-	let body = t + proxAttrs + divAttrs + "";
-	return body;
 }
 /**
  * TODO: Extract info from data and add to summary
@@ -325,21 +308,5 @@ function exit(status) {
 }
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
-//Used for the csrftoken
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
 fetchDBsAndPopulateDropdown();

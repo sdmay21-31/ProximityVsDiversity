@@ -39,7 +39,7 @@
 				<span>At least 1 attribute must be selected</span>
 			</div>
 			<p class="select-three">Select up to 3 attributes</p>
-			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button>
+			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button><script>var csrf = "{{ csrf_token }}"</script>
 		</div>
 	</div>
 	<div class="summary-outer">
