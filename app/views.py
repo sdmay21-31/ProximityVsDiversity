@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 
 from app.algos import example_algo
@@ -8,6 +9,25 @@ from app.algos import example_algo, gabe
 
 # Create your views here.
 def index(request, *args, **kwargs):
+    return render(request, 'index.html')
+
+def dummyDB(request, *args, **kwargs):
+    return JsonResponse({'dbs': ['hello_world', 'yay_me', 'im_london_tipton']})
+
+def dummyPost(request):
+    print(request.body)
+    return JsonResponse({'test': 'i dont understand python'})
+    #the dummyPost above prints the request body to the command prompt
+    
+def dummyAttr(request, db):
+    dbToAttrs = {
+        "hello_world":["goodbye", "hello", "world", "earth"],
+        "tipton":["maddie", "moseby", "hotel", "ship"],
+        "yay_me":["london", "podcast"]
+    }
+    return JsonResponse({'attrs': dbToAttrs[db]})
+
+def indexQS(request, *args, **kwargs):
     context = {
         'example_data': example_algo()[:10]
     }
