@@ -2,6 +2,7 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
+let prevInputValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
 const urlGetDb = "http://localhost:8000/get/db/";
 const urlGetAttrBase = "http://localhost:8000/get/attr/";
@@ -36,7 +37,6 @@ function handleAttrClick(forProx) {
       }
       arr.add(taIdInd);
       textarea.removeAttribute("disabled");
-      // don't need [id^='cb_'] because all checkbox ids start with that
       document.querySelectorAll(`.attr-item .list-item-cb[id$='_${taIdInd}']:not(:checked)`).forEach(function(e) {
         e.setAttribute("disabled", true);
       });
@@ -97,6 +97,7 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
+  prevInputValue = "";
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
@@ -137,11 +138,9 @@ function genListItem(id, isProx, attr) {
   const type = isProx ? "prox" : "div";
   const rowId = `row_${type}_${id}`;
   const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(v=>`${v[0].toUpperCase()}${v.slice(1)}`).join(" ")}`;
-  // might not need checkboxId
   const checkboxId = `cb_${type}_${id}`;
   const textAreaId = `ta_${type}_${id}`;
   const warningId = `w_${type}_${id}`;
-  // Return string of element
   return (`
     <div id="${rowId}" class="list-item attr-item">
       <!-- checkbox & attribute -->
@@ -163,11 +162,27 @@ function genListItem(id, isProx, attr) {
 }
 function renderInputTime() {
   document.querySelector("#input-time-container").innerHTML = `
-    <i class="input-time-warning" class="fas fa-exclamation-triangle"></i>
-    <input class="input-time" id="input-time" type="text" placeholder="Time"
-      onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-    />
+    <p class="input-time-instruction">Enter a time between 0 and 3000, inclusive</p>
+    <div class="input-time-inner-container">
+      <i class="input-time-warning" class="fas fa-exclamation-triangle"></i>
+      <input class="input-time" id="input-time" type="text" placeholder="Time"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        oninput="controlInputTime(event)"
+      />
+    </div>
   `;
+  document.querySelector("#input-time-container").classList.add("show");
+}
+function controlInputTime(event) {
+  const value = event.target.value;
+  console.log(value);
+  if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
+    prevInputValue = value;
+  } else if (value === "") {
+    prevInputValue = value;
+  } else {
+    event.target.value = prevInputValue;
+  }
 }
 function process() {
   let errorSomewhere = false;
@@ -200,32 +215,31 @@ function process() {
   if (!errorSomewhere) {
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
-    var proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
-    var divAttrs= divWeights.map(e=>({name:e[0],weight:e[1]}));
+    const proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
+    const divAttrs= divWeights.map(e=>({name:e[0],weight:e[1]}));
     console.log(time, proxWeights, divWeights);
-    // TODO: Make a POST request
-    // TODO: Create a summary from the request response
     fetch(urlProcess, {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrf, 
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body:
-		JSON.stringify({
-			time: time,
-			proxAttrs: proxAttrs,
-			divAttrs: divAttrs
-		})
-	}).then((response) => {
-			return response.json;
-	}).then((json) => {
-			console.log(json);
-	//	// createSummary(json.data);
-	  createSummary(undefined, proxWeights, divWeights);
-	//	// renderChart(json.chartBase64);
-	})		
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrf, 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ time, proxAttrs, divAttrs })
+    }).then((response) => {
+      return response.json();
+    }).then((json) => {
+      console.log(json);
+      if (json.data) {
+    	  createSummary(json.data);
+      }
+      createSummary(undefined, proxWeights, divWeights);
+      if (json.chartBase64) {
+    	  renderChart(json.chartBase64);
+      }
+    }).catch(function(reason) {
+      console.error("Issue with the POST request.")
+    });
   }
 }
 /**

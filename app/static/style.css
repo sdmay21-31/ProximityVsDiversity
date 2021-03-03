@@ -209,15 +209,31 @@ nav {
 .input-time-container {
     position: relative;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto 0 auto;
+}
+.input-time-instruction {
+    margin-bottom: 0.2rem;
+    color: lightslategrey;
+}
+.input-time-container.show {
+    margin-top: 2rem;
+}
+.input-time-inner-container {
+    position: relative;
+    display: flex;
     flex-direction: row;
     justify-content: center;
-    width: 80%;
+    width: 100%;
     margin: 0 auto 0 auto;
 }
 .input-time {
     width: 100%;
+    min-width: 0;
     max-width: 400px;
-    margin-top: 0rem;
+    /* margin-top: 2rem; */
     padding: 0.25rem 0.5rem;
     line-height: 1.5;
     border: 1px solid lightslategrey;
