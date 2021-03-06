@@ -89,7 +89,6 @@ function handleDropdownSelection(p) {
   if (selectedDatabaseId) {
     document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
   }
-  console.log(p);
   selectedDatabaseId = p.id;
   p.classList.add("selected");
   document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
