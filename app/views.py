@@ -40,20 +40,29 @@ def processAttr(request):
     
     #fail on non post request
     if request.method != "POST":
-        return "ERROR WITH REQUEST"
-
-    #This is where the form input for json is created for the form
-    #Maybe? do we need a form if JSON exists?
+        return "ERROR WITH REQUEST | SHOULD BE POST"
 
     #grab json attrs
     proxAttr = json.loads(request.data.get("proxAttrs"))
     divAttrs = json.loads(request.data.get("divAttrs"))
+    time = json.loads(request.data.get("time"))
+    cluster = json.loads(request.data.get("clusters"))
 
-    #Send data to db/algo
+    #Set up JSON object
+    jsonTmp = {
+        'attrs': {
+            'proxAttrs': proxAttr,
+            'divAttrs': divAttrs
+        },
+        'time': time,
+        'cluster': cluster
+    }
 
-    #This part is semi-tricky on how to implement, it depends upon algorithim input and should be dynamic
-    #lists are a good start to split attr/values and send them
+    context = json.dump(jsonTmp)
+    #Send data to db/algo | Format: { attrs: [], time: int, clusters: int}
 
+    #send to algo method, does it need a return or a different endpoint
+    dummySend(context)
 
 
 # Database names defined for database choice page
