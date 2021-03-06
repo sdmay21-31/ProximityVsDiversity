@@ -174,7 +174,6 @@ function renderInputTime() {
 }
 function controlInputTime(event) {
   const value = event.target.value;
-  console.log(value);
   if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
     prevInputValue = value;
   } else if (value === "") {
@@ -212,11 +211,11 @@ function process() {
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
+    const db = dbs[selectedDatabaseId.split("_")[1]];
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
-    const divAttrs= divWeights.map(e=>({name:e[0],weight:e[1]}));
-    console.log(time, proxWeights, divWeights);
+    const divAttrs = divWeights.map(e=>({name:e[0],weight:e[1]}));
     fetch(urlProcess, {
       method: 'POST',
       headers: {
@@ -224,7 +223,7 @@ function process() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ time, proxAttrs, divAttrs })
+      body: JSON.stringify({ db, time, proxAttrs, divAttrs })
     }).then((response) => {
       return response.json();
     }).then((json) => {
