@@ -9,7 +9,8 @@ from app.models import Node
 from collections import Counter
 
 app_config = apps.get_app_config('app')
-app_models = app_config.get_models()
+# can't use app_models because it can only be read once
+# app_models = app_config.get_models()
 
 # Create your views here.
 def index(request, *args, **kwargs):
@@ -27,7 +28,7 @@ def index(request, *args, **kwargs):
 #     return JsonResponse({'attrs': dbToAttrs[db]})
 
 def getDBs(request, *args, **kwargs):
-    return JsonResponse({'dbs': [m.__name__ for m in app_models]})
+    return JsonResponse({'dbs': [m.__name__ for m in app_config.get_models()]})
 
 def getAttrs(request, db):
     attrs = [f.name for f in app_config.get_model(db)._meta.fields]
