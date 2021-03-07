@@ -229,6 +229,7 @@ function process() {
       return response.json();
     }).then((json) => {
       console.log(json);
+      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`
       if (json.data) {
     	  createSummary(json.data);
       }
@@ -237,6 +238,7 @@ function process() {
     	  renderChart(json.chartBase64);
       }
     }).catch(function(reason) {
+      console.log(reason)
       console.error("Issue with the POST request.")
     });
   }

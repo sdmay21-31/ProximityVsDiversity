@@ -30,8 +30,10 @@ def attributes(request, database):
 def process(request):
     """Return the algorithm function"""
     # TODO: validate incoming data
+    # TODO: Use database map to get attributes
     (chart, data) = run_algo(
-        method='kmeans', 
+        method='kmeans',
+        time_frame=1,
         proximity=[{'mass_1': 10, 'lumin_1': 20, 'rad_1': 20}],
         diversity=[])
     return JsonResponse({
