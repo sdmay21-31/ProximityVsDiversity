@@ -20,11 +20,7 @@ from app.views import *
 urlpatterns = [
     path('', index, name="index"),
     path('algo/', AlgoRequestView, name="algo-request"),
-    path('get/db/', dummyDB, name="dummy-db"),
+    path('get/db/', getDBs, name="dummy-db"),
     path('post/process/', dummyPost, name="dummy-post"),
-    path('get/attr/<slug:db>/', dummyAttr, name="dummy-attr"),
-    path('databaseChoice/', DatabaseChoiceView, name="DatabaseChoiceView"),
-    path('databaseOne/', DatabaseOneView, name=DATABASE_NAMES[0]),
-    path('databaseTwo/', DatabaseTwoView, name=DATABASE_NAMES[1]),
-    path('databaseThree/', DatabaseThreeView, name=DATABASE_NAMES[2]),
+    path('get/attr/<slug:db>/', getAttrs, name="dummy-attr")
 ]
