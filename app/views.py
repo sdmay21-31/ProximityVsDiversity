@@ -10,9 +10,6 @@ from app.databases import get_database_attributes, get_databases
 from app.models import Node
 from collections import Counter
 
-app_config = apps.get_app_config('app')
-
-
 
 # Create your views here.
 def index(request, *args, **kwargs):
