@@ -2,7 +2,8 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
-let prevInputValue = "";
+let prevTimeInputValue = "";
+let prevClusterInputValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
 const urlGetDb = "http://localhost:8000/get/db/";
 const urlGetAttrBase = "http://localhost:8000/get/attr/";
@@ -96,7 +97,8 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
-  prevInputValue = "";
+  prevTimeInputValue = "";
+  prevClusterInputValue = "";
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
@@ -115,6 +117,7 @@ function fetchAndDisplayCardsAttrs() {
       document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
       document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
       renderInputTime();
+      renderInputClusters();
     } else {
       console.error("There was a problem with the attribute list from the endpoint");
       console.error(data);
@@ -175,11 +178,34 @@ function renderInputTime() {
 function controlInputTime(event) {
   const value = event.target.value;
   if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
-    prevInputValue = value;
+    prevTimeInputValue = value;
   } else if (value === "") {
-    prevInputValue = value;
+    prevTimeInputValue = value;
   } else {
-    event.target.value = prevInputValue;
+    event.target.value = prevTimeInputValue;
+  }
+}
+function renderInputClusters() {
+  document.querySelector("#input-clusters-container").innerHTML = `
+    <p class="input-clusters-instruction">Enter number of clusters between 1 and 20, inclusive</p>
+    <div class="input-clusters-inner-container">
+      <i class="input-clusters-warning fas fa-exclamation-triangle"></i>
+      <input class="input-clusters" id="input-clusters" type="text" placeholder="Number of Clusters (Required)"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        oninput="controlInputClusters(event)"
+      />
+    </div>
+  `;
+  document.querySelector("#input-clusters-container").classList.add("show");
+}
+function controlInputClusters(event) {
+  const value = event.target.value;
+  if(parseInt(value) >= 1 && parseInt(value) <= 20) {
+    prevClusterInputValue = value;
+  } else if (value === "") {
+    prevClusterInputValue = value;
+  } else {
+    event.target.value = prevClusterInputValue;
   }
 }
 function process() {
@@ -195,6 +221,7 @@ function process() {
   const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const time = parseInt(document.querySelector(".input-time").value);
+  const clusters = parseInt(document.querySelector(".input-clusters").value);
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
   document.querySelector(".input-time-warning").classList.remove("show");
   if (proxNaN.length + divNaN.length !== 0) {
@@ -208,6 +235,10 @@ function process() {
   }
   if (isNaN(time)) {
     document.querySelector(".input-time-warning").classList.add("show");
+    errorSomewhere = true;
+  }
+  if (isNaN(clusters)) {
+    document.querySelector(".input-clusters-warning").classList.add("show");
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
