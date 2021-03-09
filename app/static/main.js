@@ -5,9 +5,9 @@ let dbs = [];
 let prevTimeInputValue = "";
 let prevClusterInputValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
-const urlGetDb = "http://localhost:8000/get/db/";
-const urlGetAttrBase = "http://localhost:8000/get/attr/";
-const urlProcess = "http://localhost:8000/post/process/";
+const urlGetDb = "databases/";
+const urlGetAttrBase = "databases/";
+const urlProcess = "process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
 window.proxIdsSelected = proxIdsSelected;
 window.divIdsSelected = divIdsSelected;
@@ -61,6 +61,7 @@ function fetchDBsAndPopulateDropdown() {
       'Content-Type': 'application/json'
     }
   }).then(function(response) {
+    console.log(response)
     return response.json();
   }).then(function(data) {
     dbs = data.dbs;
@@ -102,7 +103,7 @@ function handleDropdownSelection(p) {
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
-  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}`, {
+  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}/attributes/`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -259,6 +260,7 @@ function process() {
       return response.json();
     }).then((json) => {
       console.log(json);
+      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`
       if (json.data) {
     	  createSummary(json.data);
       }
@@ -267,6 +269,7 @@ function process() {
     	  renderChart(json.chartBase64);
       }
     }).catch(function(reason) {
+      console.log(reason)
       console.error("Issue with the POST request.")
     });
   }
