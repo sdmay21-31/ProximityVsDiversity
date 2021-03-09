@@ -225,6 +225,7 @@ function process() {
   const clusters = parseInt(document.querySelector(".input-clusters").value);
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
   document.querySelector(".input-time-warning").classList.remove("show");
+  document.querySelector(".input-clusters-warning").classList.remove("show");
   if (proxNaN.length + divNaN.length !== 0) {
     proxNaN.forEach(function(pair) {
       document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
