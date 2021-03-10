@@ -80,17 +80,17 @@ class Node(models.Model):
 class Node2(models.Model):
     file_id = models.IntegerField(db_index=True)
     node_id = models.IntegerField(db_index=True)
-    age_yrs = models.FloatField()
-    resting_heart_rate = models.FloatField()
-    active_heart_rate = models.FloatField()
-    blood_pressure = models.FloatField()
-    temperature = models.FloatField()
-    covid_antibodies = models.FloatField()
-    influenza_antibodies = models.FloatField()
-    height_in = models.FloatField()
-    weight_lbs = models.FloatField()
-    bmi = models.FloatField()
-    num_teeth = models.FloatField()
+    age_yrs = models.FloatField(default=0)
+    resting_heart_rate = models.FloatField(default=0)
+    active_heart_rate = models.FloatField(default=0)
+    blood_pressure = models.FloatField(default=0)
+    temperature = models.FloatField(default=0)
+    covid_antibodies = models.FloatField(default=0)
+    influenza_antibodies = models.FloatField(default=0)
+    height_in = models.FloatField(default=0)
+    weight_lbs = models.FloatField(default=0)
+    bmi = models.FloatField(default=0)
+    num_teeth = models.FloatField(default=0)
     time_id = models.AutoField(primary_key=True)
     # Set the manager
     objects = NodeQuerySet.as_manager()
@@ -98,7 +98,7 @@ class Node2(models.Model):
     # Properties
     @property
     def __str__(self):
-        return 'Node2: {}'.format(self.time_id)
+        return 'Node: {}'.format(self.time_id)
 
     @property
     def id(self):
@@ -117,26 +117,26 @@ class Node3(models.Model):
     file_id = models.IntegerField(db_index=True)
     node_id = models.IntegerField(db_index=True)
     Date = models.CharField(max_length=20)
-    BUDAPEST = models.FloatField()
-    BARANYA = models.FloatField()
-    BACS = models.FloatField()
-    BEKES = models.FloatField()
-    BORSOD = models.FloatField()
-    CSONGRAD = models.FloatField()
-    FEJER = models.FloatField()
-    GYOR = models.FloatField()
-    HAJDU = models.FloatField()
-    HEVES = models.FloatField()
-    JASZ = models.FloatField()
-    KOMAROM = models.FloatField()
-    NOGRAD = models.FloatField()
-    PEST = models.FloatField()
-    SOMOGY = models.FloatField()
-    SZABOLCS = models.FloatField()
-    TOLNA = models.FloatField()
-    VAS = models.FloatField()
-    VESZPREM = models.FloatField()
-    ZALA = models.FloatField()
+    BUDAPEST = models.FloatField(default=0)
+    BARANYA = models.FloatField(default=0)
+    BACS = models.FloatField(default=0)
+    BEKES = models.FloatField(default=0)
+    BORSOD = models.FloatField(default=0)
+    CSONGRAD = models.FloatField(default=0)
+    FEJER = models.FloatField(default=0)
+    GYOR = models.FloatField(default=0)
+    HAJDU = models.FloatField(default=0)
+    HEVES = models.FloatField(default=0)
+    JASZ = models.FloatField(default=0)
+    KOMAROM = models.FloatField(default=0)
+    NOGRAD = models.FloatField(default=0)
+    PEST = models.FloatField(default=0)
+    SOMOGY = models.FloatField(default=0)
+    SZABOLCS = models.FloatField(default=0)
+    TOLNA = models.FloatField(default=0)
+    VAS = models.FloatField(default=0)
+    VESZPREM = models.FloatField(default=0)
+    ZALA = models.FloatField(default=0)
     time_id = models.AutoField(primary_key=True)
     # Set the manager
     objects = NodeQuerySet.as_manager()
@@ -144,7 +144,7 @@ class Node3(models.Model):
     # Properties
     @property
     def __str__(self):
-        return 'Node3: {}'.format(self.time_id)
+        return 'Node: {}'.format(self.time_id)
 
     @property
     def id(self):

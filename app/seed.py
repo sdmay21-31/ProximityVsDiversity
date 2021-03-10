@@ -15,6 +15,7 @@ def get_chunks(csv_reader, chunk_size, node_type):
             break
         # Building Nodes
         if count < chunk_size:
+            #nodes.append(Node(**dict(n)))
             nodes.append(node_type(**dict(n)))
             count += 1
         # Return nodes
@@ -40,8 +41,8 @@ def run(file_name='main_table_1.csv', full_seed=False, chunk_size=10000, print_s
         # Read File
         for chunk in get_chunks(csv_reader, chunk_size, node_type):
             # Create Node objects
-            Node.objects.bulk_create(chunk)
-            #node_type.objects.bulk_create(chunk)
+            #Node.objects.bulk_create(chunk)
+            node_type.objects.bulk_create(chunk)
             chunk_count += 1
             if print_status:
                 print('Nodes: {}/{}'.format(chunk_count * chunk_size, TOTAL_NODES))
@@ -49,9 +50,12 @@ def run(file_name='main_table_1.csv', full_seed=False, chunk_size=10000, print_s
             if not full_seed:
                 break
 
+
+
 # Node dictionary
 nodeDictionary = {
     "main_table_1.csv": Node,
     "main_table_2.csv": Node2,
     "hungary_chickenpox.csv": Node3
 }
+
