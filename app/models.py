@@ -73,3 +73,88 @@ class Node(models.Model):
     def get_id(self, *args, **kwargs):
         """ Example method: Return Node primary key """
         return self.time_id
+
+
+
+# Node for health data
+class Node2(models.Model):
+    file_id = models.IntegerField(db_index=True)
+    node_id = models.IntegerField(db_index=True)
+    age_yrs = models.FloatField()
+    resting_heart_rate = models.FloatField()
+    active_heart_rate = models.FloatField()
+    blood_pressure = models.FloatField()
+    temperature = models.FloatField()
+    covid_antibodies = models.FloatField()
+    influenza_antibodies = models.FloatField()
+    height_in = models.FloatField()
+    weight_lbs = models.FloatField()
+    bmi = models.FloatField()
+    num_teeth = models.FloatField()
+    time_id = models.AutoField(primary_key=True)
+    # Set the manager
+    objects = NodeQuerySet.as_manager()
+
+    # Properties
+    @property
+    def __str__(self):
+        return 'Node2: {}'.format(self.time_id)
+
+    @property
+    def id(self):
+        """ Example Property: Return Node primary key """
+        return self.time_id
+
+    # Functions
+    def get_id(self, *args, **kwargs):
+        """ Example method: Return Node primary key """
+        return self.time_id
+
+
+
+# Node for chicken pox data
+class Node3(models.Model):
+    file_id = models.IntegerField(db_index=True)
+    node_id = models.IntegerField(db_index=True)
+    Date = models.CharField(max_length=20)
+    BUDAPEST = models.FloatField()
+    BARANYA = models.FloatField()
+    BACS = models.FloatField()
+    BEKES = models.FloatField()
+    BORSOD = models.FloatField()
+    CSONGRAD = models.FloatField()
+    FEJER = models.FloatField()
+    GYOR = models.FloatField()
+    HAJDU = models.FloatField()
+    HEVES = models.FloatField()
+    JASZ = models.FloatField()
+    KOMAROM = models.FloatField()
+    NOGRAD = models.FloatField()
+    PEST = models.FloatField()
+    SOMOGY = models.FloatField()
+    SZABOLCS = models.FloatField()
+    TOLNA = models.FloatField()
+    VAS = models.FloatField()
+    VESZPREM = models.FloatField()
+    ZALA = models.FloatField()
+    time_id = models.AutoField(primary_key=True)
+    # Set the manager
+    objects = NodeQuerySet.as_manager()
+
+    # Properties
+    @property
+    def __str__(self):
+        return 'Node3: {}'.format(self.time_id)
+
+    @property
+    def id(self):
+        """ Example Property: Return Node primary key """
+        return self.time_id
+
+    # Functions
+    def get_id(self, *args, **kwargs):
+        """ Example method: Return Node primary key """
+        return self.time_id
+
+
+
