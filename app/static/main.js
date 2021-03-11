@@ -66,7 +66,7 @@ function fetchDBsAndPopulateDropdown() {
   }).then(function(data) {
     dbs = data.dbs;
     if (dbs) {
-      populateDropdown();
+      populateDropdown(localStorage.getItem("db"))?.click();
     } else {
       console.error("There was a problem with the dbs array from the database");
     }
@@ -74,20 +74,37 @@ function fetchDBsAndPopulateDropdown() {
     console.error("There was a problem fetching the database options");
   });
 }
-function populateDropdown() {
+function populateDropdown(dbNameFromStorage=null) {
   const dropdown = document.querySelector("#database-options");
   dropdown.innerHTML = "";
+  let choice = null;
   dbs.forEach(function(name, ind) {
     const item = document.createElement("p");
     item.id = `option_${ind}`;
     item.classList.add("dropdown-option");
-    // item.onclick = handleDropdownSelection.bind(item);
+    item.setAttribute("name", name);
     item.onclick = function() { handleDropdownSelection(item) };
     item.appendChild(document.createTextNode(name));
     dropdown.appendChild(item);
+    if (dbNameFromStorage && dbNameFromStorage === name) {
+      choice = item;
+    }
   });
+  if (dbNameFromStorage) {
+    return choice;
+  }
 }
 function handleDropdownSelection(p) {
+  // If everything works correctly, we shouldn't need both these conditions
+  // If selecting a selected option causes a "refresh", something went wrong 
+  if (p.classList.contains("selected") && selectedDatabaseId === p.id) {
+    document.querySelector(".dropdown-options").classList.remove("show");
+    return;
+  }
+  if (p.classList.contains("selected") ^ selectedDatabaseId === p.id) {
+    console.error("Error check: element is selected but not stored as selectedDatabaseId");
+    return;
+  }
   if (selectedDatabaseId) {
     document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
   }
@@ -100,6 +117,9 @@ function handleDropdownSelection(p) {
   divIdsSelected.clear();
   prevTimeInputValue = "";
   prevClusterInputValue = "";
+  if (localStorage.getItem("db") !== p.getAttribute("name")) {
+    localStorage.setItem("db", p.getAttribute("name"));
+  }
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
