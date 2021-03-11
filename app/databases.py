@@ -1,5 +1,3 @@
-
-
 class BinaryTrajectories:
     def __init__(self, suffix):
         self.suffix = suffix

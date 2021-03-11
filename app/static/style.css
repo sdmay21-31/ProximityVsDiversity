@@ -206,7 +206,7 @@ nav {
     display: block;
 }
 
-.input-time-container {
+.input-time-container, .input-clusters-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -214,14 +214,14 @@ nav {
     width: 80%;
     margin: 0 auto 0 auto;
 }
-.input-time-instruction {
+.input-time-instruction, .input-clusters-instruction {
     margin-bottom: 0.2rem;
     color: lightslategrey;
 }
-.input-time-container.show {
+.input-time-container.show, .input-clusters-container.show {
     margin-top: 2rem;
 }
-.input-time-inner-container {
+.input-time-inner-container, .input-clusters-inner-container {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -230,7 +230,7 @@ nav {
     width: 100%;
     margin: 0 auto 0 auto;
 }
-.input-time {
+.input-time, .input-clusters {
     width: 100%;
     min-width: 0;
     max-width: 400px;
@@ -241,17 +241,17 @@ nav {
     border-radius: 0.2rem;
     background-clip: padding-box;
 }
-.input-time:focus {
+.input-time:focus, .input-clusters:focus {
     outline: 0;
     outline: none;
     box-shadow: 0 0 0 0.2rem lightskyblue;
 }
-.input-time-warning {
+.input-time-warning, .input-clusters-warning {
     display: none;
     color: red;
     margin-right: .5rem;
 }
-.input-time-warning.show {
+.input-time-warning.show, .input-clusters-warning.show {
     display: block;
 }
 

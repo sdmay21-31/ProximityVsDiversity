@@ -2,7 +2,8 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
-let prevInputValue = "";
+let prevInputTimeValue = "";
+let prevInputClusterValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
 const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
@@ -114,7 +115,8 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
-  prevInputValue = "";
+  prevInputTimeValue = "";
+  prevInputClusterValue = "";
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
   }
@@ -135,7 +137,8 @@ function fetchAndDisplayCardsAttrs() {
       document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
       document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
       document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-      renderInputTime();
+      renderInput("time", "Enter a time between 0 and 3000, inclusive", "Time (Required)", "controlInputTime(event)");
+      renderInput("clusters", "Enter number of clusters between 1 and 20, inclusive", "Number of Clusters (Required)", "controlInputClusters(event)");
     } else {
       console.error("There was a problem with the attribute list from the endpoint");
       console.error(data);
@@ -180,27 +183,37 @@ function genListItem(id, isProx, attr) {
     </div>
   `);
 }
-function renderInputTime() {
-  document.querySelector("#input-time-container").innerHTML = `
-    <p class="input-time-instruction">Enter a time between 0 and 3000, inclusive</p>
-    <div class="input-time-inner-container">
-      <i class="input-time-warning fas fa-exclamation-triangle"></i>
-      <input class="input-time" id="input-time" type="text" placeholder="Time (Required)"
+function renderInput(id, instruction, placeholder, onInput) {
+  document.querySelector(`#input-${id}-container`).innerHTML = `
+    <p class="input-${id}-instruction">${instruction}</p>
+    <div class="input-${id}-inner-container">
+      <i class="input-${id}-warning fas fa-exclamation-triangle"></i>
+      <input class="input-${id}" id="input-${id}" type="text" placeholder=${placeholder}
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInputTime(event)"
+        oninput=${onInput}
       />
     </div>
   `;
-  document.querySelector("#input-time-container").classList.add("show");
+  document.querySelector(`#input-${id}-container`).classList.add("show");
 }
 function controlInputTime(event) {
   const value = event.target.value;
   if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
-    prevInputValue = value;
+    prevInputTimeValue = value;
   } else if (value === "") {
-    prevInputValue = value;
+    prevInputTimeValue = value;
   } else {
-    event.target.value = prevInputValue;
+    event.target.value = prevInputTimeValue;
+  }
+}
+function controlInputClusters(event) {
+  const value = event.target.value;
+  if(parseInt(value) >= 1 && parseInt(value) <= 20) {
+    prevInputClusterValue = value;
+  } else if (value === "") {
+    prevInputClusterValue = value;
+  } else {
+    event.target.value = prevInputClusterValue;
   }
 }
 function process() {
@@ -216,8 +229,10 @@ function process() {
   const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const time = parseInt(document.querySelector(".input-time").value);
+  const clusters = parseInt(document.querySelector(".input-clusters").value);
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
   document.querySelector(".input-time-warning").classList.remove("show");
+  document.querySelector(".input-clusters-warning").classList.remove("show");
   if (proxNaN.length + divNaN.length !== 0) {
     proxNaN.forEach(function(pair) {
       document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
@@ -229,6 +244,10 @@ function process() {
   }
   if (isNaN(time)) {
     document.querySelector(".input-time-warning").classList.add("show");
+    errorSomewhere = true;
+  }
+  if (isNaN(clusters)) {
+    document.querySelector(".input-clusters-warning").classList.add("show");
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
