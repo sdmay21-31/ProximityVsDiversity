@@ -137,8 +137,8 @@ function fetchAndDisplayCardsAttrs() {
       document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
       document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
       document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-      renderInputTime();
-      renderInputClusters();
+      renderInput("time", "Enter a time between 0 and 3000, inclusive", "Time (Required)", "controlInputTime(event)");
+      renderInput("clusters", "Enter number of clusters between 1 and 20, inclusive", "Number of Clusters (Required)", "controlInputClusters(event)");
     } else {
       console.error("There was a problem with the attribute list from the endpoint");
       console.error(data);
@@ -183,18 +183,18 @@ function genListItem(id, isProx, attr) {
     </div>
   `);
 }
-function renderInputTime() {
-  document.querySelector("#input-time-container").innerHTML = `
-    <p class="input-time-instruction">Enter a time between 0 and 3000, inclusive</p>
-    <div class="input-time-inner-container">
-      <i class="input-time-warning fas fa-exclamation-triangle"></i>
-      <input class="input-time" id="input-time" type="text" placeholder="Time (Required)"
+function renderInput(id, instruction, placeholder, onInput) {
+  document.querySelector(`#input-${id}-container`).innerHTML = `
+    <p class="input-${id}-instruction">${instruction}</p>
+    <div class="input-${id}-inner-container">
+      <i class="input-${id}-warning fas fa-exclamation-triangle"></i>
+      <input class="input-${id}" id="input-${id}" type="text" placeholder=${placeholder}
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInputTime(event)"
+        oninput=${onInput}
       />
     </div>
   `;
-  document.querySelector("#input-time-container").classList.add("show");
+  document.querySelector(`#input-${id}-container`).classList.add("show");
 }
 function controlInputTime(event) {
   const value = event.target.value;
@@ -205,19 +205,6 @@ function controlInputTime(event) {
   } else {
     event.target.value = prevInputTimeValue;
   }
-}
-function renderInputClusters() {
-  document.querySelector("#input-clusters-container").innerHTML = `
-    <p class="input-clusters-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-    <div class="input-clusters-inner-container">
-      <i class="input-clusters-warning fas fa-exclamation-triangle"></i>
-      <input class="input-clusters" id="input-clusters" type="text" placeholder="Number of Clusters (Required)"
-        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInputClusters(event)"
-      />
-    </div>
-  `;
-  document.querySelector("#input-clusters-container").classList.add("show");
 }
 function controlInputClusters(event) {
   const value = event.target.value;
