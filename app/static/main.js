@@ -2,8 +2,8 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
-let prevTimeInputValue = "";
-let prevClusterInputValue = "";
+let prevInputTimeValue = "";
+let prevInputClusterValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
 const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
@@ -115,8 +115,8 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
-  prevTimeInputValue = "";
-  prevClusterInputValue = "";
+  prevInputTimeValue = "";
+  prevInputClusterValue = "";
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
   }
@@ -199,11 +199,11 @@ function renderInputTime() {
 function controlInputTime(event) {
   const value = event.target.value;
   if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
-    prevTimeInputValue = value;
+    prevInputTimeValue = value;
   } else if (value === "") {
-    prevTimeInputValue = value;
+    prevInputTimeValue = value;
   } else {
-    event.target.value = prevTimeInputValue;
+    event.target.value = prevInputTimeValue;
   }
 }
 function renderInputClusters() {
@@ -222,11 +222,11 @@ function renderInputClusters() {
 function controlInputClusters(event) {
   const value = event.target.value;
   if(parseInt(value) >= 1 && parseInt(value) <= 20) {
-    prevClusterInputValue = value;
+    prevInputClusterValue = value;
   } else if (value === "") {
-    prevClusterInputValue = value;
+    prevInputClusterValue = value;
   } else {
-    event.target.value = prevClusterInputValue;
+    event.target.value = prevInputClusterValue;
   }
 }
 function process() {
