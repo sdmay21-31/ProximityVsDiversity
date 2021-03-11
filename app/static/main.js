@@ -4,9 +4,9 @@ let selectedDatabaseId = null;
 let dbs = [];
 let prevInputValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
-const urlGetDb = "http://localhost:8000/get/db/";
-const urlGetAttrBase = "http://localhost:8000/get/attr/";
-const urlProcess = "http://localhost:8000/post/process/";
+const urlGetDb = "databases/";
+const urlGetAttrBase = "databases/";
+const urlProcess = "process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
 window.proxIdsSelected = proxIdsSelected;
 window.divIdsSelected = divIdsSelected;
@@ -60,6 +60,7 @@ function fetchDBsAndPopulateDropdown() {
       'Content-Type': 'application/json'
     }
   }).then(function(response) {
+    console.log(response)
     return response.json();
   }).then(function(data) {
     dbs = data.dbs;
@@ -89,7 +90,6 @@ function handleDropdownSelection(p) {
   if (selectedDatabaseId) {
     document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
   }
-  console.log(p);
   selectedDatabaseId = p.id;
   p.classList.add("selected");
   document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
@@ -101,7 +101,7 @@ function handleDropdownSelection(p) {
   fetchAndDisplayCardsAttrs();
 }
 function fetchAndDisplayCardsAttrs() {
-  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}`, {
+  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}/attributes/`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -164,8 +164,8 @@ function renderInputTime() {
   document.querySelector("#input-time-container").innerHTML = `
     <p class="input-time-instruction">Enter a time between 0 and 3000, inclusive</p>
     <div class="input-time-inner-container">
-      <i class="input-time-warning" class="fas fa-exclamation-triangle"></i>
-      <input class="input-time" id="input-time" type="text" placeholder="Time"
+      <i class="input-time-warning fas fa-exclamation-triangle"></i>
+      <input class="input-time" id="input-time" type="text" placeholder="Time (Required)"
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
         oninput="controlInputTime(event)"
       />
@@ -175,7 +175,6 @@ function renderInputTime() {
 }
 function controlInputTime(event) {
   const value = event.target.value;
-  console.log(value);
   if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
     prevInputValue = value;
   } else if (value === "") {
@@ -213,11 +212,11 @@ function process() {
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
+    const db = dbs[selectedDatabaseId.split("_")[1]];
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
-    const divAttrs= divWeights.map(e=>({name:e[0],weight:e[1]}));
-    console.log(time, proxWeights, divWeights);
+    const divAttrs = divWeights.map(e=>({name:e[0],weight:e[1]}));
     fetch(urlProcess, {
       method: 'POST',
       headers: {
@@ -225,11 +224,12 @@ function process() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ time, proxAttrs, divAttrs })
+      body: JSON.stringify({ db, time, proxAttrs, divAttrs })
     }).then((response) => {
       return response.json();
     }).then((json) => {
       console.log(json);
+      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`
       if (json.data) {
     	  createSummary(json.data);
       }
@@ -238,6 +238,7 @@ function process() {
     	  renderChart(json.chartBase64);
       }
     }).catch(function(reason) {
+      console.log(reason)
       console.error("Issue with the POST request.")
     });
   }

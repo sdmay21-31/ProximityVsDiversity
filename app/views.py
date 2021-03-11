@@ -1,39 +1,44 @@
+from django.apps import apps
 from django.shortcuts import render, redirect
 import json
 from django.http import JsonResponse
 
-
-from app.algos import example_algo
 from app.forms import AlgoRequestForm, DatabaseChoiceForm
-from app.algos import example_algo, gabe
+from app.algos import run as run_algo
+
+from app.databases import get_database_attributes, get_databases
+
+from app.models import Node
+from collections import Counter
 
 
 # Create your views here.
 def index(request, *args, **kwargs):
+    """Default index page"""
     return render(request, 'index.html')
 
-def dummyDB(request, *args, **kwargs):
-    return JsonResponse({'dbs': ['hello_world', 'yay_me', 'im_london_tipton']})
+def databases(request, *args, **kwargs):
+    """Return list of databases"""
+    return JsonResponse({'dbs': get_databases()})
 
-def dummyPost(request):
-    print(request.body)
-    return JsonResponse({'test': 'i dont understand python'})
-    #the dummyPost above prints the request body to the command prompt
-    
-def dummyAttr(request, db):
-    dbToAttrs = {
-        "hello_world":["goodbye", "hello", "world", "earth"],
-        "tipton":["maddie", "moseby", "hotel", "ship"],
-        "yay_me":["london", "podcast"]
-    }
-    return JsonResponse({'attrs': dbToAttrs[db]})
+def attributes(request, database):
+    """Return attributes from model and strip _1 and _2"""
+    return JsonResponse({'attrs': get_database_attributes(database)})
 
-def indexQS(request, *args, **kwargs):
-    context = {
-        'example_data': example_algo()[:10]
-    }
-    gabe.run()
-    return render(request, 'index.html', context)
+def process(request):
+    """Return the algorithm function"""
+    # TODO: validate incoming data
+    # TODO: Use database map to get attributes
+    (chart, data) = run_algo(
+        method='kmeans',
+        time_frame=1,
+        proximity=[{'mass_1': 10, 'lumin_1': 20, 'rad_1': 20}],
+        diversity=[])
+    return JsonResponse({
+        'chart': chart,
+        'data': data
+        })
+
 
 #Alright, this is a start to JSON inputs from the possible frontend stuff
 def processAttr(request):
@@ -63,64 +68,3 @@ def processAttr(request):
 
     #send to algo method, does it need a return or a different endpoint
     dummySend(context)
-
-
-# Database names defined for database choice page
-DATABASE_NAMES = (
-    'DatabaseOne',
-    'DatabaseTwo',
-    'DatabaseThree',
-)
-
-# View for the database choice form
-def DatabaseChoiceView(request):
-
-    #Check for request method and respond accordingly
-    if request.method == 'GET':
-
-        form = DatabaseChoiceForm()
-
-        #Create context from cleaned data
-        context = {
-            'form': form,
-        }
-
-        return render(request, 'databaseChoiceForm.html', context)
-
-    else: #POST Request
-
-        #Create a database choice form based on recieved data
-        form = DatabaseChoiceForm(request.POST)
-
-        #Assign clean data to attributes
-        if form.is_valid():
-
-            choice = form.cleaned_data['choice']
-            choiceIndex = int(choice) - 1
-            databaseName = DATABASE_NAMES[choiceIndex]
-
-            #Send the context to the correct html page
-            return redirect(databaseName)
-
-
-
-# View for the database one page
-def DatabaseOneView(request):
-
-    databasePage = "DatabaseOnePage.html"
-
-    return render(request, databasePage)
-
-# View for the database two page
-def DatabaseTwoView(request):
-
-    databasePage = "DatabaseTwoPage.html"
-
-    return render(request, databasePage)
-
-# View for the database three page
-def DatabaseThreeView(request):
-
-    databasePage = "DatabaseThreePage.html"
-
-    return render(request, databasePage)
