@@ -1,7 +1,5 @@
 from django.apps import apps
 from django.shortcuts import render, redirect
-import json
-from jsonschema import validate
 from django.http import JsonResponse
 
 from app.forms import AlgoRequestForm, DatabaseChoiceForm
@@ -28,42 +26,7 @@ def attributes(request, database):
 
 def process(request):
     """Return the algorithm function"""
-    
-    #Json Schema to validate data
-    expectedJson = {
-        "type": "object",
-        "properties": {
-            'db': {'type' : "string"},
-            'time': {'type' : "number"},
-            'cluster': {'type' : "number"},
-            'proxAttrs': [
-                {
-                'name': {'type' : "string"},
-                'weight': {'type' : "number"}
-                },
-                {
-                'name': {'type' : "string"},
-                'weight': {'type' : "number"}
-                }
-            ],
-            'divAttrs': [
-                {
-                    'name': {'type' : "string"},
-                    'weight': {'type' : "number"}
-                },
-                {
-                    'name': {'type' : "string"},
-                    'weight': {'type' : "number"}
-                }
-            ],
-        },
-    }
-    
-    data = json.loads(request.body)
-
-    #validate incoming data
-    validate(instance=data, schema=expectedJson)
-
+    # TODO: validate incoming data
     # TODO: Use database map to get attributes
     (chart, data) = run_algo(
         method='kmeans',
