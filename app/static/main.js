@@ -2,9 +2,9 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
-let prevInputTimeValue = "";
-let prevInputClusterValue = "";
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
+const TIME = "time"; const CLUSTER = "cluster";
+let prevInputValues = {[TIME]: "", [CLUSTER]: ""};
 const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
 const urlProcess = "process/";
@@ -61,7 +61,6 @@ function fetchDBsAndPopulateDropdown() {
       'Content-Type': 'application/json'
     }
   }).then(function(response) {
-    console.log(response)
     return response.json();
   }).then(function(data) {
     dbs = data.dbs;
@@ -70,8 +69,9 @@ function fetchDBsAndPopulateDropdown() {
     } else {
       console.error("There was a problem with the dbs array from the database");
     }
-  }).catch(function(error) {
+  }).catch(function(reason) {
     console.error("There was a problem fetching the database options");
+    console.error(reason);
   });
 }
 function populateDropdown(dbNameFromStorage=null) {
@@ -115,8 +115,7 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
-  prevInputTimeValue = "";
-  prevInputClusterValue = "";
+  prevInputValues = {[TIME]: "", [CLUSTER]: ""};
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
   }
@@ -137,14 +136,15 @@ function fetchAndDisplayCardsAttrs() {
       document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
       document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
       document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-      renderInput("time", "Enter a time between 0 and 3000, inclusive", "Time (Required)", "controlInputTime(event)");
-      renderInput("clusters", "Enter number of clusters between 1 and 20, inclusive", "Number of Clusters (Required)", "controlInputClusters(event)");
+      renderInput(TIME);
+      renderInput(CLUSTER);
     } else {
       console.error("There was a problem with the attribute list from the endpoint");
       console.error(data);
     }
   }).catch(function(reason) {
     console.error("There was a problem fetching the attributes");
+    console.error(reason);
   });
 }
 function genListItemsForType(attrArr, isProxAttr) {
@@ -160,7 +160,7 @@ function genListItem(id, isProx, attr) {
   const title = isProx ? "Proximity Attributes" : "Diversity Attributes";
   const type = isProx ? "prox" : "div";
   const rowId = `row_${type}_${id}`;
-  const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(v=>`${v[0].toUpperCase()}${v.slice(1)}`).join(" ")}`;
+  const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(capitalizeFirstLetter).join(" ")}`;
   const checkboxId = `cb_${type}_${id}`;
   const textAreaId = `ta_${type}_${id}`;
   const warningId = `w_${type}_${id}`;
@@ -183,56 +183,59 @@ function genListItem(id, isProx, attr) {
     </div>
   `);
 }
-function renderInput(id, instruction, placeholder, onInput) {
-  document.querySelector(`#input-${id}-container`).innerHTML = `
-    <p class="input-${id}-instruction">${instruction}</p>
-    <div class="input-${id}-inner-container">
-      <i class="input-${id}-warning fas fa-exclamation-triangle"></i>
-      <input class="input-${id}" id="input-${id}" type="text" placeholder=${placeholder}
+function getInputTypeIgnoreCase(inputType) {
+  return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
+}
+function renderInput(inputType) {
+  const instruction = (inputType === TIME ?
+      "Enter a time between 0 and 3000, inclusive" :
+      "Enter number of clusters between 1 and 20, inclusive");
+  const [min, max] = inputType === TIME ? [0, 3000] : [1, 20];
+  const capIT = capitalizeFirstLetter(inputType === TIME ? TIME : CLUSTER);
+  const placeholder = inputType === TIME ? capIT : `Number of ${capIT}`;
+  document.querySelector(`#input-${inputType}-container`).innerHTML = `
+    <p class="input-instruction">${instruction}</p>
+    <!-- <div class="input-inner-container">
+      <i class="input-warning input-${inputType}-warning fas fa-exclamation-triangle"></i> -->
+      <input class="input input-${inputType}" type="text" placeholder="${capIT} (Required)" min=${min} max=${max} inputType="${inputType}"
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput=${onInput}
+        oninput="controlInput(event)"
       />
-    </div>
+    <!-- </div> -->
   `;
-  document.querySelector(`#input-${id}-container`).classList.add("show");
 }
-function controlInputTime(event) {
+function controlInput(event) {
+  const type = getInputTypeIgnoreCase(event.target.getAttribute("inputType"));
+  const min = event.target.getAttribute("min");
+  const max = event.target.getAttribute("max");
   const value = event.target.value;
-  if (parseInt(value) >= 0 && parseInt(value) <= 3000) {
-    prevInputTimeValue = value;
+  if (parseInt(value) >= min && parseInt(value) <= max) {
+    prevInputValues[type] = value;
   } else if (value === "") {
-    prevInputTimeValue = value;
+    prevInputValues[type] = value;
   } else {
-    event.target.value = prevInputTimeValue;
-  }
-}
-function controlInputClusters(event) {
-  const value = event.target.value;
-  if(parseInt(value) >= 1 && parseInt(value) <= 20) {
-    prevInputClusterValue = value;
-  } else if (value === "") {
-    prevInputClusterValue = value;
-  } else {
-    event.target.value = prevInputClusterValue;
+    event.target.value = prevInputValues[type];
   }
 }
 function process() {
   let errorSomewhere = false;
   if (proxIdsSelected.size + divIdsSelected.size === 0) {
-    document.querySelector(".process-warning").classList.add("show");
+    document.querySelector(".process-attribute-warning").classList.add("show");
     errorSomewhere = true;
-  } else if (document.querySelector(".process-warning").classList.contains("show")) {
-    document.querySelector(".process-warning").classList.remove("show");
+  } else if (document.querySelector(".process-attribute-warning").classList.contains("show")) {
+    document.querySelector(".process-attribute-warning").classList.remove("show");
   }
   const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
   const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
   const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
-  const time = parseInt(document.querySelector(".input-time").value);
-  const clusters = parseInt(document.querySelector(".input-clusters").value);
+  const time = parseInt(document.querySelector(`.input-time`).value);
+  const clusters = parseInt(document.querySelector(`.input-cluster`).value);
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
-  document.querySelector(".input-time-warning").classList.remove("show");
-  document.querySelector(".input-clusters-warning").classList.remove("show");
+  document.querySelector(".input-time").classList.remove("error");
+  document.querySelector(".process-time-warning").classList.remove("show");
+  document.querySelector(".input-cluster").classList.remove("error");
+  document.querySelector(".process-cluster-warning").classList.remove("show");
   if (proxNaN.length + divNaN.length !== 0) {
     proxNaN.forEach(function(pair) {
       document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
@@ -243,19 +246,21 @@ function process() {
     errorSomewhere = true;
   }
   if (isNaN(time)) {
-    document.querySelector(".input-time-warning").classList.add("show");
+    document.querySelector(".process-time-warning").classList.add("show");
+    document.querySelector(".input-time").classList.add("error");
     errorSomewhere = true;
   }
   if (isNaN(clusters)) {
-    document.querySelector(".input-clusters-warning").classList.add("show");
+    document.querySelector(".process-cluster-warning").classList.add("show");
+    document.querySelector(".input-cluster").classList.add("error");
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
     const db = dbs[selectedDatabaseId.split("_")[1]];
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
-    const proxAttrs = proxWeights.map(e=>({name:e[0],weight:e[1]}));
-    const divAttrs = divWeights.map(e=>({name:e[0],weight:e[1]}));
+    const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
+    const divAttrs = divWeights.map(e => ({ name:e[0], weight:e[1] }));
     fetch(urlProcess, {
       method: 'POST',
       headers: {
@@ -263,22 +268,21 @@ function process() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ db, time, proxAttrs, divAttrs })
+      body: JSON.stringify({ db, time, clusters, proxAttrs, divAttrs })
     }).then((response) => {
       return response.json();
     }).then((json) => {
-      console.log(json);
       document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`
-      if (json.data) {
-    	  createSummary(json.data);
-      }
-      createSummary(undefined, proxWeights, divWeights);
+      // if (json.data) {
+    	//   createSummary(json.data);
+      // }
+      // createSummary(undefined, proxWeights, divWeights);
       if (json.chartBase64) {
     	  renderChart(json.chartBase64);
       }
     }).catch(function(reason) {
-      console.log(reason)
       console.error("Issue with the POST request.")
+      console.error(reason)
     });
   }
 }
@@ -361,6 +365,6 @@ function exit(status) {
   throw '';
 }
 function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 fetchDBsAndPopulateDropdown();

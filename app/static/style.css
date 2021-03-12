@@ -1,4 +1,5 @@
 nav {
+    z-index: 1000;
     background: white;
 }
 
@@ -188,11 +189,6 @@ nav {
     outline: none;
     box-shadow: 0 0 0 0.2rem lightskyblue;
 }
-/* .list-item-weight:not(:disabled) {
-    border: 1px solid lightslategrey;
-    margin-top: -1px;
-    margin-bottom: -1px;
-} */
 .list-item-weight[disabled=true] {
     background-color: lightgrey;
     color: grey;
@@ -206,22 +202,30 @@ nav {
     display: block;
 }
 
-.input-time-container, .input-clusters-container {
+.input-outer-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin: 0 auto 0 auto;
+    justify-content: space-between;
+}
+.input-container {
+    flex: 1;
+    min-width: 400px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
-    margin: 0 auto 0 auto;
+    /* width: 80%; */
+    /* margin: 0 auto 0 auto; */
+    margin-top: 2rem;
 }
-.input-time-instruction, .input-clusters-instruction {
+.input-instruction {
     margin-bottom: 0.2rem;
     color: lightslategrey;
 }
-.input-time-container.show, .input-clusters-container.show {
-    margin-top: 2rem;
-}
-.input-time-inner-container, .input-clusters-inner-container {
+.input-inner-container {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -230,7 +234,10 @@ nav {
     width: 100%;
     margin: 0 auto 0 auto;
 }
-.input-time, .input-clusters {
+/* .input-inner-container.right {
+    flex-direction: row-reverse;
+} */
+.input {
     width: 100%;
     min-width: 0;
     max-width: 400px;
@@ -241,17 +248,20 @@ nav {
     border-radius: 0.2rem;
     background-clip: padding-box;
 }
-.input-time:focus, .input-clusters:focus {
+.input.error {
+    border-color: red;
+}
+.input:focus {
     outline: 0;
     outline: none;
     box-shadow: 0 0 0 0.2rem lightskyblue;
 }
-.input-time-warning, .input-clusters-warning {
+.input-warning {
     display: none;
     color: red;
     margin-right: .5rem;
 }
-.input-time-warning.show, .input-clusters-warning.show {
+.input-warning.show {
     display: block;
 }
 
@@ -355,6 +365,9 @@ nav {
 }
 
 @media screen and (min-width: 501px) and (max-width: 1000px) {
+    .input-outer-container {
+        flex-direction: column;
+    }
     .columns {
         flex-direction: column;
     }
@@ -372,6 +385,9 @@ nav {
 }
 
 @media screen and (max-width: 500px) {
+    .input-outer-container {
+        flex-direction: column;
+    }
     .columns {
         flex-direction: column;
     }
