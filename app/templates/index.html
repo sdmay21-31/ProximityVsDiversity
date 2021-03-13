@@ -32,9 +32,20 @@
 				</div> -->
 			</div>
 		</div>
-		<div class="input-time-container" id="input-time-container"></div>
+		<div class="input-outer-container">
+			<div class="input-container" id="input-time-container"></div>
+			<div class="input-container" id="input-cluster-container"></div>
+		</div>
 		<div class="process-button-container">
-			<div class="process-warning" style="color: red">
+			<div class="process-warning process-time-warning" style="color: red">
+				<i class="fas fa-exclamation-triangle"></i>
+				<span>Time is required</span>
+			</div>
+			<div class="process-warning process-cluster-warning" style="color: red">
+				<i class="fas fa-exclamation-triangle"></i>
+				<span>Clusters is required</span>
+			</div>
+			<div class="process-warning process-attribute-warning" style="color: red">
 				<i class="fas fa-exclamation-triangle"></i>
 				<span>Select at least 1 attribute</span>
 			</div>
