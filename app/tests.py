@@ -14,3 +14,7 @@ class ExampleQueryUnitTestCase(TestCase):
         """ Make sure there is no id that is greater than 200"""
         ids = [node.id for node in Node.objects.example_query()]
         self.assertTrue(max(ids) <= 200)
+
+
+
+
