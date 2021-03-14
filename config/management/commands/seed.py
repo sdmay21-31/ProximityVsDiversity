@@ -18,11 +18,11 @@ class Command(BaseCommand):
         # For debugging purposes
         # parser.parse_args(['--database', 'main_table_2.csv'])
         
-        #nodes2 = Node2.objects.all()
-        #print(nodes2.count())
-        #print(str)
-        #nodesStr = nodes1.__str__
-        #print(nodesStr)
+        nodes2 = Node2.objects.all()
+        print(nodes2.count())
+        print(str)
+        nodesStr = nodes2.__str__
+        print(nodesStr)
         
         
         
@@ -34,7 +34,6 @@ class Command(BaseCommand):
         database = kwargs.get('database', False) or kwargs.get('d')
         
         # Delete all rows
-        #Node.objects.all().delete()
         node_to_delete = nodeDictionary[database]
         node_to_delete.objects.all().delete()
         

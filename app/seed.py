@@ -17,8 +17,8 @@ def get_chunks(csv_reader, chunk_size, node_type):
             break
 
         # For debugging purposes
-        if count < 6 or count > 9995:
-            print(n)
+        #if count < 6 or count > 9995:
+        #    print(n)
 
         # Building Nodes
         nodes.append(node_type(**dict(n)))
@@ -41,9 +41,8 @@ def run(file_name='main_table_1.csv', full_seed=False, chunk_size=10000, print_s
         node_type = nodeDictionary[file_name]
         
         # Read File
-        for chunk in get_chunks(csv_reader, chunk_size, node_type): # Generator fails...
+        for chunk in get_chunks(csv_reader, chunk_size, node_type):
             # Create Node objects
-            #Node.objects.bulk_create(chunk)
             node_type.objects.bulk_create(chunk)
             chunk_count += 1
             if print_status:

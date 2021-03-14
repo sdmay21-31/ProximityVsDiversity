@@ -73,6 +73,9 @@ class Node(models.Model):
     def get_id(self, *args, **kwargs):
         """ Example method: Return Node primary key """
         return self.time_id
+    
+    def __repr__(self):
+        return str(self.mass_1)
 
 
 
@@ -109,6 +112,10 @@ class Node2(models.Model):
     def get_id(self, *args, **kwargs):
         """ Example method: Return Node primary key """
         return self.time_id
+    
+    def __repr__(self):
+        elements = list
+        return 'Node: {}'.format(self.age_yrs)
 
 
 
@@ -155,6 +162,8 @@ class Node3(models.Model):
     def get_id(self, *args, **kwargs):
         """ Example method: Return Node primary key """
         return self.time_id
-
+    
+    def __repr__(self):
+        return str(self.objects.values())
 
 
