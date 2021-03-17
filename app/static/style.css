@@ -1,6 +1,42 @@
+/*
+If using Summary:
+- data-input-container:
+  - border-right: 2px solid lightslategrey;
+- dropdown-container,
+  input-outer-container,
+  process-button-container:
+  - width: 80%;
+- data-cards:
+  - no width
+  - no margin
+- input:
+  - min-width: 400px;
+- chart-container:
+  - width: calc(90% - 2rem - 2rem);
+
+If not using Summary:
+- data-input-container:
+  - no border-right
+- dropdown-container,
+  input-outer-container,
+  process-button-container:
+  - width: 60%;
+- data-cards:
+  - width: 60%;
+  - margin: 0 auto;
+- input:
+  - min-width: 350px;
+- chart-container:
+  - width: 60%;
+*/
+
 nav {
     z-index: 1000;
     background: white;
+}
+
+.content-container {
+    align-items: center;
 }
 
 .columns {
@@ -10,20 +46,18 @@ nav {
     margin: 4rem 2rem 2rem 2rem;
 }
 
-.data-input {
+.data-input-container {
     position: relative;
     flex: 7;
     display: flex;
     flex-direction: column;
-    /* min-width: 500px; */
-    /* max-width: 800px; */
     max-height: 50%;
     padding-right: 2em;
-    border-right: 2px solid lightslategrey;
+    /* border-right: 2px solid lightslategrey; */
 }
 .dropdown-container {
     position: relative;
-    width: 80%;
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -51,14 +85,6 @@ nav {
 .dropdown-button:hover {
     background-color: #d39e00;
 }
-/* .dropdown-options {
-    display: none;
-    width: 100%;
-    margin-top: 2px;
-    border: 1px solid grey;
-    border-radius: .2rem;
-    transition: all 0.25s ease;
-} */
 .dropdown-options {
     position: absolute;
     transform: translateY(0.2rem);
@@ -99,10 +125,12 @@ nav {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    width: 60%;
+    margin: 0 auto;
 }
 .card {
     position: relative;
-    min-width: 350px;
+    /* min-width: 350px; */
     margin: 2rem auto 0rem auto;
     border-radius: .2rem;
 }
@@ -206,7 +234,9 @@ nav {
     position: relative;
     display: flex;
     flex-direction: row;
-    width: 80%;
+    flex-wrap: wrap;
+    /* width: 80%; */
+    width: 60%;
     margin: 0 auto 0 auto;
     justify-content: space-between;
 }
@@ -217,8 +247,6 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* width: 80%; */
-    /* margin: 0 auto 0 auto; */
     margin-top: 2rem;
 }
 .input-instruction {
@@ -234,13 +262,10 @@ nav {
     width: 100%;
     margin: 0 auto 0 auto;
 }
-/* .input-inner-container.right {
-    flex-direction: row-reverse;
-} */
 .input {
     width: 100%;
     min-width: 0;
-    max-width: 400px;
+    max-width: 350px;
     /* margin-top: 2rem; */
     padding: 0.25rem 0.5rem;
     line-height: 1.5;
@@ -267,7 +292,7 @@ nav {
 
 .process-button-container {
     position: relative;
-    width: 80%;
+    width: 60%;
     margin: 2rem auto;
     text-align: center;
     color: lightslategrey;
@@ -302,8 +327,24 @@ nav {
 .process-button:disabled {
     background-color: lightgrey;
 }
+.process-button-text {
+    display: inline-block;
+    margin-right: 0.5em;
+}
+.process-button-spinner {
+    display: none;
+    width: 1em;
+    height: 1em;
+    border: 4px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+.process-button-spinner.show {
+    display: inline-block;
+}
 
-.summary-outer {
+.summary-container {
     flex: 3;
     padding-left: calc(2em + 2px);
     border-left: 2px solid lightslategrey;
@@ -359,9 +400,25 @@ nav {
     padding-left: 0.5rem;
 }
 
-.chart {
-    width: calc(90% - 2rem - 2rem);
+.chart-container {
+    /* width: calc(90% - 2rem - 2rem); */
+    /* display: flex; */
+    width: 60%;
     margin: 2rem auto;
+}
+.chart-container>p {
+    display: flex;
+    font-size: 2rem;
+}
+#chart {
+    display: block;
+    margin: 0 !important;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media screen and (min-width: 501px) and (max-width: 1000px) {
@@ -371,11 +428,11 @@ nav {
     .columns {
         flex-direction: column;
     }
-    .data-input {
+    .data-input-container {
         padding-right: 0;
         border-right: 0px;
     }
-    .summary-outer {
+    .summary-container {
         padding-left: 0;
         border-left: 0px;
     }
@@ -394,11 +451,11 @@ nav {
     .data-cards {
         flex-direction: column;
     }
-    .data-input {
+    .data-input-container {
         padding-right: 0;
         border-right: 0px;
     }
-    .summary-outer {
+    .summary-container {
         padding-left: 0;
         border-left: 0px;
     }
