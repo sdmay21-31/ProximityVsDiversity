@@ -14,18 +14,6 @@ class Command(BaseCommand):
         parser.add_argument('-d', '--database', dest='database',
                             action='store', default='main_table_1.csv',
                             help='Specify the database to seed.')
-        
-        # For debugging purposes
-        # parser.parse_args(['--database', 'main_table_2.csv'])
-        
-        nodes2 = Node2.objects.all()
-        print(nodes2.count())
-        print(str)
-        nodesStr = nodes2.__str__
-        print(nodesStr)
-        
-        
-        
 
 
 

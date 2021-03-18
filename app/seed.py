@@ -16,10 +16,6 @@ def get_chunks(csv_reader, chunk_size, node_type):
             yield nodes
             break
 
-        # For debugging purposes
-        #if count < 6 or count > 9995:
-        #    print(n)
-
         # Building Nodes
         nodes.append(node_type(**dict(n)))
         if count < chunk_size:
