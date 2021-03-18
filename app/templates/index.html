@@ -4,71 +4,63 @@
 
 {% block content %}
 <div class="columns">
-	<div class="data-input">
-		<div class="dropdown-container">
-			<button class="dropdown-button" onclick="toggleDropdown()">
-				<strong>Select Database</strong>
-				<i class="fas fa-chevron-down dropdown-button-icon"></i>
-			</button>
-			<div class="dropdown-options" id="database-options"></div>
-		</div>
-		<div class="data-cards" id="data-cards">
-			<div class="card" id="card-prox">
-				<div class="list-item card-header">
-					<p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
-				</div>
-				<div class="list-item attr-item">Select a Database</div>
-				<!-- <div class="list-group">
+	<div class="data-input-outer-container">
+		<div class="data-input-container">
+			<div class="dropdown-container">
+				<button class="dropdown-button" onclick="toggleDropdown()">
+					<strong>Select Database</strong>
+					<i class="fas fa-chevron-down dropdown-button-icon"></i>
+				</button>
+				<div class="dropdown-options" id="database-options"></div>
+			</div>
+			<div class="data-cards" id="data-cards">
+				<div class="card" id="card-prox">
+					<div class="list-item card-header">
+						<p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
+					</div>
 					<div class="list-item attr-item">Select a Database</div>
-				</div> -->
-			</div>
-			<div class="card" id="card-div">
-				<div class="list-item card-header">
-					<p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
+					<!-- <div class="list-group">
+						<div class="list-item attr-item">Select a Database</div>
+					</div> -->
 				</div>
-				<div class="list-item attr-item">Select a Database</div>
-				<!-- <div class="list-group">
+				<div class="card" id="card-div">
+					<div class="list-item card-header">
+						<p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
+					</div>
 					<div class="list-item attr-item">Select a Database</div>
-				</div> -->
+					<!-- <div class="list-group">
+						<div class="list-item attr-item">Select a Database</div>
+					</div> -->
+				</div>
 			</div>
-		</div>
-		<div class="input-outer-container">
-			<div class="input-container" id="input-time-container"></div>
-			<div class="input-container" id="input-cluster-container"></div>
-		</div>
-		<div class="process-button-container">
-			<div class="process-warning process-time-warning" style="color: red">
-				<i class="fas fa-exclamation-triangle"></i>
-				<span>Time is required</span>
+			<div class="input-outer-container">
+				<div class="input-container" id="input-time-container"></div>
+				<div class="input-container" id="input-cluster-container"></div>
 			</div>
-			<div class="process-warning process-cluster-warning" style="color: red">
-				<i class="fas fa-exclamation-triangle"></i>
-				<span>Clusters is required</span>
-			</div>
-			<div class="process-warning process-attribute-warning" style="color: red">
-				<i class="fas fa-exclamation-triangle"></i>
-				<span>Select at least 1 attribute</span>
-			</div>
-			<p class="select-three">Select up to 3 attributes</p>
-			<button class="process-button" onclick="process()" disabled><strong>Process</strong></button><script>var csrf = "{{ csrf_token }}"</script>
-		</div>
-	</div>
-	<div class="summary-outer">
-		<div class="summary">
-			<p class="summary-title" style="font-size:2rem;">Summary</p>
-			<div class="summary-box summary-prox">
-				<p class="summary-box-title">Proximity Attributes and Weights</p>
-				<div class="summary-attr-ul-list prox-list"></div>
-			</div>
-			<div class="summary-box summary-diversity">
-				<p class="summary-box-title">Diversity Attributes and Weights</p>
-				<div class="summary-attr-ul-list div-list"></div>
+			<div class="process-button-container">
+				<div class="process-warning process-time-warning" style="color: red">
+					<i class="fas fa-exclamation-triangle"></i>
+					<span>Time is required</span>
+				</div>
+				<div class="process-warning process-cluster-warning" style="color: red">
+					<i class="fas fa-exclamation-triangle"></i>
+					<span>Clusters is required</span>
+				</div>
+				<div class="process-warning process-attribute-warning" style="color: red">
+					<i class="fas fa-exclamation-triangle"></i>
+					<span>Select at least 1 attribute</span>
+				</div>
+				<p class="select-three">Select up to 3 attributes</p>
+				<button class="process-button" onclick="process()" disabled>
+					<div class="process-button-text"><strong>Process</strong></div>
+					<div class="process-button-spinner"></div>
+				</button><script>var csrf = "{{ csrf_token }}"</script>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="chart">
-	<p style="font-size:2rem;">Chart</p>
-	<img alt="" height="600" width="900" id="chart">
+	<div class="chart-container">
+		<!-- <p>Chart</p> -->
+		<img alt="" id="chart">
+	</div>
 </div>
 {% endblock %}

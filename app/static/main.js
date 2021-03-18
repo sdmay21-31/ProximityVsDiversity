@@ -3,15 +3,21 @@ let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
 const CHECKBOX = "cb"; const TEXTAREA = "ta";
-const TIME = "time"; const CLUSTER = "cluster";
-let prevInputValues = {[TIME]: "", [CLUSTER]: ""};
+const TIME = "time", CLUSTER = "cluster";
+let inputState = {[TIME]: "", [CLUSTER]: ""};
+const PROX = "prox", DIV = "div";
+let inputWeightState = {[PROX]: [], [DIV]: []};
 const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
 const urlProcess = "process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
-window.proxIdsSelected = proxIdsSelected;
-window.divIdsSelected = divIdsSelected;
-window.selectedDatabaseId = selectedDatabaseId;
+const svgNamespace = "http://www.w3.org/2000/svg";
+var notyf = new Notyf({
+  duration: 10000,
+  dismissible: true
+});
+// From Font-Awesome
+const xpath = "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z";
 function handleAttrClick(forProx) {
   let arr = forProx ? proxIdsSelected : divIdsSelected;
   return function(label) {
@@ -115,7 +121,7 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
-  prevInputValues = {[TIME]: "", [CLUSTER]: ""};
+  inputWeightState = {[TIME]: "", [CLUSTER]: ""};
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
   }
@@ -136,6 +142,8 @@ function fetchAndDisplayCardsAttrs() {
       document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
       document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
       document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
+      inputWeightState[PROX] = new Array(attrList.length).fill("");
+      inputWeightState[DIV] = new Array(attrList.length).fill("");
       renderInput(TIME);
       renderInput(CLUSTER);
     } else {
@@ -179,12 +187,23 @@ function genListItem(id, isProx, attr) {
       <input
         id="${textAreaId}" class="list-item-weight" type="text" placeholder="Weight" disabled=true
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        oninput="controlInputWeight(event)"
       />
     </div>
   `);
 }
-function getInputTypeIgnoreCase(inputType) {
-  return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
+function controlInputWeight(event) {
+  const [, type, ind] = event.target.id.toLowerCase().split("_");
+  const value = event.target.value;
+  if (isNaN(value)) {
+    event.target.value = inputWeightState[type][ind];
+  } else if (parseInt(value) >= 1) {
+    inputWeightState[type][ind] = value;
+  } else if (value === "") {
+    inputWeightState[type][ind] = value;
+  } else {
+    event.target.value = inputWeightState[type][ind];
+  }
 }
 function renderInput(inputType) {
   const instruction = (inputType === TIME ?
@@ -204,17 +223,22 @@ function renderInput(inputType) {
     <!-- </div> -->
   `;
 }
+function getInputTypeIgnoreCase(inputType) {
+  return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
+}
 function controlInput(event) {
   const type = getInputTypeIgnoreCase(event.target.getAttribute("inputType"));
   const min = event.target.getAttribute("min");
   const max = event.target.getAttribute("max");
   const value = event.target.value;
-  if (parseInt(value) >= min && parseInt(value) <= max) {
-    prevInputValues[type] = value;
+  if (isNaN(value)) {
+    event.target.value = inputState[type];
+  } else if (parseInt(value) >= min && parseInt(value) <= max) {
+    inputState[type] = value;
   } else if (value === "") {
-    prevInputValues[type] = value;
+    inputState[type] = value;
   } else {
-    event.target.value = prevInputValues[type];
+    event.target.value = inputState[type];
   }
 }
 function process() {
@@ -261,6 +285,7 @@ function process() {
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
     const divAttrs = divWeights.map(e => ({ name:e[0], weight:e[1] }));
+    document.querySelector(".process-button-spinner").classList.add("show");
     fetch(urlProcess, {
       method: 'POST',
       headers: {
@@ -272,7 +297,7 @@ function process() {
     }).then((response) => {
       return response.json();
     }).then((json) => {
-      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`
+      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`;
       // if (json.data) {
     	//   createSummary(json.data);
       // }
@@ -280,9 +305,13 @@ function process() {
       if (json.chartBase64) {
     	  renderChart(json.chartBase64);
       }
+      notyf.success("Finished processing");
     }).catch(function(reason) {
-      console.error("Issue with the POST request.")
-      console.error(reason)
+      console.error("Issue with the POST request.");
+      console.error(reason);
+      notyf.error("(POST) Not able to process the data.");
+    }).finally(function() {
+      document.querySelector(".process-button-spinner").classList.remove("show");
     });
   }
 }
