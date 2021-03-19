@@ -32,28 +32,37 @@ class TestSeed:
         database = 'main_table_1.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database)
+        
+        count = node_type.objects.count()
+        assert count == 10000
 
     def test_seed_database_2(self, db):
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database)
+        
+        count = node_type.objects.count()
+        assert count == 10000
 
     def test_seed_database_3(self, db):
-        database = 'main_table_2.csv'
+        database = 'hungary_chickenpox.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database)
+        
+        count = node_type.objects.count()
+        assert count == 10000
 
 
 
@@ -61,19 +70,25 @@ class TestSeed:
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True)
+        
+        count = node_type.objects.count()
+        assert count == 30285
 
     def test_seed_database_3_full(self, db):
-        database = 'main_table_2.csv'
+        database = 'hungary_chickenpox.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True)
+        
+        count = node_type.objects.count()
+        assert count == 10069
 
 
 
@@ -81,38 +96,49 @@ class TestSeed:
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True, 20000)
+        
+        count = node_type.objects.count()
+        assert count == 30285
 
     def test_seed_database_2_smaller_chunk(self, db):
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True, 100)
+        
+        count = node_type.objects.count()
+        assert count == 30285
 
     def test_seed_database_2_exact_size_chunk(self, db):
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True, 30285)
+        
+        count = node_type.objects.count()
+        assert count == 30285
 
     def test_seed_database_2_print_status(self, db):
         database = 'main_table_2.csv'
         
         # Delete all rows
-        node_to_delete = nodeDictionary[database]
-        node_to_delete.objects.all().delete()
+        node_type = nodeDictionary[database]
+        node_type.objects.all().delete()
         
         seed.run(database, True, 10000, False)
-
+        
+        count = node_type.objects.count()
+        assert count == 30285
 
 
 
@@ -124,9 +150,10 @@ class TestSeed:
         count = node_type.objects.count()
         exist = node_type.objects.exists()
         allElements = node_type.objects.all()
-        print("Count: " + str(count))
-        print("Exists: " + str(exist))
-        print("All elements: " + str(allElements))
+        countStr = str(count)
+        existStr = str(exist)
+        allElementStr = str(allElements)
+        assert isinstance(allElementStr, str)
 
     def test_objects_all_2(self, db):
         # Get the node type
@@ -136,9 +163,10 @@ class TestSeed:
         count = node_type.objects.count()
         exist = node_type.objects.exists()
         allElements = node_type.objects.all()
-        print("Count: " + str(count))
-        print("Exists: " + str(exist))
-        print("All elements: " + str(allElements))
+        countStr = str(count)
+        existStr = str(exist)
+        allElementStr = str(allElements)
+        assert isinstance(allElementStr, str)
 
     def test_objects_all_3(self, db):
         # Get the node type
@@ -148,9 +176,10 @@ class TestSeed:
         count = node_type.objects.count()
         exist = node_type.objects.exists()
         allElements = node_type.objects.all()
-        print("Count: " + str(count))
-        print("Exists: " + str(exist))
-        print("All elements: " + str(allElements))
+        countStr = str(count)
+        existStr = str(exist)
+        allElementStr = str(allElements)
+        assert isinstance(allElementStr, str)
 
 
 
