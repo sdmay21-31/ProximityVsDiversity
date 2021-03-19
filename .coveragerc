@@ -1,0 +1,10 @@
+[run]
+omit = */tests/*
+       */htmlcov/*
+	   */datasets/*
+	   */bin/*
+	   */migrations/*
+	   */.venv/*
+	   */.pytest_cache/*
+	   */.idea/*
+	   */.git/*
