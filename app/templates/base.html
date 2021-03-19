@@ -6,7 +6,9 @@
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 </head>
 
 <body>
@@ -15,7 +17,7 @@
             Proximity Vs. Diversity
         </a>
     </nav>
-    <div class="">
+    <div class="content-container">
         {% block content %}
         {% endblock %}
     </div>
