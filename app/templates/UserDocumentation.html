@@ -1,0 +1,90 @@
+<html>
+<head>
+<header class="help-header">
+	<h1 class="header">Proximity Vs. Diversity Help Menu</h1>	
+	<a class="backlink-header" href="/">Back</a>
+</header>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	<style type="text/css">
+	
+	.backlink-footer{	
+		font-family: "Arial";
+		font-size: 18pt;
+		float:right;
+		position:relative;
+	}
+	.backlink-header{	
+		font-family: "Arial";
+		font-size: 18pt;
+		float:right;
+		position:relative;
+	}
+	.help-header{
+		color: #000000;
+		font-size: 18pt;
+		font-family: "Arial";
+		line-height: 1.15;
+		text-align: center;
+	}
+	.titleHead {
+		color: #000000;
+		font-weight: 700;
+		text-decoration: none;
+		vertical-align: baseline;
+		font-size: 18pt;
+		font-family: "Arial";
+		font-style: normal;
+	}
+	
+	.titleResponse {
+		color: #000000;
+		font-weight: 400;
+		text-decoration: none;
+		vertical-align: baseline;
+		font-size: 14pt;
+		font-family: "Arial";
+		font-style: normal;
+	}
+	
+	.helpMenu {
+		text-align:left;
+		background-color: #ffffff;
+		padding: 72pt 72pt 72pt 72pt;
+	}
+	
+	p {
+		padding-top: 10pt;
+	}
+	
+	
+	</style>
+	 {% load static %}
+</head>
+<body class="helpMenu">
+	<p><span class="titleHead">What is this website and why was this website created?</span></p>
+	<p><span class="titleResponse">Astronomy researchers have difficulty visualizing the large heterogeneous datasets of binary stellar trajectories. With the vast number of publicly available datasets retrieved from astronomical observations and simulation, there needs to be a tool that allows researchers to quickly search for patterns in the data. The main use case for this data is the clustering of binary stars based on the proximity and diversity of the stellar attributes across multiple distance functions. Using these distance functions, analysts would like to measure the outcome of different attributes related to the attribute&rsquo;s proximity vs. diversity. To solve this problem, we have developed an intuitive web-based tool that allows users to select distance functions for different data parameters. This application enables users to query a large heterogeneous dataset with a focus on proximity vs. diversity. In all, this website allows users to select a database, select 3 specific attributes within that dataset in relation to proximity and diversity, attach a weight to each attribute, select a time that the algorithm will cluster at, and select the number of clusters they are looking for. Once this is complete, a graph will be generated that represents the clustering of the attributes selected.</span></p>
+	<p><span class="titleHead">What is proximity and diversity?</span></p>
+	<p><span class="titleResponse">Proximity and diversity, in the context of this project, are how close and far two or more things are to each other. If you select mass in the proximity attributes and rad in the diversity attributes then you are looking for a clustering that is close in mass but far apart in radius.</span></p>
+	<p><span class="titleHead">How do I select a database?</span></p>
+	<p><span class="titleResponse">You can select a database by clicking on the orange dropdown at the top of the page labeled DB. You may switch databases at any time.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 56.00px;"><img alt="" src={% static "images/image2.png"%} style="width: 624.00px; height: 56.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+	<p><span class="titleHead">How do I select attributes for proximity and diversity?</span></p>
+	<p><span class="titleResponse">You can select attributes from the two tables labeled proximity attributes and diversity attributes by clicking on the check box next to the attribute name.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 176.00px;"><img alt="" src={% static "images/image1.png"%} style="width: 624.00px; height: 176.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+	<p><span class="titleHead">How do I attach a weight to an attribute and what is the weight attribute?</span></p>
+	<p><span class="titleResponse">You can attach a weight to an attribute by typing a whole number into the &ldquo;weight&rdquo; section of the table corresponding to the attribute that is selected. Weight in this case will dictate the importance of an attribute(higher weight equals higher importance). The weight attribute will scale based on the other weights you have selected. In the case below Kstar has a weight of 1 however it will have an actual weight of 0.167, since Mass0 and Lumin have a weight of 2 and 3. The actual weight of Mass0 and Lumin are 0.333 and 0.5 respectively.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 181.33px;"><img alt="" src={% static "images/image5.png"%} style="width: 624.00px; height: 181.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+	<p><span class="titleHead">How do I select the time I want the attributes clustered at?</span></p>
+	<p><span class="titleResponse">You can select the time you would like the attributes to be clustered at by typing a whole number between 0 and 3000 in the &ldquo;time&rdquo; box that is directly below the proximity attribute table.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 249.00px; height: 114.00px;"><img alt="" src={% static "images/image3.png"%} style="width: 249.00px; height: 114.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+	<p><span class="titleHead">How do I select the number of clusters?</span></p>
+	<p><span class="titleResponse">You can select the amount of clusters you would like to see in the graph by typing a whole number between 1 and 20 in the “Cluster” box that is directly below the diversity attribute table.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 267.00px; height: 103.00px;"><img alt="" src={% static "images/image6.png"%} style="width: 267.00px; height: 103.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+	<p><span class="titleHead">How do I view the chart generated by the clustering algorithm?</span></p>
+	<p><span class="titleResponse">You can view the chart generated by the clustering algorithm by clicking on the green &ldquo;Process&rdquo; button and then scrolling down to the Chart section.</span></p>
+	<p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 440.00px;"><img alt="" src={% static "images/image4.png"%} style="width: 624.00px; height: 440.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p>
+</body>
+<footer>
+	<a class="backlink-footer" href="/">Back</a>
+</footer>
+</html>

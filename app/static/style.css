@@ -2,7 +2,6 @@ nav {
     z-index: 1000;
     background: white;
 }
-
 .content-container {
     align-items: center;
 }
@@ -387,3 +386,4 @@ nav {
         flex-direction: column;
     }
 }
+
