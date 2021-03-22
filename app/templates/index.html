@@ -55,13 +55,11 @@
 				<button class="process-button" onclick="process()" disabled>
 					<div class="process-button-text"><strong>Process</strong></div>
 					<div class="process-button-spinner"></div>
-				</button><script>var csrf = "{{ csrf_token }}"</script>
+				</button>
 			</div>
 		</div>
 	</div>
-	<div class="chart-container">
-		<!-- <p>Chart</p> -->
-		<img alt="" id="chart">
-	</div>
+	<div class="chart-container"></div>
 </div>
+<div class="plotly-container"></div>
 {% endblock %}

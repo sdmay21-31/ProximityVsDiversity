@@ -227,7 +227,7 @@ nav {
     margin-bottom: 0.2rem;
     color: lightslategrey;
 }
-.input-inner-container {
+/* .input-inner-container {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -235,7 +235,7 @@ nav {
     align-items: center;
     width: 100%;
     margin: 0 auto 0 auto;
-}
+} */
 .input {
     width: 100%;
     min-width: 0;

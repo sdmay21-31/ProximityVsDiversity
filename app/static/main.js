@@ -11,7 +11,6 @@ const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
 const urlProcess = "process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
-const svgNamespace = "http://www.w3.org/2000/svg";
 var notyf = new Notyf({
   duration: 10000,
   dismissible: true
@@ -121,6 +120,7 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
+  document.querySelector('#chart')?.removeAttribute("src");
   inputWeightState = {[TIME]: "", [CLUSTER]: ""};
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
@@ -285,11 +285,18 @@ function process() {
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
     const divAttrs = divWeights.map(e => ({ name:e[0], weight:e[1] }));
+    const cookieHalves = `; ${document.cookie}`.split(`; csrftoken=`);
+    const csrf = cookieHalves.length === 2 ? cookieHalves[1].split(";")[0] : null;
+    if (!csrf) {
+      console.error("CSRF Token not in cookies");
+      notyf.error("CSRF Token not in cookies");
+      return;
+    }
     document.querySelector(".process-button-spinner").classList.add("show");
     fetch(urlProcess, {
       method: 'POST',
       headers: {
-        'X-CSRFToken': csrf, 
+        'X-CSRFToken': csrf,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
@@ -297,15 +304,20 @@ function process() {
     }).then((response) => {
       return response.json();
     }).then((json) => {
-      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`;
-      // if (json.data) {
-    	//   createSummary(json.data);
+      let chart = document.querySelector("#chart");
+      chart?.parentNode.removeChild(chart);
+      chart = document.createElement("img");
+      chart.id = "chart";
+      chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
+      chart.onload = function() {
+        chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * chart.width / chart.height;
+      };
+      chart.src = `data:image/png;base64,${json.chart}`;
+      document.querySelector(".chart-container").appendChild(chart);
+      // if (json.dataFile) {
+    	  renderChart(json.dataFile);
       // }
-      // createSummary(undefined, proxWeights, divWeights);
-      if (json.chartBase64) {
-    	  renderChart(json.chartBase64);
-      }
-      notyf.success("Finished processing");
+      notyf.success("Processing successful.");
     }).catch(function(reason) {
       console.error("Issue with the POST request.");
       console.error(reason);
@@ -355,7 +367,19 @@ function createSummary(data, proxWeights, divWeights) {
 /**
  * TODO: render chart
  */
-function renderChart(chartBase64) {}
+function renderChart(dataFile) {
+  // TODO: Render json with json or csv
+  // Need to receive a file from POST
+  // Plotly.d3.json();
+  // Plotly.plot( document.querySelector(".plotly-container"), [{
+  //   x: [1, 2, 3, 4, 5],
+  //   y: [1, 2, 4, 8, 16]
+  // }], { 
+  //   margin: { t: 0 }
+  // }, {
+  //   showSendToCloud:true
+  // });
+}
 function exit(status) {
   // https://stackoverflow.com/a/550583
   // http://kevin.vanzonneveld.net
@@ -397,3 +421,4 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 fetchDBsAndPopulateDropdown();
+renderChart("something");
