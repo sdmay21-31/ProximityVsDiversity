@@ -20,18 +20,21 @@ class TestConfigSeed:
         print(os.getcwd())
         
         # This may not be a valid function call...
+        call(["source", ".venv/Scripts/activate"])
         #call(["source", "../.venv/Scripts/activate"])
         
         # The path for manage.py depends on the current working directory
         argList = ["python", "manage.py", "seed"]
-        #argList = ["python", "../manage.py", "seed"]
+        
+        # This program appears to run correctly...
+        #argList = ["ls", "-l"]
         
         # Setting python path does not appear to work, unless wrong directory was used
         # DJANGO_SETTINGS_MODULE = config.settings -> settings.py
         
         # manage.py cannot find "django" for some reason on line 11
         # Some item failed to be imported at the very least...
-        call(argList)
+        call(argList, shell=True)
         print(argList)
         
         node_type = nodeDictionary[database]
