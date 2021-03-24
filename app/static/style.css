@@ -320,6 +320,7 @@ nav {
     border-top-color: transparent;
     animation: spin 1s linear infinite;
 }
+
 .process-button-spinner.show {
     display: inline-block;
 }
@@ -331,6 +332,45 @@ nav {
     /* max-width: 1600px; */
     /* margin: 2rem auto; */
 }
+/* for user_documentation */
+.help-header{
+	color: #000000;
+	font-size: 22pt;
+	font-family: "Arial";
+	line-height: 1.15;
+	text-align: center;
+	padding-top:72px;
+}
+.titleHead {
+	color: #000000;
+	font-weight: 700;
+	text-decoration: none;
+	vertical-align: baseline;
+	font-size: 18pt;
+	font-family: "Arial";
+	font-style: normal;
+}
+
+.titleResponse {
+	color: #000000;
+	font-weight: 400;
+	text-decoration: none;
+	vertical-align: baseline;
+	font-size: 14pt;
+	font-family: "Arial";
+	font-style: normal;
+}
+
+.helpMenu {
+	text-align:left;
+	background-color: #ffffff;
+}
+p.helpP{
+	padding-top: 10px;	
+	padding-left: 72px;
+	padding-right:72px;
+}
+/* end for user_documentation */
 .chart-container > p {
     display: flex;
     font-size: 2rem;
