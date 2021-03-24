@@ -1,11 +1,41 @@
 from django.db import models
 
+class Dataset(models.Model):
+    name = models.CharField(max_length=250)
 
-# Put query functions here
-class NodeQuerySet(models.QuerySet):
-    def example_query(self, *args, **kwargs):
-        """ Filter time_id is less than or equeal to 200"""
-        return self.filter(time_id__lte=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_email = models.EmailField()
+    created_by_name = models.CharField(max_length=250)
+
+    total_simulations = models.IntegerField()
+    total_nodes = models.IntegerField()
+    max_simulation_nodes = models.IntegerField()
+    min_simulation_nodes = models.IntegerField()
+    simulation_id = models.CharField(max_length=50)
+
+
+class Simulation(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    simulation_value = models.CharField()
+    total_nodes = models.IntegerField()
+    attributes = models.JSONField()
+    """Structure
+    {
+        'attr_key': {
+            'name': string,
+            'data_index': int
+        }
+    }
+    """
+    data = models.JSONField()
+    """Structure
+    [
+        ['attr1', 'attr2', ...],
+        ['attr1', 'attr2', 'attr3']
+    ]
+    """
 
 
 # Put class based attributes here
@@ -56,8 +86,6 @@ class Node(models.Model):
     merger_type = models.FloatField()
     bin_num = models.FloatField()
     time_id = models.AutoField(primary_key=True)
-    # Set the manager
-    objects = NodeQuerySet.as_manager()
 
     # Properties
     @property
