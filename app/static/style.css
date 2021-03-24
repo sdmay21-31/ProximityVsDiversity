@@ -1,6 +1,7 @@
 nav {
     z-index: 1000;
     background: white;
+    box-shadow: 0 6px 6px -6px rgb(0 0 0 / 50%);
 }
 .content-container {
     align-items: center;
@@ -272,7 +273,7 @@ nav {
 .process-button-container {
     position: relative;
     width: 100%;
-    margin: 2rem auto;
+    margin: 2rem auto auto auto;
     text-align: center;
     color: lightslategrey;
 }
@@ -339,6 +340,13 @@ nav {
     width: 100%;
     height: auto;
     max-height: 100%;
+}
+
+.plotly-container {
+    position: relative;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 2rem;
 }
 
 @keyframes spin {
