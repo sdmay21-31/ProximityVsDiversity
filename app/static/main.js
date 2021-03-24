@@ -222,6 +222,7 @@ function renderInput(inputType) {
       />
     <!-- </div> -->
   `;
+  document.querySelector(`#input-${inputType}-container`).classList.add("show");
 }
 function getInputTypeIgnoreCase(inputType) {
   return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
@@ -285,13 +286,13 @@ function process() {
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
     const divAttrs = divWeights.map(e => ({ name:e[0], weight:e[1] }));
-    const cookieHalves = `; ${document.cookie}`.split(`; csrftoken=`);
-    const csrf = cookieHalves.length === 2 ? cookieHalves[1].split(";")[0] : null;
-    if (!csrf) {
-      console.error("CSRF Token not in cookies");
-      notyf.error("CSRF Token not in cookies");
-      return;
-    }
+    // const cookieHalves = `; ${document.cookie}`.split(`; csrftoken=`);
+    // const csrf = cookieHalves.length === 2 ? cookieHalves[1].split(";")[0] : null;
+    // if (!csrf) {
+    //   console.error("CSRF Token not in cookies");
+    //   notyf.error("CSRF Token not in cookies");
+    //   return;
+    // }
     document.querySelector(".process-button-spinner").classList.add("show");
     fetch(urlProcess, {
       method: 'POST',
@@ -304,18 +305,22 @@ function process() {
     }).then((response) => {
       return response.json();
     }).then((json) => {
+      // remove existing and set new chart image properties: id, maxHeight, src
       let chart = document.querySelector("#chart");
       chart?.parentNode.removeChild(chart);
       chart = document.createElement("img");
       chart.id = "chart";
       chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
-      chart.onload = function() {
-        chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * chart.width / chart.height;
-      };
       chart.src = `data:image/png;base64,${json.chart}`;
+      // create a reference image from which to take the width and height to calculate maxHeight
+      let referenceImg = new Image();
+      referenceImg.onload = () => {
+        chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
+      }
+      referenceImg.src = `data:image/png;base64,${json.chart}`;
       document.querySelector(".chart-container").appendChild(chart);
       // if (json.dataFile) {
-    	  renderChart(json.dataFile);
+    	//   renderChart(json.dataFile);
       // }
       notyf.success("Processing successful.");
     }).catch(function(reason) {
