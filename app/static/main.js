@@ -459,6 +459,15 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 fetchDBsAndPopulateDropdown();
-// (async function() {
-//   renderPlotly(dummydata_data);
-// })();
+
+// setting a timeout because other renderings are delayed without it
+// (new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     const script = document.createElement("script");
+//     document.body.appendChild(script);
+//     script.onload = resolve;
+//     script.onerror = reject;
+//     script.async = true;
+//     script.src = 'static/dummydata.js';
+//   }, 1000);
+// })).then(() => renderPlotly(dummydata_data));
