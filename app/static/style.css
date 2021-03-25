@@ -3,10 +3,6 @@ nav {
     background: white;
 }
 
-.content-container {
-    align-items: center;
-}
-
 .columns {
     display: flex;
     flex-direction: row;

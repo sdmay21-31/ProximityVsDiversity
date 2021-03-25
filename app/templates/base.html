@@ -1,27 +1,26 @@
 <html>
-
+{% load static %}
 <head>
     <title>Proximity vs. Diversity</title>
     <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    {% block head-extra %}
+    {% endblock head-extra %}
 </head>
 
 <body>
-    <nav class="flex space-x-4 py-2 px-8 fixed w-screen top-0">
+    <nav class="flex space-x-4 py-2 px-8 w-screen">
         <a href="/" class="flex-1 text-xl">
             Proximity Vs. Diversity
         </a>
     </nav>
-    <div class="content-container">
+    <div class="items-center">
         {% block content %}
-        {% endblock %}
+        {% endblock content%}
     </div>
-    <script src="{% static 'main.js' %}"></script>
+    {% block body-extra %}
+    {% endblock body-extra %}
 </body>
 
 </html>

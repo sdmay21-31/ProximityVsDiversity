@@ -23,6 +23,8 @@ class Command(BaseCommand):
             attribute_ids = self.get_user_input_cols(
                 'Enter attribute identifiers you would like to use seperated by commas:\n')
 
+            name_of_dataset = input("What will the name of the dataset be: ")
+
             line = next(reader)
             line = next(reader)
 

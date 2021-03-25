@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <div>
+        <h2 class="text-lg">
+            Choose a Dataset to add:
+        </h2>
+        <ul class="ml-2">
+            {% for filename in filenames %}
+            <li>
+                <a href="{% url 'add_dataset' filename %}" class="hover:text-blue-500">{{ filename }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

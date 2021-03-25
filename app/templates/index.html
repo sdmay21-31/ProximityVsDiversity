@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Proximity Vs. Diversity{% endblock %}
+
+{% block head-extra %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+{% endblock head-extra %}
+
+{% block body-extra	 %}
+    <script src="{% static 'main.js' %}"></script>
+{% endblock body-extra %}
 
 {% block content %}
 <div class="columns">

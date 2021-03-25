@@ -1,8 +1,12 @@
+from os import walk
+
 from django.apps import apps
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.generic import FormView
 
-from app.forms import AlgoRequestForm, DatabaseChoiceForm
+from app.forms import SetupDatasetForm
 from app.algos import run as run_algo
 
 from app.databases import get_database_attributes, get_databases
@@ -23,6 +27,20 @@ def databases(request, *args, **kwargs):
 def attributes(request, database):
     """Return attributes from model and strip _1 and _2"""
     return JsonResponse({'attrs': get_database_attributes(database)})
+
+@login_required(login_url="/admin/login/")
+def add_dataset(request):
+    _, _, filenames = next(walk("datasets"))
+    filenames.remove('.gitignore')
+    filenames = map(lambda x: x.split('.')[0], filenames)
+    context = {
+        'filenames': filenames
+    }
+    return render(request, 'add_dataset.html', context)
+
+class SetupDatasetView(FormView):
+    template_name = "setup_dataset.html"
+    form_class = SetupDatasetForm
 
 def process(request):
     """Return the algorithm function"""

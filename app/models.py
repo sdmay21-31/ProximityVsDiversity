@@ -1,7 +1,7 @@
 from django.db import models
 
 class Dataset(models.Model):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, unique=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -18,7 +18,7 @@ class Dataset(models.Model):
 class Simulation(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    simulation_value = models.CharField()
+    simulation_value = models.CharField(max_length=50)
     total_nodes = models.IntegerField()
     attributes = models.JSONField()
     """Structure
