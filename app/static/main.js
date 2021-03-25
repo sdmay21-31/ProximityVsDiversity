@@ -462,12 +462,10 @@ fetchDBsAndPopulateDropdown();
 
 // setting a timeout because other renderings are delayed without it
 // (new Promise((resolve, reject) => {
-//   setTimeout(() => {
-//     const script = document.createElement("script");
-//     document.body.appendChild(script);
-//     script.onload = resolve;
-//     script.onerror = reject;
-//     script.async = true;
-//     script.src = 'static/dummydata.js';
-//   }, 1000);
+//   const script = document.createElement("script");
+//   document.body.appendChild(script);
+//   script.onload = resolve;
+//   script.onerror = reject;
+//   script.async = true;
+//   script.src = 'static/dummydata.js';
 // })).then(() => renderPlotly(dummydata_data));
