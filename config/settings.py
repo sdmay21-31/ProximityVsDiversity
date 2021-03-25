@@ -32,8 +32,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = [env('HOST'), 'localhost']
 
-# Application definition
+LOGIN_URL = "/admin/login/"
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

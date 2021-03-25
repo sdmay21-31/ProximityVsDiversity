@@ -1,7 +1,7 @@
 from django.db import models
 
 class Dataset(models.Model):
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -12,8 +12,10 @@ class Dataset(models.Model):
     total_nodes = models.IntegerField()
     max_simulation_nodes = models.IntegerField()
     min_simulation_nodes = models.IntegerField()
-    simulation_id = models.CharField(max_length=50)
+    simulation_id = models.CharField(max_length=250)
 
+    class Meta:
+        db_table = "dataset"
 
 class Simulation(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
@@ -37,6 +39,8 @@ class Simulation(models.Model):
     ]
     """
 
+    class Meta:
+        db_table = "simulation"
 
 # Put class based attributes here
 class Node(models.Model):

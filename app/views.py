@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from app.forms import SetupDatasetForm
 from app.algos import run as run_algo
@@ -28,7 +29,7 @@ def attributes(request, database):
     """Return attributes from model and strip _1 and _2"""
     return JsonResponse({'attrs': get_database_attributes(database)})
 
-@login_required(login_url="/admin/login/")
+@login_required
 def add_dataset(request):
     _, _, filenames = next(walk("datasets"))
     filenames.remove('.gitignore')
@@ -38,9 +39,14 @@ def add_dataset(request):
     }
     return render(request, 'add_dataset.html', context)
 
-class SetupDatasetView(FormView):
+class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
     form_class = SetupDatasetForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['filename'] = self.kwargs.get('filename') + '.csv'
+        return kwargs
 
 def process(request):
     """Return the algorithm function"""
