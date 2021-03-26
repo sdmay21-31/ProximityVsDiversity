@@ -11,7 +11,6 @@ const urlGetDb = "databases/";
 const urlGetAttrBase = "databases/";
 const urlProcess = "process/";
 let attrList = ["mass", "luminosity", "hydrogen", "radius"];
-const svgNamespace = "http://www.w3.org/2000/svg";
 var notyf = new Notyf({
   duration: 10000,
   dismissible: true
@@ -121,6 +120,7 @@ function handleDropdownSelection(p) {
   document.querySelector(".process-button").removeAttribute("disabled");
   proxIdsSelected.clear();
   divIdsSelected.clear();
+  document.querySelector('#chart')?.removeAttribute("src");
   inputWeightState = {[TIME]: "", [CLUSTER]: ""};
   if (localStorage.getItem("db") !== p.getAttribute("name")) {
     localStorage.setItem("db", p.getAttribute("name"));
@@ -222,6 +222,7 @@ function renderInput(inputType) {
       />
     <!-- </div> -->
   `;
+  document.querySelector(`#input-${inputType}-container`).classList.add("show");
 }
 function getInputTypeIgnoreCase(inputType) {
   return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
@@ -285,11 +286,18 @@ function process() {
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
     const divAttrs = divWeights.map(e => ({ name:e[0], weight:e[1] }));
+    // const cookieHalves = `; ${document.cookie}`.split(`; csrftoken=`);
+    // const csrf = cookieHalves.length === 2 ? cookieHalves[1].split(";")[0] : null;
+    // if (!csrf) {
+    //   console.error("CSRF Token not in cookies");
+    //   notyf.error("CSRF Token not in cookies");
+    //   return;
+    // }
     document.querySelector(".process-button-spinner").classList.add("show");
     fetch(urlProcess, {
       method: 'POST',
       headers: {
-        'X-CSRFToken': csrf, 
+        'X-CSRFToken': csrf,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
@@ -297,15 +305,24 @@ function process() {
     }).then((response) => {
       return response.json();
     }).then((json) => {
-      document.querySelector('#chart').src = `data:image/png;base64,${json.chart}`;
-      // if (json.data) {
-    	//   createSummary(json.data);
-      // }
-      // createSummary(undefined, proxWeights, divWeights);
-      if (json.chartBase64) {
-    	  renderChart(json.chartBase64);
+      // remove existing and set new chart image properties: id, maxHeight, src
+      let chart = document.querySelector("#chart");
+      chart?.parentNode.removeChild(chart);
+      chart = document.createElement("img");
+      chart.id = "chart";
+      chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
+      chart.src = `data:image/png;base64,${json.chart}`;
+      // create a reference image from which to take the width and height to calculate maxHeight
+      let referenceImg = new Image();
+      referenceImg.onload = () => {
+        chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
       }
-      notyf.success("Finished processing");
+      referenceImg.src = `data:image/png;base64,${json.chart}`;
+      document.querySelector(".chart-container").appendChild(chart);
+      // if (json.plotlyData) {
+    	//   renderPlotly(json.plotlyData);
+      // }
+      notyf.success("Processing successful.");
     }).catch(function(reason) {
       console.error("Issue with the POST request.");
       console.error(reason);
@@ -355,7 +372,52 @@ function createSummary(data, proxWeights, divWeights) {
 /**
  * TODO: render chart
  */
-function renderChart(chartBase64) {}
+function renderPlotly(plotlyData) {
+  function unpack(rows, key) {
+    const ind = dummydata_columns.indexOf(key);
+    return rows.map( function(row) { return row[ind]; } );
+  }
+  const trace1 = {
+    x:unpack(plotlyData, 'x1'), y: unpack(plotlyData, 'y1'), z: unpack(plotlyData, 'z1'),
+    mode: 'markers',
+    marker: {
+      size: 12,
+      line: {
+        color: 'rgba(217, 217, 217, 0.14)',
+        width: 0.5
+      },
+      opacity: 0.8
+    },
+    type: 'scatter3d'
+  };
+  const trace2 = {
+    x:unpack(plotlyData, 'x2'), y: unpack(plotlyData, 'y2'), z: unpack(plotlyData, 'z2'),
+    mode: 'markers',
+    marker: {
+      color: 'rgb(127, 127, 127)',
+      size: 12,
+      symbol: 'circle',
+      line: {
+        color: 'rgb(204, 204, 204)',
+        width: 1
+      },
+      opacity: 0.8
+    },
+    type: 'scatter3d'
+  };
+  const data = [trace1, trace2];
+  // const data = [trace2];
+  const layout = {
+    margin: { l: 0, r: 0, b: 0, t: 0 },
+    scene: {
+      xaxis: { title: 'x Attribute' },
+      yaxis: { title: 'y Attribute' },
+      zaxis: { title: 'z Attribute' }
+    }
+  };
+  const config = { responsive: true };
+  Plotly.newPlot(document.querySelector(".plotly-container"), data, layout, config);
+}
 function exit(status) {
   // https://stackoverflow.com/a/550583
   // http://kevin.vanzonneveld.net
@@ -397,3 +459,13 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 fetchDBsAndPopulateDropdown();
+
+// setting a timeout because other renderings are delayed without it
+// (new Promise((resolve, reject) => {
+//   const script = document.createElement("script");
+//   document.body.appendChild(script);
+//   script.onload = resolve;
+//   script.onerror = reject;
+//   script.async = true;
+//   script.src = 'static/dummydata.js';
+// })).then(() => renderPlotly(dummydata_data));

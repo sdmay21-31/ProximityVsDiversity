@@ -1,13 +1,14 @@
 nav {
     z-index: 1000;
     background: white;
+    box-shadow: 0 6px 6px -6px rgb(0 0 0 / 50%);
 }
-
 .content-container {
     align-items: center;
 }
 
 .columns {
+    width: calc(100% - 2rem - 2rem);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -18,16 +19,18 @@ nav {
 
 .data-input-outer-container {
     position: relative;
+    width: 100%;
     flex: 6;
     flex-basis: 1000px;
     max-width: 1200px;
 }
 .data-input-container {
     position: relative;
+    width: 100%;
     display: flex;
     flex-direction: column;
     /* min-width: 1000px; */
-    max-width: 12000px;
+    max-width: 1200px;
     padding-right: 2em;
     /* border-right: 2px solid lightslategrey; */
 }
@@ -222,13 +225,15 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+.input-container.show {
     margin-top: 2rem;
 }
 .input-instruction {
     margin-bottom: 0.2rem;
     color: lightslategrey;
 }
-.input-inner-container {
+/* .input-inner-container {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -236,7 +241,7 @@ nav {
     align-items: center;
     width: 100%;
     margin: 0 auto 0 auto;
-}
+} */
 .input {
     width: 100%;
     min-width: 0;
@@ -268,7 +273,7 @@ nav {
 .process-button-container {
     position: relative;
     width: 100%;
-    margin: 2rem auto;
+    margin: 2rem auto auto auto;
     text-align: center;
     color: lightslategrey;
 }
@@ -315,6 +320,7 @@ nav {
     border-top-color: transparent;
     animation: spin 1s linear infinite;
 }
+
 .process-button-spinner.show {
     display: inline-block;
 }
@@ -326,6 +332,45 @@ nav {
     /* max-width: 1600px; */
     /* margin: 2rem auto; */
 }
+/* for user_documentation */
+.help-header{
+	color: #000000;
+	font-size: 22pt;
+	font-family: "Arial";
+	line-height: 1.15;
+	text-align: center;
+	padding-top:72px;
+}
+.titleHead {
+	color: #000000;
+	font-weight: 700;
+	text-decoration: none;
+	vertical-align: baseline;
+	font-size: 18pt;
+	font-family: "Arial";
+	font-style: normal;
+}
+
+.titleResponse {
+	color: #000000;
+	font-weight: 400;
+	text-decoration: none;
+	vertical-align: baseline;
+	font-size: 14pt;
+	font-family: "Arial";
+	font-style: normal;
+}
+
+.helpMenu {
+	text-align:left;
+	background-color: #ffffff;
+}
+p.helpP{
+	padding-top: 10px;	
+	padding-left: 72px;
+	padding-right:72px;
+}
+/* end for user_documentation */
 .chart-container > p {
     display: flex;
     font-size: 2rem;
@@ -337,14 +382,21 @@ nav {
     max-height: 100%;
 }
 
+.plotly-container {
+    position: relative;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 2rem;
+}
+
 @keyframes spin {
     100% {
         transform: rotate(360deg);
     }
 }
 
-/* max-width: width of data-input-outer-container + min chart size */
-/* 1200px + 480px */
+/* max-width: width of data-input-outer-container + min chart size + other stuff */
+/* 1200px + 480px + other stuff */
 @media screen and (max-width: 1680px) {
     .columns {
         flex-direction: column;
@@ -355,8 +407,6 @@ nav {
         margin-left: auto;
     }
     .data-input-container {
-        width: 100%;
-        min-width: 1000px;
         padding-right: 0;
     }
     .chart-container {
@@ -365,9 +415,12 @@ nav {
     }
 }
 
+/* @media screen and (min-width: 1001px) and (max-width: 1680px) {
+    .data-input-container {}
+} */
+
 @media screen and (min-width: 501px) and (max-width: 1000px) {
     .data-input-container {
-        padding-right: 0;
         border-right: 0px;
     }
     .input-outer-container {
@@ -377,13 +430,13 @@ nav {
 
 @media screen and (max-width: 500px) {
     .data-input-container {
-        padding-right: 0;
         border-right: 0px;
-    }
-    .data-cards {
-        flex-direction: column;
     }
     .input-outer-container {
         flex-direction: column;
     }
+    .data-cards {
+        flex-direction: column;
+    }
 }
+

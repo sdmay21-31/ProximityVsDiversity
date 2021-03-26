@@ -12,6 +12,9 @@ from collections import Counter
 
 
 # Create your views here.
+def guide(request):
+    return render(request, 'user_documentation.html')
+    
 def index(request, *args, **kwargs):
     """Default index page"""
     return render(request, 'index.html')
