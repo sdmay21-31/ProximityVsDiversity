@@ -333,6 +333,22 @@ nav {
     /* margin: 2rem auto; */
 }
 /* for user_documentation */
+.help-title{
+    background-color: #ffc107;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+}
+.help-response{
+    padding: 5px;
+    overflow: hidden;
+    background-color: #ffffff;
+    max-height: 0;
+    transition: max-height 0.35s ease-out;
+}
 .help-header{
 	color: #000000;
 	font-size: 22pt;
@@ -361,11 +377,7 @@ nav {
 	font-style: normal;
 }
 
-.helpMenu {
-	text-align:left;
-	background-color: #ffffff;
-}
-p.helpP{
+.help-div{
 	padding-top: 10px;	
 	padding-left: 72px;
 	padding-right:72px;
