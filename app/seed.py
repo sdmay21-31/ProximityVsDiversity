@@ -1,5 +1,6 @@
 import csv
 
+#from app.nodeDictionary import node_dictionary
 from app.models import Node, Node2, Node3
 
 TOTAL_NODES = 10355968
@@ -34,6 +35,7 @@ def run(file_name='main_table_1.csv', full_seed=False, chunk_size=10000, print_s
         chunk_count = 0
         
         # Get the node type
+        #node_type = node_dictionary[file_name]
         node_type = nodeDictionary[file_name]
         
         # Read File

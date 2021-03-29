@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from app import seed
-from app.models import Node, Node2, Node3
+#from app.nodeDictionary import node_dictionary
 from app.seed import nodeDictionary
 from app import findHeaderNames
 
@@ -22,9 +22,9 @@ class Command(BaseCommand):
         full = kwargs.get('full', False) or kwargs.get('f')
         database = kwargs.get('database', False) or kwargs.get('d')
         
-        findHeaderNames.newSeed(database)
+        #findHeaderNames.newSeed(database)
         
-        """
+        
         # Delete all rows
         node_to_delete = nodeDictionary[database]
         node_to_delete.objects.all().delete()
@@ -39,4 +39,4 @@ class Command(BaseCommand):
         else:
             print('Seeding 10000 nodes')
             seed.run(database)
-        """
+        
