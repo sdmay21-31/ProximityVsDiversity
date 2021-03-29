@@ -334,31 +334,14 @@ nav {
 }
 /* for user_documentation */
 .help-title{
-    background-color: #ffc107;
+    background-color: #60A5FA;
     cursor: pointer;
-    padding: 18px;
+    padding: 1em;
     width: 100%;
     border: none;
     text-align: left;
     outline: none;
-}
-.help-response{
-    padding: 5px;
-    overflow: hidden;
-    background-color: #ffffff;
-    max-height: 0;
-    transition: max-height 0.35s ease-out;
-}
-.help-header{
-	color: #000000;
-	font-size: 22pt;
-	font-family: "Arial";
-	line-height: 1.15;
-	text-align: center;
-	padding-top:72px;
-}
-.titleHead {
-	color: #000000;
+    color: #000000;
 	font-weight: 700;
 	text-decoration: none;
 	vertical-align: baseline;
@@ -366,15 +349,27 @@ nav {
 	font-family: "Arial";
 	font-style: normal;
 }
-
-.titleResponse {
-	color: #000000;
+.help-response{
+    padding: 5px;
+    overflow: hidden;
+    background-color: #ffffff;
+    max-height: 0;
+    transition: max-height 0.35s ease-out;
+    color: #000000;
 	font-weight: 400;
 	text-decoration: none;
 	vertical-align: baseline;
 	font-size: 14pt;
 	font-family: "Arial";
 	font-style: normal;
+}
+.help-header{
+	color: #000000;
+	font-size: 1.83em;
+	font-family: "Arial";
+	line-height: 1.15;
+	text-align: center;
+	padding-top:72px;
 }
 
 .help-div{

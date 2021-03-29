@@ -99,14 +99,6 @@ function populateDropdown(dbNameFromStorage=null) {
     return choice;
   }
 }
-function handleHelpTitleClick(helpId) {
-  var content = document.getElementById(helpId);
-  if(content.style.maxHeight){
-    content.style.maxHeight = null;
-  } else {
-    content.style.maxHeight = content.scrollHeight+"px";
-  }
-}
 function handleDropdownSelection(p) {
   // If everything works correctly, we shouldn't need both these conditions
   // If selecting a selected option causes a "refresh", something went wrong 
