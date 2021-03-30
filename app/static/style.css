@@ -333,16 +333,15 @@ nav {
     /* margin: 2rem auto; */
 }
 /* for user_documentation */
-.help-header{
-	color: #000000;
-	font-size: 22pt;
-	font-family: "Arial";
-	line-height: 1.15;
-	text-align: center;
-	padding-top:72px;
-}
-.titleHead {
-	color: #000000;
+.help-title{
+    background-color: #60A5FA;
+    cursor: pointer;
+    padding: 1em;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    color: #000000;
 	font-weight: 700;
 	text-decoration: none;
 	vertical-align: baseline;
@@ -350,9 +349,13 @@ nav {
 	font-family: "Arial";
 	font-style: normal;
 }
-
-.titleResponse {
-	color: #000000;
+.help-response{
+    padding: 5px;
+    overflow: hidden;
+    background-color: #ffffff;
+    max-height: 0;
+    transition: max-height 0.35s ease-out;
+    color: #000000;
 	font-weight: 400;
 	text-decoration: none;
 	vertical-align: baseline;
@@ -360,12 +363,16 @@ nav {
 	font-family: "Arial";
 	font-style: normal;
 }
-
-.helpMenu {
-	text-align:left;
-	background-color: #ffffff;
+.help-header{
+	color: #000000;
+	font-size: 1.83em;
+	font-family: "Arial";
+	line-height: 1.15;
+	text-align: center;
+	padding-top:72px;
 }
-p.helpP{
+
+.help-div{
 	padding-top: 10px;	
 	padding-left: 72px;
 	padding-right:72px;

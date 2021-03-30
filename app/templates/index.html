@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block scripts %} 
+<script src="{% static 'main.js' %}"></script>
+{% endblock %}
 
 {% block title %}Proximity Vs. Diversity{% endblock %}
 
