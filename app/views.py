@@ -12,7 +12,7 @@ from app.algos import run as run_algo
 
 from app.databases import get_database_attributes, get_databases
 
-from app.models import Node
+from app.models import Node, Dataset
 from collections import Counter
 
 
@@ -23,6 +23,19 @@ def guide(request):
 def index(request, *args, **kwargs):
     """Default index page"""
     return render(request, 'index.html')
+
+def datasets(request, *args, **kwargs):
+    """Datasets page"""
+    return render(request, 'datasets.html', {
+        'datasets': Dataset.objects.all()
+        })
+
+def dataset(request, pk, *args, **kwargs):
+    """Datasets page"""
+    return render(request, 'dataset.html', {
+        'dataset': Dataset.objects.get(pk=pk),
+        'data': None
+        })
 
 def databases(request, *args, **kwargs):
     """Return list of databases"""

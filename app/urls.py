@@ -4,6 +4,9 @@ from app import views
 
 urlpatterns = [
     path('guide/',views.guide, name="guide"),
+    path('datasets/', views.datasets, name="datasets"),
+    path('datasets/<int:pk>/', views.dataset, name="dataset"),
+
     path('', views.index, name="index"),
     path('process/', views.process, name="process"),
     path('databases/', views.databases, name="databases"),
