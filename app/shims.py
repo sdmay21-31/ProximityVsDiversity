@@ -1,47 +1,27 @@
 from app.matplot import get_plt
 import numpy as np
-
-"""Kmeans courtesy of: https://github.com/corvasto/Simple-k-Means-Clustering-Python/blob/master/kMeansClustering.py
-"""
-def compute_euclidean_distance(point, centroid):
-    return np.sqrt(np.sum((point - centroid)**2))
-
-def assign_label_cluster(distance, data_point, centroids):
-    index_of_minimum = min(distance, key=distance.get)
-    return [index_of_minimum, data_point, centroids[index_of_minimum]]
-
-def compute_new_centroids(cluster_label, centroids):
-    return np.array(cluster_label + centroids)/2
-
-def iterate_k_means(data_points, centroids, total_iteration):
-    label = []
-    cluster_label = []
-    total_points = len(data_points)
-    k = len(centroids)
-    
-    for iteration in range(0, total_iteration):
-        for index_point in range(0, total_points):
-            distance = {}
-            for index_centroid in range(0, k):
-                distance[index_centroid] = compute_euclidean_distance(data_points[index_point], centroids[index_centroid])
-            label = assign_label_cluster(distance, data_points[index_point], centroids)
-            centroids[label[0]] = compute_new_centroids(label[1], centroids[label[0]])
-
-            if iteration == (total_iteration - 1):
-                cluster_label.append(label)
-
-    return [cluster_label, centroids]
-
-def create_centroids():
-    centroids = []
-    centroids.append([.2, 0.6])
-    centroids.append([.1, .0001])
-    centroids.append([0, 0])
-    return np.array(centroids)
-
+from pyclustering.cluster.kmeans import kmeans, kmeans_visualizer
+from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
+from pyclustering.samples.definitions import FCPS_SAMPLES
+from pyclustering.utils import read_sample
+from pyclustering.utils.metric import distance_metric, type_metric
 
 def relativise(value, mmax, mmin):
     return (value - mmin) / (mmax - mmin)
+
+def weighted_euclidean_distance(weights):
+    def euclidean_distance_square(point1, point2):
+        distance = 0.0
+        for i in range(len(point1)):
+            distance += ((point1[i] - point2[i]) ** 2.0) * weights[i]
+
+        return distance
+
+    def euclidean_distance(point1, point2):
+        distance = euclidean_distance_square(point1, point2)
+        return distance ** 0.5
+
+    return euclidean_distance
 
 class DatasetShim:
     def process(self):
@@ -73,15 +53,30 @@ class DatasetShim:
             nodes.append([x, y, z])
 
 
+        # Prepare initial centers using K-Means++ method.
+        metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance([1, 1, 1]))
+        initial_centers = kmeans_plusplus_initializer(nodes, 2).initialize()
+         
+        # Create instance of K-Means algorithm with prepared centers.
+        kmeans_instance = kmeans(nodes, initial_centers, metric=metric)
+         
+        # Run cluster analysis and obtain results.
+        kmeans_instance.process()
+        clusters = kmeans_instance.get_clusters()
+        final_centers = np.array(kmeans_instance.get_centers())
+        print(final_centers)
+
+
         xs = [n[0] for n in nodes]
         ys = [n[1] for n in nodes]
         zs = [n[2] for n in nodes]
 
+
         plt = get_plt()
-        fig = plt.figure()
-        ax = fig.add_subplot(projection='3d')
-        ax.scatter(xs, ys, zs)
-        # plt.scatter(new_centroids[:,0], new_centroids[:,1], c='black')
+        # fig = plt.figure()
+        # ax = fig.add_subplot(projection='3d')
+        plt.scatter(xs, ys)
+        plt.scatter(final_centers[:,0], final_centers[:,1], c='black')
         return plt
 
 
