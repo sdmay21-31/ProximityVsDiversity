@@ -3,6 +3,7 @@ from django.urls import path
 from app import views
 
 urlpatterns = [
+    path('guide/',views.guide, name="guide"),
     path('', views.index, name="index"),
     path('process/', views.process, name="process"),
     path('databases/', views.databases, name="databases"),
