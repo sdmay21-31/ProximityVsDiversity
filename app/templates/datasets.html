@@ -12,5 +12,12 @@
 {% endblock head-extra %}
 
 {% block content %}
-<img src="data:image/png;base64,{{ data }}" alt="" height="600" width="900">
+{% for dataset in datasets %}
+<a href="{% url 'dataset' dataset.id %}">
+    <button class="process-button">
+        <strong>{{ dataset.name }}</strong>
+        <i class="fas fa-chevron-down dropdown-button-icon"></i>
+    </button>
+</a>
+{% endfor %}
 {% endblock %}

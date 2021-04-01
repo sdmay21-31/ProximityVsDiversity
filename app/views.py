@@ -14,6 +14,7 @@ from app.databases import get_database_attributes, get_databases
 
 from app.models import Node, Dataset
 from collections import Counter
+from app.matplot import plot_to_uri
 
 
 # Create your views here.
@@ -32,9 +33,10 @@ def datasets(request, *args, **kwargs):
 
 def dataset(request, pk, *args, **kwargs):
     """Datasets page"""
+    dataset = Dataset.objects.get(pk=pk)
     return render(request, 'dataset.html', {
-        'dataset': Dataset.objects.get(pk=pk),
-        'data': None
+        'dataset': dataset,
+        'data': plot_to_uri(dataset.process())
         })
 
 def databases(request, *args, **kwargs):
