@@ -1,36 +1,34 @@
 from django.db import models
+from django.conf import settings
 
 class Dataset(models.Model):
     name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by_email = models.EmailField()
-    created_by_name = models.CharField(max_length=250)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
 
-    total_simulations = models.IntegerField()
-    total_nodes = models.IntegerField()
-    max_simulation_nodes = models.IntegerField()
-    min_simulation_nodes = models.IntegerField()
-    simulation_id = models.CharField(max_length=250)
+    total_simulations = models.IntegerField(default=0)
+    total_nodes = models.IntegerField(default=0)
+    max_simulation_nodes = models.IntegerField(default=0)
+    min_simulation_nodes = models.IntegerField(default=0)
+    simulation_attributes = models.JSONField()
+    """Structure
+    ['attr1', 'attr2', 'attr3']
+    """
 
     class Meta:
         db_table = "dataset"
 
 class Simulation(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
     simulation_value = models.CharField(max_length=50)
     total_nodes = models.IntegerField()
-    attributes = models.JSONField()
-    """Structure
-    {
-        'attr_key': {
-            'name': string,
-            'data_index': int
-        }
-    }
-    """
+    
     data = models.JSONField()
     """Structure
     [

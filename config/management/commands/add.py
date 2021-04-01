@@ -1,63 +1,51 @@
 from django.core.management.base import BaseCommand, CommandError
 import csv
+from app.models import Dataset, Simulation
 
 class Command(BaseCommand):
-    missing_args_message = 'Please add the file you would like to add'
     help = "Adds a new dataset to your application"
 
-    def add_arguments(self, parser):
-        parser.add_argument('file', help='Select the file to import.')
-
     def handle(self, *args, **kwargs):
-        with open(kwargs.get('file')) as file:
+        with open('datasets/main_table_1.csv') as file:
             reader = csv.DictReader(file)
 
             next(reader)
 
             self.headers = reader._fieldnames
-            self.list_headers()
 
-            simulation_id = self.get_user_input_col(
-                'Enter the Simulation Identifier: ')
+            simulation_id = 'node_id'
+            attribute_ids = ['mass_1', 'lumin_1', 'rad_1', 'teff_1']
 
-            attribute_ids = self.get_user_input_cols(
-                'Enter attribute identifiers you would like to use seperated by commas:\n')
+            Dataset.objects.all().delete()
+            dataset = Dataset(
+                name="testing",
+                simulation_attributes=attribute_ids)
+            dataset.save()
 
-            name_of_dataset = input("What will the name of the dataset be: ")
+            TOTAL_SIMULATIONS = 10
+            simulation = []
+            simulations = []
+            current_simulation_id = None
 
-            line = next(reader)
-            line = next(reader)
+            while len(simulations) < TOTAL_SIMULATIONS:
+                line = next(reader, None)
+                if line is None:
+                    break
+                if current_simulation_id is None:
+                    current_simulation_id = line[simulation_id]
+                    continue
+                # If moving on to next simulation
+                if current_simulation_id != line[simulation_id]:
+                    simulations.append(Simulation(
+                        dataset=dataset,
+                        simulation_value=current_simulation_id,
+                        total_nodes=len(simulation),
+                        data=simulation
+                    ))
+                    current_simulation_id = line[simulation_id]
+                    simulation = []
+                # Add node to current simulation
+                simulation.append([line[col] for col in attribute_ids])
 
-            current_simulation = line[simulation_id]
-            next_simulation = current_simulation
-            count = 0
-
-            while current_simulation == next_simulation:
-                line = next(reader)
-                next_simulation = line[simulation_id]
-                count += 1
-
-            print(current_simulation, next_simulation, count)
-
-    def list_headers(self, list_display=True):
-        print("Available identifiers")
-        print("====================")
-        for header in self.headers:
-            print(header)
-
-    def validate_header(self, header):
-        if not header in self.headers:
-            raise ValueError
-
-    def get_user_input_col(self, question):
-        value = input(question)
-        self.validate_header(value)
-        return value
-
-    def get_user_input_cols(self, question):
-        value = input(question)
-        values = [v.strip() for v in value.split(',')]
-        for value in values:
-            self.validate_header(value)
-        return values
-
+            Simulation.objects.bulk_create(simulations)
+            print(Simulation.objects.count())

@@ -12,7 +12,7 @@ class SetupDatasetForm(forms.ModelForm):
 
     class Meta:
         model = Dataset
-        fields = ['name', 'created_by_name', 'created_by_email']
+        fields = ['name']
 
     def add_dynamic_fields(self):
         with open(f'datasets/{ self.filename }') as file:
