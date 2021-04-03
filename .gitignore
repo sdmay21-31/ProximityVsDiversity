@@ -17,6 +17,9 @@ main_table_1.csv
 # VSCode
 .vscode
 
+# Postgres files
+postgres/
+
 # Created by https://www.gitignore.io/api/django
 # Edit at https://www.gitignore.io/?templates=django
 
