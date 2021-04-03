@@ -156,9 +156,7 @@ function fetchAndDisplayCardsAttrs() {
   });
 }
 function genListItemsForType(attrArr, isProxAttr) {
-  return attrArr.map((attr, ind) => {
-    return genListItem(ind, isProxAttr, attr);
-  }).join("");
+  return attrArr.map((attr, ind) => genListItem(ind, isProxAttr, attr)).join("");
 }
 function genListItem(id, isProx, attr) {
   // Checks
@@ -172,18 +170,16 @@ function genListItem(id, isProx, attr) {
   const checkboxId = `cb_${type}_${id}`;
   const textAreaId = `ta_${type}_${id}`;
   const warningId = `w_${type}_${id}`;
+  // decimal is charCode 46
   return (`
     <div id="${rowId}" class="list-item attr-item">
-      <!-- checkbox & attribute -->
       <div class="list-item-cbattr">
         <label class="list-item-cbattr-label">
           <input id="${checkboxId}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(${isProx})(this)">
-          <span><strong style="font-size:1rem;">${attrProperCase}</strong></span>
+          <span><strong>${attrProperCase}</strong></span>
         </label>
       </div>
-      <!-- warning svg -->
       <i id="${warningId}" class="fas fa-exclamation-triangle list-item-warning"></i>
-      <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
       <input
         id="${textAreaId}" class="list-item-weight" type="text" placeholder="Weight" disabled=true
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
@@ -214,13 +210,10 @@ function renderInput(inputType) {
   const placeholder = inputType === TIME ? capIT : `Number of ${capIT}`;
   document.querySelector(`#input-${inputType}-container`).innerHTML = `
     <p class="input-instruction">${instruction}</p>
-    <!-- <div class="input-inner-container">
-      <i class="input-warning input-${inputType}-warning fas fa-exclamation-triangle"></i> -->
-      <input class="input input-${inputType}" type="text" placeholder="${capIT} (Required)" min=${min} max=${max} inputType="${inputType}"
-        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInput(event)"
-      />
-    <!-- </div> -->
+    <input class="input input-${inputType}" type="text" placeholder="${capIT} (Required)" min=${min} max=${max} inputType="${inputType}"
+      onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+      oninput="controlInput(event)"
+    />
   `;
   document.querySelector(`#input-${inputType}-container`).classList.add("show");
 }
@@ -332,46 +325,6 @@ function process() {
     });
   }
 }
-/**
- * TODO: Extract info from data and add to summary
- */
-function createSummary(data, proxWeights, divWeights) {
-  const proxList = document.querySelector(".prox-list");
-  const divList = document.querySelector(".div-list");
-  let li;
-  // Just leaving this here for the future
-  // `<p class="summary-attr-item"><span class="summary-attr-item-name">mass</span><span class="summary-attr-item-weight">1</span></p>`
-  proxList.innerHTML = "";
-  divList.innerHTML = "";
-  // summary creation for proximity
-  if (proxWeights.length === 0) {
-    li = document.createElement("li");
-    li.appendChild(document.createTextNode("No proximity attribute selected"));
-    proxList.appendChild(li);
-  } else {
-    proxWeights.forEach(function(e) {
-      li = document.createElement("li");
-      li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
-      proxList.appendChild(li);
-    });
-  }
-  // summary creation for diversity
-  if (divWeights.length === 0) {
-    li = document.createElement("li");
-    li.appendChild(document.createTextNode("No diversity attribute selected"));
-    divList.appendChild(li);
-  } else {
-    divWeights.forEach(function(e) {
-      li = document.createElement("li");
-      li.appendChild(document.createTextNode(capitalizeFirstLetter(e[0]) + " with a weight of " + e[1]));
-      divList.appendChild(li);				
-    });
-  }
-  // TODO: Extract info from data and add to summary
-}
-/**
- * TODO: render chart
- */
 function renderPlotly(plotlyData) {
   function unpack(rows, key) {
     const ind = dummydata_columns.indexOf(key);

@@ -1,12 +1,3 @@
-nav {
-    z-index: 1000;
-    background: white;
-    box-shadow: 0 6px 6px -6px rgb(0 0 0 / 50%);
-}
-.content-container {
-    align-items: center;
-}
-
 .columns {
     width: calc(100% - 2rem - 2rem);
     display: flex;
@@ -29,10 +20,8 @@ nav {
     width: 100%;
     display: flex;
     flex-direction: column;
-    /* min-width: 1000px; */
     max-width: 1200px;
-    padding-right: 2em;
-    /* border-right: 2px solid lightslategrey; */
+    padding-right: 2rem;
 }
 .dropdown-container {
     position: relative;
@@ -109,7 +98,6 @@ nav {
 }
 .card {
     position: relative;
-    /* min-width: 350px; */
     margin: 2rem auto 0rem auto;
     border-radius: .2rem;
 }
@@ -129,14 +117,6 @@ nav {
     font-size: 1.2rem;
     float: start;
     padding: 0.6rem 1rem;
-}
-
-.list-group {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
 }
 .list-item {
     display: flex;
@@ -170,10 +150,13 @@ nav {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+.list-item-cbattr-label>span {
+    font-size: 1rem;
+}
 .list-item-cb {
-    margin-right: 1em;
-    width: 1em;
-    height: 1em;
+    margin-right: 1rem;
+    width: 1rem;
+    height: 1rem;
     border-radius: 0.2rem;
 }
 .list-item-cb:focus {
@@ -233,20 +216,10 @@ nav {
     margin-bottom: 0.2rem;
     color: lightslategrey;
 }
-/* .input-inner-container {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 0 auto 0 auto;
-} */
 .input {
     width: 100%;
     min-width: 0;
     max-width: 350px;
-    /* margin-top: 2rem; */
     padding: 0.25rem 0.5rem;
     line-height: 1.5;
     border: 1px solid lightslategrey;
@@ -309,12 +282,12 @@ nav {
 }
 .process-button-text {
     display: inline-block;
-    margin-right: 0.5em;
+    margin-right: 0.5rem;
 }
 .process-button-spinner {
     display: none;
-    width: 1em;
-    height: 1em;
+    width: 1rem;
+    height: 1rem;
     border: 4px solid white;
     border-radius: 50%;
     border-top-color: transparent;
@@ -328,56 +301,8 @@ nav {
 .chart-container {
     position: relative;
     flex: 4;
-    /* min-width: 1000px; */
-    /* max-width: 1600px; */
-    /* margin: 2rem auto; */
-}
-/* for user_documentation */
-.help-title{
-    background-color: #60A5FA;
-    cursor: pointer;
-    padding: 1em;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    color: #000000;
-	font-weight: 700;
-	text-decoration: none;
-	vertical-align: baseline;
-	font-size: 18pt;
-	font-family: "Arial";
-	font-style: normal;
-}
-.help-response{
-    padding: 5px;
-    overflow: hidden;
-    background-color: #ffffff;
-    max-height: 0;
-    transition: max-height 0.35s ease-out;
-    color: #000000;
-	font-weight: 400;
-	text-decoration: none;
-	vertical-align: baseline;
-	font-size: 14pt;
-	font-family: "Arial";
-	font-style: normal;
-}
-.help-header{
-	color: #000000;
-	font-size: 1.83em;
-	font-family: "Arial";
-	line-height: 1.15;
-	text-align: center;
-	padding-top:72px;
 }
 
-.help-div{
-	padding-top: 10px;	
-	padding-left: 72px;
-	padding-right:72px;
-}
-/* end for user_documentation */
 .chart-container > p {
     display: flex;
     font-size: 2rem;
@@ -433,6 +358,9 @@ nav {
     .input-outer-container {
         flex-direction: column;
     }
+    .data-cards {
+        flex-direction: column;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -446,4 +374,3 @@ nav {
         flex-direction: column;
     }
 }
-
