@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+{% endblock %}
+{% block scripts %} 
+<script src="{% static 'main.js' %}"></script>
+{% endblock %}
+
 {% block title %}Proximity Vs. Diversity{% endblock %}
 
 {% block content %}
@@ -20,18 +28,12 @@
 						<p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
 					</div>
 					<div class="list-item attr-item">Select a Database</div>
-					<!-- <div class="list-group">
-						<div class="list-item attr-item">Select a Database</div>
-					</div> -->
 				</div>
 				<div class="card" id="card-div">
 					<div class="list-item card-header">
 						<p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
 					</div>
 					<div class="list-item attr-item">Select a Database</div>
-					<!-- <div class="list-group">
-						<div class="list-item attr-item">Select a Database</div>
-					</div> -->
 				</div>
 			</div>
 			<div class="input-outer-container">
