@@ -35,7 +35,9 @@ def datasets(request, *args, **kwargs):
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
     dataset = Dataset.objects.get(slug=slug)
-    return render(request, 'process.html')
+    return render(request, 'process.html', {
+        'dataset': dataset
+        })
 
 def databases(request, *args, **kwargs):
     """Return list of databases"""
@@ -64,16 +66,12 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
         kwargs['filename'] = self.kwargs.get('filename') + '.csv'
         return kwargs
 
-def process(request):
+def process(request, slug):
     """Return the algorithm function"""
     # TODO: validate incoming data
     # TODO: Use database map to get attributes
-    (chart, data) = run_algo(
-        method='kmeans',
-        time_frame=1,
-        proximity=[{'mass_1': 10, 'lumin_1': 20, 'rad_1': 20}],
-        diversity=[])
+    print(request.GET.lists())
     return JsonResponse({
-        'chart': chart,
-        'data': data
+        'chart': '',
+        'data': {}
         })

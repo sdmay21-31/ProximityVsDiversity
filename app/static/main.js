@@ -7,16 +7,13 @@ const TIME = "time", CLUSTER = "cluster";
 let inputState = {[TIME]: "", [CLUSTER]: ""};
 const PROX = "prox", DIV = "div";
 let inputWeightState = {[PROX]: [], [DIV]: []};
-const urlGetDb = "databases/";
-const urlGetAttrBase = "databases/";
 const urlProcess = "process/";
-let attrList = ["mass", "luminosity", "hydrogen", "radius"];
+
 var notyf = new Notyf({
   duration: 10000,
   dismissible: true
 });
-// From Font-Awesome
-const xpath = "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z";
+
 function handleAttrClick(forProx) {
   let arr = forProx ? proxIdsSelected : divIdsSelected;
   return function(label) {
@@ -33,7 +30,7 @@ function handleAttrClick(forProx) {
           }
         });
       }
-      document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
+      // document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
       arr.delete(taIdInd);
       textarea.setAttribute("disabled", "true");
     } else {
@@ -55,143 +52,7 @@ function handleAttrClick(forProx) {
     return 1;
   }
 }
-function toggleDropdown() {
-  document.querySelector(".dropdown-options").classList.toggle("show");
-}
-function fetchDBsAndPopulateDropdown() {
-  fetch(urlGetDb, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  }).then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    dbs = data.dbs;
-    if (dbs) {
-      populateDropdown(localStorage.getItem("db"))?.click();
-    } else {
-      console.error("There was a problem with the dbs array from the database");
-    }
-  }).catch(function(reason) {
-    console.error("There was a problem fetching the database options");
-    console.error(reason);
-  });
-}
-function populateDropdown(dbNameFromStorage=null) {
-  const dropdown = document.querySelector("#database-options");
-  dropdown.innerHTML = "";
-  let choice = null;
-  dbs.forEach(function(name, ind) {
-    const item = document.createElement("p");
-    item.id = `option_${ind}`;
-    item.classList.add("dropdown-option");
-    item.setAttribute("name", name);
-    item.onclick = function() { handleDropdownSelection(item) };
-    item.appendChild(document.createTextNode(name));
-    dropdown.appendChild(item);
-    if (dbNameFromStorage && dbNameFromStorage === name) {
-      choice = item;
-    }
-  });
-  if (dbNameFromStorage) {
-    return choice;
-  }
-}
-function handleDropdownSelection(p) {
-  // If everything works correctly, we shouldn't need both these conditions
-  // If selecting a selected option causes a "refresh", something went wrong 
-  if (p.classList.contains("selected") && selectedDatabaseId === p.id) {
-    document.querySelector(".dropdown-options").classList.remove("show");
-    return;
-  }
-  if (p.classList.contains("selected") ^ selectedDatabaseId === p.id) {
-    console.error("Error check: element is selected but not stored as selectedDatabaseId");
-    return;
-  }
-  if (selectedDatabaseId) {
-    document.querySelector(`#${selectedDatabaseId}`).classList.remove("selected");
-  }
-  selectedDatabaseId = p.id;
-  p.classList.add("selected");
-  document.querySelector(".dropdown-button>strong").innerText = `DB: ${p.innerText}`;
-  document.querySelector(".dropdown-options").classList.remove("show");
-  document.querySelector(".process-button").removeAttribute("disabled");
-  proxIdsSelected.clear();
-  divIdsSelected.clear();
-  document.querySelector('#chart')?.removeAttribute("src");
-  inputWeightState = {[TIME]: "", [CLUSTER]: ""};
-  if (localStorage.getItem("db") !== p.getAttribute("name")) {
-    localStorage.setItem("db", p.getAttribute("name"));
-  }
-  fetchAndDisplayCardsAttrs();
-}
-function fetchAndDisplayCardsAttrs() {
-  fetch(`${urlGetAttrBase}${dbs[selectedDatabaseId.split("_")[1]]}/attributes/`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  }).then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    const attrList = data.attrs;
-    if (attrList && Array.isArray(attrList) && attrList.length > 0) {
-      document.querySelectorAll(".card .attr-item").forEach(e => e.parentNode.removeChild(e));
-      document.querySelector("#card-prox").innerHTML += genListItemsForType(attrList, true);
-      document.querySelector("#card-div").innerHTML += genListItemsForType(attrList, false);
-      inputWeightState[PROX] = new Array(attrList.length).fill("");
-      inputWeightState[DIV] = new Array(attrList.length).fill("");
-      renderInput(TIME);
-      renderInput(CLUSTER);
-    } else {
-      console.error("There was a problem with the attribute list from the endpoint");
-      console.error(data);
-    }
-  }).catch(function(reason) {
-    console.error("There was a problem fetching the attributes");
-    console.error(reason);
-  });
-}
-function genListItemsForType(attrArr, isProxAttr) {
-  return attrArr.map((attr, ind) => {
-    return genListItem(ind, isProxAttr, attr);
-  }).join("");
-}
-function genListItem(id, isProx, attr) {
-  // Checks
-  if (typeof(id) !== "number" || id % 1 !== 0) { console.error("id should be whole number"); return null; }
-  if (typeof(isProx) !== "boolean") { console.error("isProx should be of boolean type"); return null; }
-  if (!attr) { console.error("attr is required"); return null; }
-  const title = isProx ? "Proximity Attributes" : "Diversity Attributes";
-  const type = isProx ? "prox" : "div";
-  const rowId = `row_${type}_${id}`;
-  const attrProperCase = `${attr.split(" ").filter(v=>v.length).map(capitalizeFirstLetter).join(" ")}`;
-  const checkboxId = `cb_${type}_${id}`;
-  const textAreaId = `ta_${type}_${id}`;
-  const warningId = `w_${type}_${id}`;
-  return (`
-    <div id="${rowId}" class="list-item attr-item">
-      <!-- checkbox & attribute -->
-      <div class="list-item-cbattr">
-        <label class="list-item-cbattr-label">
-          <input id="${checkboxId}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(${isProx})(this)">
-          <span><strong style="font-size:1rem;">${attrProperCase}</strong></span>
-        </label>
-      </div>
-      <!-- warning svg -->
-      <i id="${warningId}" class="fas fa-exclamation-triangle list-item-warning"></i>
-      <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-      <input
-        id="${textAreaId}" class="list-item-weight" type="text" placeholder="Weight" disabled=true
-        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInputWeight(event)"
-      />
-    </div>
-  `);
-}
+
 function controlInputWeight(event) {
   const [, type, ind] = event.target.id.toLowerCase().split("_");
   const value = event.target.value;
@@ -205,25 +66,7 @@ function controlInputWeight(event) {
     event.target.value = inputWeightState[type][ind];
   }
 }
-function renderInput(inputType) {
-  const instruction = (inputType === TIME ?
-      "Enter a time between 0 and 3000, inclusive" :
-      "Enter number of clusters between 1 and 20, inclusive");
-  const [min, max] = inputType === TIME ? [0, 3000] : [1, 20];
-  const capIT = capitalizeFirstLetter(inputType === TIME ? TIME : CLUSTER);
-  const placeholder = inputType === TIME ? capIT : `Number of ${capIT}`;
-  document.querySelector(`#input-${inputType}-container`).innerHTML = `
-    <p class="input-instruction">${instruction}</p>
-    <!-- <div class="input-inner-container">
-      <i class="input-warning input-${inputType}-warning fas fa-exclamation-triangle"></i> -->
-      <input class="input input-${inputType}" type="text" placeholder="${capIT} (Required)" min=${min} max=${max} inputType="${inputType}"
-        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-        oninput="controlInput(event)"
-      />
-    <!-- </div> -->
-  `;
-  document.querySelector(`#input-${inputType}-container`).classList.add("show");
-}
+
 function getInputTypeIgnoreCase(inputType) {
   return inputType.toLowerCase() === TIME ? TIME : CLUSTER;
 }
@@ -281,7 +124,6 @@ function process() {
     errorSomewhere = true;
   }
   if (!errorSomewhere) {
-    const db = dbs[selectedDatabaseId.split("_")[1]];
     const proxWeights = proxIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const divWeights = divIdsAndWeights.map(function(pair) { let p = [...pair]; p[0] = attrList[p[0]]; return p; });
     const proxAttrs = proxWeights.map(e => ({ name:e[0], weight:e[1] }));
@@ -294,14 +136,22 @@ function process() {
     //   return;
     // }
     document.querySelector(".process-button-spinner").classList.add("show");
-    fetch(urlProcess, {
-      method: 'POST',
+    var esc = encodeURIComponent;
+    let params = { time, clusters, proxAttrs, divAttrs };
+
+
+    console.log(proxAttrs)
+    let prox = new URLSearchParams(params);
+    console.log(prox.toString())
+
+    let query = `?time=${time}&clusters=${clusters}&proximity=${'f'}&diversity=${'f'}`
+
+    fetch(`process/?${serialize(params)}`, {
+      method: 'GET',
       headers: {
-        'X-CSRFToken': csrf,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ db, time, clusters, proxAttrs, divAttrs })
     }).then((response) => {
       return response.json();
     }).then((json) => {
@@ -458,14 +308,3 @@ function exit(status) {
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
-fetchDBsAndPopulateDropdown();
-
-// setting a timeout because other renderings are delayed without it
-// (new Promise((resolve, reject) => {
-//   const script = document.createElement("script");
-//   document.body.appendChild(script);
-//   script.onload = resolve;
-//   script.onerror = reject;
-//   script.async = true;
-//   script.src = 'static/dummydata.js';
-// })).then(() => renderPlotly(dummydata_data));

@@ -19,7 +19,7 @@ class Dataset(DatasetShim, models.Model):
     total_nodes = models.IntegerField(default=0)
     max_simulation_nodes = models.IntegerField(default=0)
     min_simulation_nodes = models.IntegerField(default=0)
-    simulation_attributes = models.JSONField(editable=False)
+    attributes = models.JSONField(editable=False)
     """Structure
     ['attr1', 'attr2', 'attr3']
     """

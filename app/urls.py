@@ -6,10 +6,11 @@ urlpatterns = [
     path('', views.index, name="index"),
     
     path('datasets/<slug:slug>/', views.dataset, name="dataset"),
+    path('datasets/<slug:slug>/process/', views.process, name="process"),
 
     path('guide/',views.guide, name="guide"),
 
-    path('process/', views.process, name="process"),
+    
     path('databases/', views.databases, name="databases"),
     path('databases/<slug:database>/attributes/', views.attributes , name="attributes"),
     path('add/', views.add_dataset, name="add_dataset"),
