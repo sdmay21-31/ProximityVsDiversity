@@ -24,8 +24,8 @@ def weighted_euclidean_distance(weights):
     return euclidean_distance
 
 class DatasetShim:
-    def process(self, data):
-        simulations = self.simulation_set.filter(total_nodes__gt=500)
+    def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
+        simulations = self.simulation_set.filter(total_nodes__gt=5)
         nodes = []
         for simulation in simulations:
             maxs = [0, 0, 0]
@@ -46,16 +46,19 @@ class DatasetShim:
                 if node[2] < mins[2]:
                     mins[2] = node[2]
 
-            node = [float(simulation.data[25][0]), float(simulation.data[25][1]), float(simulation.data[25][2])]
-            x = relativise(node[0], maxs[0], mins[0])
-            y = relativise(node[1], maxs[1], mins[1])
-            z = relativise(node[2], maxs[2], mins[2])
-            nodes.append([x, y, z])
+            node = [float(simulation.data[time_value][0]), float(simulation.data[time_value][1]), float(simulation.data[time_value][2])]
+            try:
+                x = relativise(node[0], maxs[0], mins[0])
+                y = relativise(node[1], maxs[1], mins[1])
+                z = relativise(node[2], maxs[2], mins[2])
+                nodes.append([x, y, z])
+            except ZeroDivisionError:
+                pass
 
 
         # Prepare initial centers using K-Means++ method.
         metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance([1, 1, 1]))
-        initial_centers = kmeans_plusplus_initializer(nodes, 2).initialize()
+        initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()
          
         # Create instance of K-Means algorithm with prepared centers.
         kmeans_instance = kmeans(nodes, initial_centers, metric=metric)

@@ -61,7 +61,15 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 def process(request, slug):
     """Return the algorithm function"""
     dataset = Dataset.objects.get(slug=slug)
+    params = request.GET
+    # TODO: validate data
+    data = dataset.process(
+            int(params.get('time')),
+            int(params.get('clusters')),
+            proximity=params.get('proxAttrs'),
+            diversity=params.get('divAttrs')
+            )
     return JsonResponse({
-        'chart': plot_to_uri(dataset.process(request.GET)),
+        'chart': plot_to_uri(data),
         'data': {}
         })

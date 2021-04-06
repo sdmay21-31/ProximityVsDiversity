@@ -56,12 +56,12 @@
             <div class="input-outer-container">
                 <div class="input-container" id="input-time-container">
                     <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
-                    <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+                    <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" value="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
                 </div>
 
                 <div class="input-container" id="input-cluster-container">
                     <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-                    <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+                    <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" value="3" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
                 </div>
             </div>
             <div class="process-button-container">
@@ -85,7 +85,9 @@
             </div>
         </div>
     </div>
-    <div class="chart-container"></div>
+    <div class="chart-container">
+        <img id="chart">
+    </div>
 </div>
 <div class="plotly-container"></div>
 {# TODO: PLEASE LORD REMOVE THIS #}
