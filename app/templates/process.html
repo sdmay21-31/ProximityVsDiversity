@@ -47,10 +47,21 @@
                     <div class="list-item card-header">
                         <p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
                     </div>
-                    <div class="list-item attr-item">Select a Database</div>
-                    <!-- <div class="list-group">
-						<div class="list-item attr-item">Select a Database</div>
-					</div> -->
+                    {% for attribute in dataset.attributes %}
+                    <div id="row_div_{{forloop.counter}}" class="list-item attr-item">
+                        <!-- checkbox & attribute -->
+                        <div class="list-item-cbattr">
+                            <label class="list-item-cbattr-label">
+                                <input id="cb_div_{{forloop.counter}}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(true)(this)">
+                                <span><strong style="font-size:1rem;">{{ attribute }}</strong></span>
+                            </label>
+                        </div>
+                        <!-- warning svg -->
+                        <i id="cb_div_{{forloop.counter}}" class="fas fa-exclamation-triangle list-item-warning"></i>
+                        <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
+                        <input id="ta_div_{{forloop.counter}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
             <div class="input-outer-container">
@@ -92,6 +103,6 @@
 <div class="plotly-container"></div>
 {# TODO: PLEASE LORD REMOVE THIS #}
 <script>
-	const attrList = {{ dataset.attributes | safe }}
+const attrList = {{ dataset.attributes | safe }}
 </script>
 {% endblock %}

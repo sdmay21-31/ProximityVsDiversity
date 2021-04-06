@@ -26,12 +26,6 @@ def index(request, *args, **kwargs):
         'datasets': Dataset.objects.all()
         })
 
-def datasets(request, *args, **kwargs):
-    """Datasets page"""
-    return render(request, 'datasets.html', {
-        'datasets': Dataset.objects.all()
-        })
-
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
     dataset = Dataset.objects.get(slug=slug)

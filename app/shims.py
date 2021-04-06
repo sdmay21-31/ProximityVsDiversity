@@ -24,6 +24,7 @@ def weighted_euclidean_distance(weights):
     return euclidean_distance
 
 class DatasetShim:
+
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
         simulations = self.simulation_set.filter(total_nodes__gt=5)
         nodes = []
@@ -54,7 +55,6 @@ class DatasetShim:
                 nodes.append([x, y, z])
             except ZeroDivisionError:
                 pass
-
 
         # Prepare initial centers using K-Means++ method.
         metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance([1, 1, 1]))
