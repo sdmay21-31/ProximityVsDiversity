@@ -13,7 +13,7 @@ numpy==1.20.1
 pandas==1.2.1
 pep517==0.9.1
 Pillow==8.1.0
-psycopg2==2.8.6
+psycopg2-binary==2.8.6
 pyclustering==0.10.1.2
 pyparsing==2.4.7
 PyQt5==5.15.2
