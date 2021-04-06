@@ -3,11 +3,12 @@ from django.urls import path
 from app import views
 
 urlpatterns = [
-    path('guide/',views.guide, name="guide"),
-    path('datasets/', views.datasets, name="datasets"),
-    path('datasets/<int:pk>/', views.dataset, name="dataset"),
-
     path('', views.index, name="index"),
+    
+    path('datasets/<slug:slug>/', views.dataset, name="dataset"),
+
+    path('guide/',views.guide, name="guide"),
+
     path('process/', views.process, name="process"),
     path('databases/', views.databases, name="databases"),
     path('databases/<slug:database>/attributes/', views.attributes , name="attributes"),

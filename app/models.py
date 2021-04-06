@@ -1,9 +1,11 @@
 from django.db import models
+from autoslug import AutoSlugField
 from django.conf import settings
 from app.shims import DatasetShim
 
 class Dataset(DatasetShim, models.Model):
     name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
+    slug = AutoSlugField(unique=True, populate_from='name')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -17,7 +19,7 @@ class Dataset(DatasetShim, models.Model):
     total_nodes = models.IntegerField(default=0)
     max_simulation_nodes = models.IntegerField(default=0)
     min_simulation_nodes = models.IntegerField(default=0)
-    simulation_attributes = models.JSONField()
+    simulation_attributes = models.JSONField(editable=False)
     """Structure
     ['attr1', 'attr2', 'attr3']
     """
@@ -26,10 +28,10 @@ class Dataset(DatasetShim, models.Model):
         db_table = "dataset"
 
 class Simulation(models.Model):
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    total_nodes = models.IntegerField()
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
+    total_nodes = models.IntegerField(editable=False)
     
-    data = models.JSONField()
+    data = models.JSONField(editable=False)
     """Structure
     [
         ['attr1', 'attr2', ...],
@@ -39,6 +41,3 @@ class Simulation(models.Model):
 
     class Meta:
         db_table = "simulation"
-
-class Node(models.Model):
-    pass

@@ -1,8 +1,7 @@
 from django.contrib import admin
-from app.models import Node, Simulation, Dataset
+from app.models import Simulation, Dataset
 
 # Register your models here.
-admin.site.register(Node)
 admin.site.register(Dataset)
 
 @admin.register(Simulation)

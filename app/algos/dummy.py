@@ -2,8 +2,6 @@ from .algo import Algo
 import numpy as np
 from app.matplot import get_plt
 
-from app.models import Node
-from sklearn.cluster import KMeans
 
 class DummyAlgo(Algo):
     @property

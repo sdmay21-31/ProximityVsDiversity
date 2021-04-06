@@ -4,75 +4,23 @@
 
 {% block title %}Proximity Vs. Diversity{% endblock %}
 
-{% block head-extra %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-{% endblock head-extra %}
-
 {% block body-extra	 %}
     <script src="{% static 'main.js' %}"></script>
 {% endblock body-extra %}
 
 {% block content %}
-<div class="columns">
-	<a class="help-link" href="/guide">Help</a>
-	<div class="data-input-outer-container">
-		<div class="data-input-container">
-			<div class="dropdown-container">
-				<button class="dropdown-button" onclick="toggleDropdown()">
-					<strong>Select Database</strong>
-					<i class="fas fa-chevron-down dropdown-button-icon"></i>
-				</button>
-				<div class="dropdown-options" id="database-options"></div>
-			</div>
-			<div class="data-cards" id="data-cards">
-				<div class="card" id="card-prox">
-					<div class="list-item card-header">
-						<p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
-					</div>
-					<div class="list-item attr-item">Select a Database</div>
-					<!-- <div class="list-group">
-						<div class="list-item attr-item">Select a Database</div>
-					</div> -->
-				</div>
-				<div class="card" id="card-div">
-					<div class="list-item card-header">
-						<p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
-					</div>
-					<div class="list-item attr-item">Select a Database</div>
-					<!-- <div class="list-group">
-						<div class="list-item attr-item">Select a Database</div>
-					</div> -->
-				</div>
-			</div>
-			<div class="input-outer-container">
-				<div class="input-container" id="input-time-container"></div>
-				<div class="input-container" id="input-cluster-container"></div>
-			</div>
-			<div class="process-button-container">
-				<div class="process-warning process-time-warning" style="color: red">
-					<i class="fas fa-exclamation-triangle"></i>
-					<span>Time is required</span>
-				</div>
-				<div class="process-warning process-cluster-warning" style="color: red">
-					<i class="fas fa-exclamation-triangle"></i>
-					<span>Clusters is required</span>
-				</div>
-				<div class="process-warning process-attribute-warning" style="color: red">
-					<i class="fas fa-exclamation-triangle"></i>
-					<span>Select at least 1 attribute</span>
-				</div>
-				<p class="select-three">Select up to 3 attributes</p>
-				<button class="process-button" onclick="process()" disabled>
-					<div class="process-button-text"><strong>Process</strong></div>
-					<div class="process-button-spinner"></div>
-				</button><script>var csrf = "{{ csrf_token }}"</script>
-			</div>
-		</div>
+<div class="flex flex-col items-center justify-center p-4">
+	<h2>Select a dataset</h2>
+	<div class="rounded border border-gray-200 divide-y divide-gray-200">
+		{% for dataset in datasets %}
+			<a href="{% url 'dataset' dataset.slug %}" class="p-2 hover:text-blue-500">{{ dataset.name }}</a>
+		{% endfor %}
 	</div>
-	<div class="chart-container"></div>
+	<div>
+		<span>or</span>&nbsp;<a href="{% url 'add_dataset' %}" class="text-blue-500 hover:underline">Add New Dataset</a>
+	</div>
+	<div>
+		<span>or</span>&nbsp;<a href="{% url 'guide' %}" class="text-blue-500 hover:underline">View our help guide!</a>
+	</div>
 </div>
-<div class="plotly-container"></div>
 {% endblock %}

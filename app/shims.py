@@ -25,7 +25,7 @@ def weighted_euclidean_distance(weights):
 
 class DatasetShim:
     def process(self):
-        simulations = self.simulation_set.filter(total_nodes=1001)
+        simulations = self.simulation_set.filter(total_nodes__gt=500)
         nodes = []
         for simulation in simulations:
             maxs = [0, 0, 0]
@@ -46,7 +46,7 @@ class DatasetShim:
                 if node[2] < mins[2]:
                     mins[2] = node[2]
 
-            node = [float(simulation.data[500][0]), float(simulation.data[500][1]), float(simulation.data[500][2])]
+            node = [float(simulation.data[25][0]), float(simulation.data[25][1]), float(simulation.data[25][2])]
             x = relativise(node[0], maxs[0], mins[0])
             y = relativise(node[1], maxs[1], mins[1])
             z = relativise(node[2], maxs[2], mins[2])
@@ -75,7 +75,7 @@ class DatasetShim:
         plt = get_plt()
         # fig = plt.figure()
         # ax = fig.add_subplot(projection='3d')
-        plt.scatter(xs, ys)
+        plt.scatter(xs, ys, s=1)
         plt.scatter(final_centers[:,0], final_centers[:,1], c='black')
         return plt
 

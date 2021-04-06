@@ -50,7 +50,7 @@ class Command(BaseCommand):
             if current_simulation_id != line_simulation_id:
                 if line['file_id'] != current_file_id:
                     current_file_id = line['file_id']
-                    print(current_file_id)
+                    print(f'File Finished: {current_file_id}')
                 simulations.append(Simulation(
                     id=line_simulation_id,
                     dataset=self.dataset,
@@ -62,4 +62,7 @@ class Command(BaseCommand):
 
             simulation.append([line[col] for col in self.attribute_ids])
             # Increment line
-            line = next(reader)
+            try:
+                line = next(reader)
+            except StopIteration:
+                line = None
