@@ -67,8 +67,6 @@ class DatasetShim:
         kmeans_instance.process()
         clusters = kmeans_instance.get_clusters()
         final_centers = np.array(kmeans_instance.get_centers())
-        print(final_centers)
-
 
         xs = [n[0] for n in nodes]
         ys = [n[1] for n in nodes]
