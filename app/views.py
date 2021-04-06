@@ -39,14 +39,6 @@ def dataset(request, slug, *args, **kwargs):
         'dataset': dataset
         })
 
-def databases(request, *args, **kwargs):
-    """Return list of databases"""
-    return JsonResponse({'dbs': get_databases()})
-
-def attributes(request, database):
-    """Return attributes from model and strip _1 and _2"""
-    return JsonResponse({'attrs': get_database_attributes(database)})
-
 @login_required
 def add_dataset(request):
     _, _, filenames = next(walk("datasets"))
@@ -68,10 +60,8 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
 def process(request, slug):
     """Return the algorithm function"""
-    # TODO: validate incoming data
-    # TODO: Use database map to get attributes
-    print(request.GET.lists())
+    dataset = Dataset.objects.get(slug=slug)
     return JsonResponse({
-        'chart': '',
+        'chart': plot_to_uri(dataset.process(request.GET)),
         'data': {}
         })

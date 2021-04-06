@@ -10,9 +10,6 @@ urlpatterns = [
 
     path('guide/',views.guide, name="guide"),
 
-    
-    path('databases/', views.databases, name="databases"),
-    path('databases/<slug:database>/attributes/', views.attributes , name="attributes"),
     path('add/', views.add_dataset, name="add_dataset"),
     path('add/<slug:filename>/', views.SetupDatasetView.as_view(), name="add_dataset"),
 

@@ -24,7 +24,7 @@ def weighted_euclidean_distance(weights):
     return euclidean_distance
 
 class DatasetShim:
-    def process(self):
+    def process(self, data):
         simulations = self.simulation_set.filter(total_nodes__gt=500)
         nodes = []
         for simulation in simulations:
