@@ -17,7 +17,7 @@ class Command(BaseCommand):
             Dataset.objects.all().delete()
             self.dataset = Dataset(
                 name="Astro Physics",
-                simulation_attributes=self.attribute_ids)
+                attributes=self.attribute_ids)
             self.dataset.save()
 
             for simulations in self.get_simulations(reader):
