@@ -10,8 +10,10 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
 
             self.headers = reader._fieldnames
-
-            self.simulation_id = 'node_id'
+            if 'node_id' in self.headers:
+                self.simulation_id = 'node_id'
+            else:
+                self.simulation_id = 'id'
             self.attribute_ids = ['mass_1', 'lumin_1', 'rad_1', 'teff_1']
 
             Dataset.objects.all().delete()

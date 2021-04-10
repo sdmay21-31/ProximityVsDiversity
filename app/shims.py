@@ -26,7 +26,7 @@ def weighted_euclidean_distance(weights):
 class DatasetShim:
 
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
-        simulations = self.simulation_set.filter(total_nodes__gt=5)
+        simulations = self.simulation_set.filter(total_nodes__gt=5).iterator(1000)
         nodes = []
         for simulation in simulations:
             maxs = [0, 0, 0]
