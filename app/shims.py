@@ -26,12 +26,16 @@ def weighted_euclidean_distance(weights):
 class DatasetShim:
 
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
-        simulations = self.simulation_set.filter(total_nodes__gt=5).iterator(1000)
+        simulations = self.simulation_set.iterator(1000)
+        time_percentage = float(time_value) / self.max_simulation_nodes
         nodes = []
         for simulation in simulations:
+            # Get the linearly interpolated node
+            node_time_index = int(simulation.total_nodes * time_percentage)
             maxs = [0, 0, 0]
             mins = [float('inf'), float('inf'), float('inf')]
 
+            # Find the min and max
             for n in simulation.data:
                 node = [float(n[0]), float(n[1]), float(n[2])]
                 if node[0] > maxs[0]:
@@ -46,8 +50,9 @@ class DatasetShim:
                     mins[1] = node[1]
                 if node[2] < mins[2]:
                     mins[2] = node[2]
-
-            node = [float(simulation.data[time_value][0]), float(simulation.data[time_value][1]), float(simulation.data[time_value][2])]
+            # Get the nodes for the specific time instance
+            node = [float(simulation.data[node_time_index][0]), float(simulation.data[node_time_index][1]), float(simulation.data[node_time_index][2])]
+            # Relativise
             try:
                 x = relativise(node[0], maxs[0], mins[0])
                 y = relativise(node[1], maxs[1], mins[1])
@@ -68,10 +73,10 @@ class DatasetShim:
         clusters = kmeans_instance.get_clusters()
         final_centers = np.array(kmeans_instance.get_centers())
 
+        # Add points for graph
         xs = [n[0] for n in nodes]
         ys = [n[1] for n in nodes]
         zs = [n[2] for n in nodes]
-
 
         plt = get_plt()
         # fig = plt.figure()
