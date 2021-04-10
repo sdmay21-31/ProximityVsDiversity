@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 import csv
 from app.models import Dataset, Simulation
+from django.db.models import Sum, Max, Min
+
 
 class Command(BaseCommand):
     help = "Adds a new dataset to your application"
@@ -9,7 +11,8 @@ class Command(BaseCommand):
         with open('datasets/main_table_1.csv') as file:
             reader = csv.DictReader(file)
 
-            self.headers = reader._fieldnames
+            self.headers = reader.fieldnames
+
             if 'node_id' in self.headers:
                 self.simulation_id = 'node_id'
             else:
@@ -25,7 +28,12 @@ class Command(BaseCommand):
             for simulations in self.get_simulations(reader):
                 Simulation.objects.bulk_create(simulations)
 
-            print(Simulation.objects.count())
+            self.dataset.total_simulations = Simulation.objects.count()
+            aggs = Simulation.objects.aggregate(Sum('total_nodes'), Max('total_nodes'), Min('total_nodes'))
+            self.dataset.total_nodes = aggs['total_nodes__sum']
+            self.dataset.max_simulation_nodes = aggs['total_nodes__max']
+            self.dataset.min_simulation_nodes = aggs['total_nodes__min']
+            self.dataset.save()
 
     def get_simulations(self, reader, chunk_size=500):
         def get_id(line):
