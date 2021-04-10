@@ -30,9 +30,20 @@ class DatasetShim:
 
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
         simulations = self.simulation_set.iterator(1000)
+        attributes = proximity.get('attributes')
+
+        if len(attributes) not in [2, 3]:
+            raise ValueError
+
+        is_3d = True if len(attributes) == 3 else False
+
         attribute_indexes = [
             self.get_attribute_index(attr)
-            for attr in proximity['attributes']]
+            for attr in attributes]
+        weights = [
+            float(weight)
+            for weight in proximity.get('weights')
+        ]
 
         time_percentage = float(time_value) / self.max_simulation_nodes
         nodes = []
@@ -66,7 +77,7 @@ class DatasetShim:
                 pass
 
         # Prepare initial centers using K-Means++ method.
-        metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance([1, 1, 1]))
+        metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
         initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()
          
         # Create instance of K-Means algorithm with prepared centers.
@@ -79,14 +90,30 @@ class DatasetShim:
 
         # Add points for graph
         # TODO: make dynamic for attribute_indexes
+        plt = get_plt()
+
         xs = [n[0] for n in nodes]
         ys = [n[1] for n in nodes]
+        projection = None
+        if is_3d:
+            zs = [n[2] for n in nodes]
+            projection = '3d'
 
-        plt = get_plt()
-        # fig = plt.figure()
-        # ax = fig.add_subplot(projection='3d')
-        plt.scatter(xs, ys, s=1)
-        plt.scatter(final_centers[:,0], final_centers[:,1], c='black')
+        fig = plt.figure()
+        ax = fig.add_subplot(projection=projection)
+
+
+        ax.set_xlabel(attributes[0])
+        ax.set_ylabel(attributes[1])
+
+        if is_3d:
+            ax.scatter(xs, ys, zs, s=1)
+            ax.scatter(final_centers[:,0], final_centers[:,1], final_centers[:,2], c='black')
+            ax.set_zlabel(attributes[2])
+        else: #Is 2D
+            ax.scatter(xs, ys, s=1)
+            ax.scatter(final_centers[:,0], final_centers[:,1], c='black')
+
         return plt
 
 
