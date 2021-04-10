@@ -103,7 +103,7 @@ function process() {
   const time = parseInt(document.querySelector(`.input-time`).value);
     const clusters = parseInt(document.querySelector(`.input-cluster`).value);
 
-    if(!isValideProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights))
+    if(!isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights))
       return;
 
     const proxWeights = proxIdsAndWeights.map(function(pair) {
@@ -145,7 +145,7 @@ function process() {
     });
 }
 
-function isValideProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights) {
+function isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights) {
   /* Return true if input data is valid */
     let errorSomewhere = false;
     if (proxIdsSelected.size + divIdsSelected.size === 0) {
