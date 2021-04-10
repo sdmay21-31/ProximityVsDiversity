@@ -116,12 +116,17 @@ function process() {
         p[0] = attrList[p[0]];
         return p;
     });
-    const proxAttrs = proxWeights.map(e => ({ name: e[0], weight: e[1] }));
-    const divAttrs = divWeights.map(e => ({ name: e[0], weight: e[1] }));
+
     document.querySelector(".process-button-spinner").classList.add("show");
-    axios.get('process/', {
-            params: { time, clusters, proxAttrs, divAttrs }
+    let params = simpleQueryString.stringify({
+        time, 
+        clusters,
+        proximity_attributes: proxWeights.map(x => x[0]),
+        proximity_weights: proxWeights.map(x => x[1]),
+        diversity_attributes: divWeights.map(x => x[0]),
+        diversity_weights: divWeights.map(x => x[1])
     })
+    axios.get('process/?' + params)
     .then(response => {
         let json = response.data
         // Update chart

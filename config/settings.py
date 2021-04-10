@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'config',
     'app',
     'fontawesome-free',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

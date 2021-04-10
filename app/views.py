@@ -6,11 +6,10 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from app.forms import SetupDatasetForm
-from app.algos import run as run_algo
-
-from app.databases import get_database_attributes, get_databases
 
 from app.models import Dataset
 from collections import Counter
@@ -52,18 +51,25 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
         kwargs['filename'] = self.kwargs.get('filename') + '.csv'
         return kwargs
 
+@api_view(['GET'])
 def process(request, slug):
     """Return the algorithm function"""
     dataset = Dataset.objects.get(slug=slug)
-    params = request.GET
+    params = request.query_params
     # TODO: validate data
     data = dataset.process(
             int(params.get('time')),
             int(params.get('clusters')),
-            proximity=params.get('proxAttrs'),
-            diversity=params.get('divAttrs')
+            proximity={
+                'attributes': params.getlist('proximity_attributes'),
+                'weights': params.getlist('proximity_weights')
+            },
+            diversity={
+                'attributes': params.getlist('diversity_attributes'),
+                'weights': params.getlist('diversity_weights')
+            },
             )
-    return JsonResponse({
+    return Response({
         'chart': plot_to_uri(data),
         'data': {}
         })
