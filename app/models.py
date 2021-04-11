@@ -6,6 +6,7 @@ from app.shims import DatasetShim
 class Dataset(DatasetShim, models.Model):
     name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
     slug = AutoSlugField(unique=True, populate_from='name')
+    file = models.FileField(upload_to='datasets')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -19,6 +20,8 @@ class Dataset(DatasetShim, models.Model):
     total_nodes = models.IntegerField(default=0)
     max_simulation_nodes = models.IntegerField(default=0)
     min_simulation_nodes = models.IntegerField(default=0)
+
+    simulation_fields = models.JSONField(editable=False, default=dict)
     attributes = models.JSONField(editable=False)
     """Structure
     ['attr1', 'attr2', 'attr3']

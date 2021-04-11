@@ -17,6 +17,14 @@ class SetupDatasetForm(forms.ModelForm):
         model = Dataset
         fields = ['name']
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.attributes = self.cleaned_data['attributes']
+        instance.simulation_fields = self.cleaned_data['simulation_fields']
+        if commit:
+            instance.save()
+        return instance
+
     def add_dynamic_fields(self):
         with open(f'datasets/{ self.filename }') as file:
             header = file.readline()
@@ -24,9 +32,9 @@ class SetupDatasetForm(forms.ModelForm):
 
             choices = [(h, h) for h in headers]
 
-            self.fields['simulation_ids'] = forms.MultipleChoiceField(
+            self.fields['simulation_fields'] = forms.MultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple,
-                label="Simulation Identifiers",
+                label="Simulation Fields",
                 help_text="Select the fields that differentiates your different simulations.",
                 choices=choices)
 

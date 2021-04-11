@@ -13,7 +13,4 @@ urlpatterns = [
     path('add/', views.add_dataset, name="add_dataset"),
     path('add/<filename>/', views.SetupDatasetView.as_view(), name="add_dataset"),
     path('upload/', views.upload, name="upload"),
-
-    path('celery/', views.celery, name="celery")
-
 ]

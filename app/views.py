@@ -19,6 +19,8 @@ from app.models import Dataset
 from collections import Counter
 from app.matplot import plot_to_uri
 
+from app.tasks import seed_dataset
+
 
 # Create your views here.
 def guide(request):
@@ -34,6 +36,29 @@ def dataset(request, slug, *args, **kwargs):
     dataset = Dataset.objects.get(slug=slug)
     return render(request, 'process.html', {
         'dataset': dataset
+        })
+
+@api_view(['GET'])
+def process(request, slug):
+    """Return the algorithm function"""
+    dataset = Dataset.objects.get(slug=slug)
+    params = request.query_params
+    # TODO: validate data
+    data = dataset.process(
+            int(params.get('time')),
+            int(params.get('clusters')),
+            proximity={
+                'attributes': params.getlist('proximity_attributes'),
+                'weights': params.getlist('proximity_weights')
+            },
+            diversity={
+                'attributes': params.getlist('diversity_attributes'),
+                'weights': params.getlist('diversity_weights')
+            },
+            )
+    return Response({
+        'chart': plot_to_uri(data),
+        'data': {}
         })
 
 @login_required
@@ -77,35 +102,7 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
         context['filename'] = self.kwargs.get('filename')
         return context
 
-@api_view(['GET'])
-def process(request, slug):
-    """Return the algorithm function"""
-    dataset = Dataset.objects.get(slug=slug)
-    params = request.query_params
-    # TODO: validate data
-    data = dataset.process(
-            int(params.get('time')),
-            int(params.get('clusters')),
-            proximity={
-                'attributes': params.getlist('proximity_attributes'),
-                'weights': params.getlist('proximity_weights')
-            },
-            diversity={
-                'attributes': params.getlist('diversity_attributes'),
-                'weights': params.getlist('diversity_weights')
-            },
-            )
-    return Response({
-        'chart': plot_to_uri(data),
-        'data': {}
-        })
-
-from pathlib import Path
-from app.tasks import touch_file
-
-def celery(request):
-    if request.method == 'POST':
-        touch_file.delay()
-    return render(request, 'celery.html', {
-        'test': Path(os.path.join(settings.BASE_DIR, 'datasets', 'test')).exists()
-        })
+    def form_valid(self, form):
+        dataset = form.save()
+        seed_dataset(dataset, self.kwargs.get('filename'))
+        return redirect('dataset-processing', dataset)
