@@ -2,13 +2,13 @@ let proxIdsSelected = new Set();
 let divIdsSelected = new Set();
 let selectedDatabaseId = null;
 let dbs = [];
-const CHECKBOX = "cb";
-const TEXTAREA = "ta";
+const CHECKBOX = "cb",
+  TEXTAREA = "ta";
 const TIME = "time",
   CLUSTER = "cluster";
 let inputState = {
-  [TIME]: "",
-  [CLUSTER]: ""
+  [TIME]: "0",
+  [CLUSTER]: "3"
 };
 const PROX = "prox",
   DIV = "div";
@@ -21,6 +21,13 @@ var notyf = new Notyf({
   duration: 10000,
   dismissible: true
 });
+
+setFirstState();
+
+function setFirstState() {
+  document.querySelector(".input-time").value = inputState[TIME];
+  document.querySelector(".input-cluster").value = inputState[CLUSTER];
+}
 
 function handleAttrClick(forProx) {
   let arr = forProx ? proxIdsSelected : divIdsSelected;
@@ -38,7 +45,7 @@ function handleAttrClick(forProx) {
           }
         });
       }
-      // document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
+      document.querySelector(`.attr-item .list-item-cb:disabled[id$='_${taIdInd}']`).removeAttribute("disabled");
       arr.delete(taIdInd);
       textarea.setAttribute("disabled", "true");
     } else {
@@ -48,6 +55,10 @@ function handleAttrClick(forProx) {
       }
       arr.add(taIdInd);
       textarea.removeAttribute("disabled");
+      if (textarea.value === "") {
+        textarea.value = "1";
+        inputWeightState[taId[1]][taId[2]] = "1";
+      }
       document.querySelectorAll(`.attr-item .list-item-cb[id$='_${taIdInd}']:not(:checked)`).forEach(function(e) {
         e.setAttribute("disabled", true);
       });
@@ -95,17 +106,21 @@ function controlInput(event) {
   }
 }
 
-
 function process() {
+  /*let chart = document.querySelector("#chart");
+  chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
+  chart.src = `data:image/png;base64,${imgPath}`;
+  let referenceImg = new Image();
+  referenceImg.onload = () => {
+    chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
+  }
+  referenceImg.src = `data:image/png;base64,${imgPath}`;*/
   /* Request the data and chart */
   const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
   const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
   const time = parseInt(document.querySelector(`.input-time`).value);
   const clusters = parseInt(document.querySelector(`.input-cluster`).value);
-
-  if(!isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights))
-    return;
-
+  if (!isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights)) return;
   const proxWeights = proxIdsAndWeights.map(function(pair) {
     let p = [...pair];
     p[0] = attrList[p[0]];
@@ -116,7 +131,7 @@ function process() {
     p[0] = attrList[p[0]];
     return p;
   });
-
+  document.querySelector(".process-button").setAttribute("disabled", true);
   document.querySelector(".process-button-spinner").classList.add("show");
   let params = simpleQueryString.stringify({
     time, 
@@ -125,9 +140,8 @@ function process() {
     proximity_weights: proxWeights.map(x => x[1]),
     diversity_attributes: divWeights.map(x => x[0]),
     diversity_weights: divWeights.map(x => x[1])
-  })
-  axios.get('process/?' + params)
-  .then(response => {
+  });
+  axios.get('process/?' + params).then(response => {
     let json = response.data
     // Update chart
     let chart = document.querySelector("#chart");
@@ -139,13 +153,14 @@ function process() {
       chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
     }
     referenceImg.src = `data:image/png;base64,${json.chart}`;
-    document.querySelector(".chart-container").appendChild(chart);
+    // document.querySelector(".chart-container").appendChild(chart);
     notyf.success("Processing successful.");
   }).catch(function(reason) {
     console.error("Issue with the Process request.");
     console.error(reason);
     notyf.error("Not able to process the data.");
   }).finally(function() {
+    document.querySelector(".process-button").removeAttribute("disabled");
     document.querySelector(".process-button-spinner").classList.remove("show");
   });
 }
@@ -159,10 +174,8 @@ function isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights)
   } else if (document.querySelector(".process-attribute-warning").classList.contains("show")) {
     document.querySelector(".process-attribute-warning").classList.remove("show");
   }
-  
   const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
   const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
-  
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
   document.querySelector(".input-time").classList.remove("error");
   document.querySelector(".process-time-warning").classList.remove("show");

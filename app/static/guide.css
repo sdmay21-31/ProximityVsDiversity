@@ -1,39 +1,39 @@
 .guide-container {
-	margin: 4rem;
+    margin: 2rem 4rem;
 }
 .guide-header {
-	margin-bottom: 2rem;
-	color: #000000;
-	line-height: 1.15;
-	text-align: center;
-	font-size: 1.83em;
+    margin-bottom: 2rem;
+    color: #000000;
+    line-height: 1.15;
+    text-align: center;
+    font-size: 2rem;
 }
 .guide-item {
-	margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 .guide-item-title {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 100%;
     padding: 1rem 1.25rem;
     background-color: #60A5FA;
     cursor: pointer;
     border: none;
-	border-radius: 0.2rem;
+    border-radius: 0.2rem;
     outline: none;
     color: #000000;
-	vertical-align: baseline;
+    vertical-align: baseline;
     text-align: left;
-	text-decoration: none;
-	font-weight: 700;
-	font-size: 1.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.5rem;
 }
 .guide-item-title > span {
-	flex: 1;
+    flex: 1;
 }
 .guide-item-title.open > svg {
-	transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 .guide-item-response {
     max-height: 0;
@@ -41,22 +41,22 @@
     overflow: hidden;
     background-color: #ffffff;
     color: #000000;
-	font-weight: 400;
-	text-decoration: none;
-	vertical-align: baseline;
-	font-size: 1.2rem;
-	font-family: "Arial";
+    font-weight: 400;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 1.2rem;
+    font-family: "Arial";
     transition: max-height 0.25s ease-out;
 }
 .guide-item-img-outer {
-	display: inline-block;
-	margin: 0px 0px;
-	overflow: hidden;
-	border: 0px solid #000000;
+    display: inline-block;
+    margin: 0px 0px;
+    overflow: hidden;
+    border: 0px solid #000000;
 }
 .guide-item-img {
-	margin-left: 0px;
-	margin-top: 0px;
-	width: 100%;
-	height: 100%;
+    margin-left: 0px;
+    margin-top: 0px;
+    width: 100%;
+    height: 100%;
 }

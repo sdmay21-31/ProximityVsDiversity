@@ -11,18 +11,19 @@
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.rawgit.com/khalidsalomao/simple-query-string/22cc5bbe/src/simplequerystring.min.js"></script>
-{% endblock head-extra %}
+{% endblock %}
 
 {% block body-extra %}
+<script src="{% static 'extra.js' %}"></script>
 <script src="{% static 'main.js' %}"></script>
-{% endblock body-extra %}
+{% endblock %}
 
 {% block content %}
 
 <div class="columns">
-  <h1>{{ dataset.name }}</h1>
   <div class="data-input-outer-container">
     <div class="data-input-container">
+      <p class="data-input-container-title"><strong>{{ dataset.name }} Dataset</strong></p>
       <div class="data-cards" id="data-cards">
         <div class="card" id="card-prox">
           <div class="list-item card-header">
@@ -41,7 +42,7 @@
               <!-- warning svg -->
               <i id="cb_prox_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
               <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-              <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+              <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
             </div>
             {% endfor %}
           </div>
@@ -62,7 +63,7 @@
             <!-- warning svg -->
             <i id="cb_div_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
             <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-            <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+            <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
           </div>
           {% endfor %}
         </div>
@@ -70,12 +71,11 @@
       <div class="input-outer-container">
         <div class="input-container" id="input-time-container">
           <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
-          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" value="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
         </div>
-
         <div class="input-container" id="input-cluster-container">
           <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" value="3" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
         </div>
       </div>
       <div class="process-button-container">
