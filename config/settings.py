@@ -18,7 +18,10 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-env = environ.Env()
+env = environ.Env(
+    DEBUG=(bool, False),
+    CACHE=(bool, False)
+)
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -28,12 +31,13 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [env('HOST'), 'localhost']
 
-# Application definition
+LOGIN_URL = "/admin/login/"
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'config',
     'app',
-    'fontawesome-free'
+    'fontawesome-free',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -53,8 +58,22 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+if not DEBUG:
+    MIDDLEWARE += [
+        'django.middleware.cache.UpdateCacheMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.cache.FetchFromCacheMiddleware',
+    ]
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
 
 ROOT_URLCONF = 'config.urls'
 
@@ -122,5 +141,22 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
-# Mimetypes
-# mimetypes.add_type("text/css", ".css", True)
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'filename': os.path.join(BASE_DIR, 'logs', 'errors.log'),
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        },
+    }
