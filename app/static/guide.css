@@ -1,17 +1,17 @@
-.help-container {
+.guide-container {
 	margin: 4rem;
 }
-.help-header {
+.guide-header {
 	margin-bottom: 2rem;
 	color: #000000;
 	line-height: 1.15;
 	text-align: center;
 	font-size: 1.83em;
 }
-.help-item {
+.guide-item {
 	margin-top: 0.5rem;
 }
-.help-item-title {
+.guide-item-title {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -29,13 +29,13 @@
 	font-weight: 700;
 	font-size: 1.5rem;
 }
-.help-item-title > span {
+.guide-item-title > span {
 	flex: 1;
 }
-.help-item-title.open > svg {
+.guide-item-title.open > svg {
 	transform: rotate(180deg);
 }
-.help-item-response {
+.guide-item-response {
     max-height: 0;
     padding: 5px;
     overflow: hidden;
@@ -48,13 +48,13 @@
 	font-family: "Arial";
     transition: max-height 0.25s ease-out;
 }
-.help-item-img-outer {
+.guide-item-img-outer {
 	display: inline-block;
 	margin: 0px 0px;
 	overflow: hidden;
 	border: 0px solid #000000;
 }
-.help-item-img {
+.guide-item-img {
 	margin-left: 0px;
 	margin-top: 0px;
 	width: 100%;

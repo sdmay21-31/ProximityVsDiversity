@@ -18,7 +18,7 @@ from app.matplot import plot_to_uri
 
 # Create your views here.
 def guide(request):
-    return render(request, 'user_documentation.html')
+    return render(request, 'guide.html')
     
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {

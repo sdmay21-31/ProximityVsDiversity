@@ -1,4 +1,4 @@
-function handleHelpTitleClick(btn) {
+function handleGuideTitleClick(btn) {
   let response = btn.nextElementSibling;
   btn.classList.toggle("open");
   if (response.style.maxHeight) {
