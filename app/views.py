@@ -1,4 +1,7 @@
 from os import walk
+import os
+
+from django.conf import settings
 
 from django.apps import apps
 from django.shortcuts import render, redirect
@@ -6,10 +9,11 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.text import slugify
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from app.forms import SetupDatasetForm
+from app.forms import SetupDatasetForm, UploadFileForm
 
 from app.models import Dataset
 from collections import Counter
@@ -36,11 +40,28 @@ def dataset(request, slug, *args, **kwargs):
 def add_dataset(request):
     _, _, filenames = next(walk("datasets"))
     filenames.remove('.gitignore')
-    filenames = map(lambda x: x.split('.')[0], filenames)
     context = {
-        'filenames': filenames
+        'filenames': filenames,
+        'form': UploadFileForm
     }
     return render(request, 'add_dataset.html', context)
+
+def handle_uploaded_file(f):
+    splt = f.name.split('.')
+    extension = splt[-1]
+    name = '_'.join(splt[:-1])
+    filename = '.'.join([slugify(name), extension])
+    with open(os.path.join(settings.BASE_DIR, 'datasets', filename), 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+@login_required
+def upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+    return redirect('/add')
 
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
@@ -48,8 +69,13 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['filename'] = self.kwargs.get('filename') + '.csv'
+        kwargs['filename'] = self.kwargs.get('filename')
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filename'] = self.kwargs.get('filename')
+        return context
 
 @api_view(['GET'])
 def process(request, slug):

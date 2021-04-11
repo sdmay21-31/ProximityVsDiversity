@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'config',
     'app',
     'fontawesome-free',
-    'rest_framework'
+    'rest_framework',
+    'crispy_forms',
+    'crispy_tailwind'
 ]
 
 MIDDLEWARE = [
@@ -140,6 +142,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 if not DEBUG:
     LOGGING = {

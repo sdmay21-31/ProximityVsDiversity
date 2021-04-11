@@ -11,6 +11,7 @@ urlpatterns = [
     path('guide/',views.guide, name="guide"),
 
     path('add/', views.add_dataset, name="add_dataset"),
-    path('add/<slug:filename>/', views.SetupDatasetView.as_view(), name="add_dataset"),
+    path('add/<filename>/', views.SetupDatasetView.as_view(), name="add_dataset"),
+    path('upload/', views.upload, name="upload")
 
 ]

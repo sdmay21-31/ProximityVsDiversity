@@ -2,6 +2,9 @@ from django import forms
 from app.models import Dataset
 
 
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
 class SetupDatasetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -21,11 +24,14 @@ class SetupDatasetForm(forms.ModelForm):
 
             choices = [(h, h) for h in headers]
 
-            self.fields['simulation_id'] = forms.ChoiceField(
-                label="Simulation Id",
-                choices=choices,
-                help_text="Select One")
+            self.fields['simulation_ids'] = forms.MultipleChoiceField(
+                widget=forms.CheckboxSelectMultiple,
+                label="Simulation Identifiers",
+                help_text="Select the fields that differentiates your different simulations.",
+                choices=choices)
 
             self.fields['attributes'] = forms.MultipleChoiceField(
+                widget=forms.CheckboxSelectMultiple,
                 label="Attributes",
+                help_text="Select the fields that you would like stored as attributes for your simulations.",
                 choices=choices)

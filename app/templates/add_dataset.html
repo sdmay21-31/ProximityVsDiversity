@@ -1,12 +1,28 @@
 {% extends "base.html" %}
-
+{% load tailwind_filters %}
 {% block content %}
-<div class="container mx-auto px-4">
-    <div>
-        <h2 class="text-lg">
-            Coming Soon
-        </h2>
-        
+<div class="container mx-auto p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+            <h2>Select a file to use</h2>
+            <ul class="px-2">
+                {% for file in filenames %}
+                <li>
+                    <a href="{% url 'add_dataset' file %}" class="hover:text-blue-500">
+                        {{ file }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <form action="/upload/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h2>Or Upload a file</h2>
+                {{ form|crispy }}
+                <button type="submit" class="block mt-3 text-white bg-blue-500 text-lg rounded-md p-2">Submit</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock content %}
