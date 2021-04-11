@@ -1,14 +1,19 @@
+from os import walk
+
 from django.apps import apps
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.generic import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from app.forms import AlgoRequestForm, DatabaseChoiceForm
-from app.algos import run as run_algo
+from app.forms import SetupDatasetForm
 
-from app.databases import get_database_attributes, get_databases
-
-from app.models import Node
+from app.models import Dataset
 from collections import Counter
+from app.matplot import plot_to_uri
 
 
 # Create your views here.
@@ -16,27 +21,55 @@ def guide(request):
     return render(request, 'user_documentation.html')
     
 def index(request, *args, **kwargs):
-    """Default index page"""
-    return render(request, 'index.html')
+    return render(request, 'index.html', {
+        'datasets': Dataset.objects.all()
+        })
 
-def databases(request, *args, **kwargs):
-    """Return list of databases"""
-    return JsonResponse({'dbs': get_databases()})
+def dataset(request, slug, *args, **kwargs):
+    """Datasets page"""
+    dataset = Dataset.objects.get(slug=slug)
+    return render(request, 'process.html', {
+        'dataset': dataset
+        })
 
-def attributes(request, database):
-    """Return attributes from model and strip _1 and _2"""
-    return JsonResponse({'attrs': get_database_attributes(database)})
+@login_required
+def add_dataset(request):
+    _, _, filenames = next(walk("datasets"))
+    filenames.remove('.gitignore')
+    filenames = map(lambda x: x.split('.')[0], filenames)
+    context = {
+        'filenames': filenames
+    }
+    return render(request, 'add_dataset.html', context)
 
-def process(request):
+class SetupDatasetView(LoginRequiredMixin, FormView):
+    template_name = "setup_dataset.html"
+    form_class = SetupDatasetForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['filename'] = self.kwargs.get('filename') + '.csv'
+        return kwargs
+
+@api_view(['GET'])
+def process(request, slug):
     """Return the algorithm function"""
-    # TODO: validate incoming data
-    # TODO: Use database map to get attributes
-    (chart, data) = run_algo(
-        method='kmeans',
-        time_frame=1,
-        proximity=[{'mass_1': 10, 'lumin_1': 20, 'rad_1': 20}],
-        diversity=[])
-    return JsonResponse({
-        'chart': chart,
-        'data': data
+    dataset = Dataset.objects.get(slug=slug)
+    params = request.query_params
+    # TODO: validate data
+    data = dataset.process(
+            int(params.get('time')),
+            int(params.get('clusters')),
+            proximity={
+                'attributes': params.getlist('proximity_attributes'),
+                'weights': params.getlist('proximity_weights')
+            },
+            diversity={
+                'attributes': params.getlist('diversity_attributes'),
+                'weights': params.getlist('diversity_weights')
+            },
+            )
+    return Response({
+        'chart': plot_to_uri(data),
+        'data': {}
         })

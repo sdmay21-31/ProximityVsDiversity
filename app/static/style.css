@@ -1,3 +1,8 @@
+nav {
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 6px 6px -6px rgb(0 0 0 / 50%);
+}
 .columns {
     width: calc(100% - 2rem - 2rem);
     display: flex;

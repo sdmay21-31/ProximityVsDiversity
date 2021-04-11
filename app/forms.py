@@ -1,60 +1,31 @@
 from django import forms
-from app.models import Node
+from app.models import Dataset
 
-NODE_ATTR_CHOICES = (
-    ("1", "tphys"),
-    ("2", "kstar_1"),
-    ("3", "mass0_1"),
-    ("4", "mass_1"),
-    ("5", "lumin_1"),
-    ("6", "rad_1"),
-    ("7", "teff_1"),
-    ("8", "massc_1"),
-    ("9", "radc_1"),
-    ("10", "menv_1"),
-    ("11", "renv_1"),
-    ("12", "epoch_1"),
-    ("13", "opsin_1"),
-    ("14", "deltam_1"),
-    ("15", "rrol_1"),
-    ("16", "kstar_2"),
-    ("17", "mass0_2"),
-    ("18", "mass_2"),
-    ("19", "lumin_2"),
-    ("20", "rad_2"),
-    ("21", "teff_2"),
-    ("22", "massc_2"),
-    ("23", "radc_2"),
-    ("24", "menv_2"),
-    ("25", "renv_2"),
-    ("26", "epoch_2"),
-    ("27", "opsin_2"),
-    ("28", "deltam_2"),
-    ("29", "rrol_12"),
-    ("30", "porb"),
-    ("31", "sec"),
-    ("32", "ecc"),
-)
 
-DATABASE_CHOICES = (
-    ('1', 'Database One'),
-    ('2', 'Database Two'),
-    ('3', 'Database Three'),
-)
+class SetupDatasetForm(forms.ModelForm):
 
-class AlgoRequestForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.filename = kwargs.pop('filename')
+        super(SetupDatasetForm, self).__init__(*args, **kwargs)
 
-    #List and select wanted attr
-    attribute1 = forms.ChoiceField(choices=NODE_ATTR_CHOICES)
-    attribute2 = forms.ChoiceField(choices=NODE_ATTR_CHOICES)
-    attribute3 = forms.ChoiceField(choices=NODE_ATTR_CHOICES)
+        self.add_dynamic_fields()
 
-    attribute1Value = forms.FloatField()
-    attribute2Value = forms.FloatField()
-    attribute3Value = forms.FloatField()
-    
-class DatabaseChoiceForm(forms.Form):
-    
-    choice = forms.ChoiceField(choices = DATABASE_CHOICES)
-    
+    class Meta:
+        model = Dataset
+        fields = ['name']
 
+    def add_dynamic_fields(self):
+        with open(f'datasets/{ self.filename }') as file:
+            header = file.readline()
+            headers = header.split(',')
+
+            choices = [(h, h) for h in headers]
+
+            self.fields['simulation_id'] = forms.ChoiceField(
+                label="Simulation Id",
+                choices=choices,
+                help_text="Select One")
+
+            self.fields['attributes'] = forms.MultipleChoiceField(
+                label="Attributes",
+                choices=choices)
