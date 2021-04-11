@@ -40,6 +40,7 @@ class DatasetShim:
         attribute_indexes = [
             self.get_attribute_index(attr)
             for attr in attributes]
+
         weights = [
             float(weight)
             for weight in proximity.get('weights')
@@ -57,11 +58,11 @@ class DatasetShim:
             for n in simulation.data:
                 node = [float(n[attr_index]) for attr_index in attribute_indexes]
 
-                for attr_index in attribute_indexes:
-                    if node[attr_index] > maxs[attr_index]:
-                        maxs[attr_index] = node[attr_index]
-                    if node[attr_index] < mins[attr_index]:
-                        mins[attr_index] = node[attr_index]
+                for index in range(len(attribute_indexes)):
+                    if node[index] > maxs[index]:
+                        maxs[index] = node[index]
+                    if node[index] < mins[index]:
+                        mins[index] = node[index]
 
             # Get the nodes for the specific time instance
             node = [
@@ -70,8 +71,8 @@ class DatasetShim:
             # Relativise
             try:
                 nodes.append([
-                    relativise(node[attr_index], maxs[attr_index], mins[attr_index])
-                    for attr_index in attribute_indexes
+                    relativise(node[index], maxs[index], mins[index])
+                    for index in range(len(attribute_indexes))
                 ])
             except ZeroDivisionError:
                 pass
