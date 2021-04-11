@@ -99,3 +99,13 @@ def process(request, slug):
         'chart': plot_to_uri(data),
         'data': {}
         })
+
+from pathlib import Path
+from app.tasks import touch_file
+
+def celery(request):
+    if request.method == 'POST':
+        touch_file.delay()
+    return render(request, 'celery.html', {
+        'test': Path(os.path.join(settings.BASE_DIR, 'datasets', 'test')).exists()
+        })
