@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
     def get_simulations(self, reader, chunk_size=500):
         def get_id(line):
-            return line['node_id'].zfill(6) + line['file_id'].zfill(4)
+            return line[self.simulation_id].zfill(6) + line['file_id'].zfill(4)
         simulation = []
         simulations = []
         line = next(reader)
