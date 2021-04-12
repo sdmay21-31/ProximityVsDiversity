@@ -7,7 +7,7 @@ from django.core.validators import FileExtensionValidator
 class Dataset(DatasetShim, models.Model):
     name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
     slug = AutoSlugField(unique=True, populate_from='name')
-    file_name = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255, default='main_table_1.csv')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

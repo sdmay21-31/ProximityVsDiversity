@@ -104,5 +104,5 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         dataset = form.save()
-        seed_dataset(dataset, self.kwargs.get('filename'))
+        seed_dataset(dataset)
         return redirect('dataset-processing', dataset)

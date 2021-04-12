@@ -21,6 +21,7 @@ class SetupDatasetForm(forms.ModelForm):
         instance = super().save(commit=False)
         instance.attributes = self.cleaned_data['attributes']
         instance.simulation_fields = self.cleaned_data['simulation_fields']
+        instance.file_name = self.filename
         if commit:
             instance.save()
         return instance
