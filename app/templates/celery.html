@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
- {{ test }}
-<form method="post">
-    {% csrf_token %}
-<button class="bg-blue-500" type="submit">Test</button>   
-</form>
-{% endblock content %}

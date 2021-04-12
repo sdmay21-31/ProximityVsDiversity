@@ -62,22 +62,26 @@ def get_simulations(reader, dataset, chunk_size=500):
 @shared_task
 def seed_dataset(dataset_id):
     dataset = Dataset.objects.get(id=dataset_id)
-    dataset.set_seeding()
-    dataset.save()
-    with open(os.path.join(settings.BASE_DIR, 'datasets', dataset.file_name)) as file:
-        reader = csv.DictReader(file)
-
-        headers = reader.fieldnames
-
-        for simulations in get_simulations(reader, dataset):
-            Simulation.objects.bulk_create(simulations)
-
-        aggs = dataset.simulation_set.aggregate(
-            Sum('total_nodes'), Max('total_nodes'), Min('total_nodes'))
-
-        dataset.total_simulations = dataset.simulation_set.count()
-        dataset.total_nodes = aggs['total_nodes__sum']
-        dataset.max_simulation_nodes = aggs['total_nodes__max']
-        dataset.min_simulation_nodes = aggs['total_nodes__min']
-        dataset.set_completed()
+    try:
+        dataset.set_seeding()
         dataset.save()
+        with open(os.path.join(settings.BASE_DIR, 'datasets', dataset.file_name)) as file:
+            reader = csv.DictReader(file)
+
+            headers = reader.fieldnames
+
+            for simulations in get_simulations(reader, dataset):
+                Simulation.objects.bulk_create(simulations)
+
+            aggs = dataset.simulation_set.aggregate(
+                Sum('total_nodes'), Max('total_nodes'), Min('total_nodes'))
+
+            dataset.total_simulations = dataset.simulation_set.count()
+            dataset.total_nodes = aggs['total_nodes__sum']
+            dataset.max_simulation_nodes = aggs['total_nodes__max']
+            dataset.min_simulation_nodes = aggs['total_nodes__min']
+            dataset.set_completed()
+            dataset.save()
+    except Exception as e:
+        dataset.set_error()
+        raise e

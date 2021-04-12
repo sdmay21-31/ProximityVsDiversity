@@ -6,6 +6,15 @@ from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
 
 
+class DatasetFile(models.Model):
+    name = models.CharField(max_length=250)
+    slug = AutoSlugField(unique=True, populate_from="name")
+    file = models.FileField(upload_to="datasets",
+        validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls'])])
+
+    class Meta:
+        db_table = "dataset_file"
+
 class Dataset(DatasetShim, models.Model):
     class Statuses(models.IntegerChoices):
         CREATED = 0, 'Created'
@@ -18,6 +27,8 @@ class Dataset(DatasetShim, models.Model):
                             help_text="Name of the dataset")
     description = models.CharField(max_length=250, default='')
     slug = AutoSlugField(unique=True, populate_from='name')
+    file = models.ForeignKey(DatasetFile, on_delete=models.SET_NULL,
+        null=True, blank=True)
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
     status = models.IntegerField(
         choices=Statuses.choices, default=Statuses.LEGACY)

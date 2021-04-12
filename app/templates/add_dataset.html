@@ -6,19 +6,19 @@
         <div>
             <h2>Select a file to use</h2>
             <ul class="px-2">
-                {% for file in filenames %}
+                {% for file in dataset_files %}
                 <li>
-                    <a href="{% url 'add_dataset' file %}" class="hover:text-blue-500">
-                        {{ file }}
+                    <a href="{% url 'add_dataset' file.slug %}" class="hover:text-blue-500">
+                        {{ file.name }}
                     </a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
         <div>
-            <form action="/upload/" method="post" enctype="multipart/form-data">
+            <h2 class="text-xl my-3 underline">Add new File</h2>
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <h2>Or Upload a file</h2>
                 {{ form|crispy }}
                 <button type="submit" class="block mt-3 text-white bg-blue-500 text-lg rounded-md p-2">Submit</button>
             </form>
