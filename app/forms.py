@@ -15,7 +15,7 @@ class SetupDatasetForm(forms.ModelForm):
 
     class Meta:
         model = Dataset
-        fields = ['name']
+        fields = ['name', 'description']
 
     def save(self, commit=True):
         instance = super().save(commit=False)

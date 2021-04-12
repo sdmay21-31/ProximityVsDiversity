@@ -2,7 +2,9 @@ from django.db import models
 from autoslug import AutoSlugField
 from django.conf import settings
 from app.shims import DatasetShim
+from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
+
 
 class Dataset(DatasetShim, models.Model):
     class Statuses(models.IntegerChoices):
@@ -12,10 +14,13 @@ class Dataset(DatasetShim, models.Model):
         ERROR = 3, 'Error'
         LEGACY = 4, 'Legacy'
 
-    name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
+    name = models.CharField(max_length=250, unique=True,
+                            help_text="Name of the dataset")
+    description = models.CharField(max_length=250, default='')
     slug = AutoSlugField(unique=True, populate_from='name')
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
-    status = models.IntegerField(choices=Statuses.choices, default=Statuses.LEGACY)
+    status = models.IntegerField(
+        choices=Statuses.choices, default=Statuses.LEGACY)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -39,6 +44,9 @@ class Dataset(DatasetShim, models.Model):
     class Meta:
         db_table = "dataset"
 
+    def get_absolute_url(self):
+        return reverse_lazy('edit', args=(self.slug, ))
+
     def set_created(self):
         self.status = Dataset.Statuses.CREATED
 
@@ -51,10 +59,15 @@ class Dataset(DatasetShim, models.Model):
     def set_error(self):
         self.status = Dataset.Statuses.ERROR
 
+    def is_processable(self):
+        return self.status == Dataset.Statuses.COMPLETED or self.status == Dataset.Statuses.LEGACY
+
+
 class Simulation(models.Model):
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
+    dataset = models.ForeignKey(
+        Dataset, on_delete=models.CASCADE, editable=False)
     total_nodes = models.IntegerField(editable=False)
-    
+
     data = models.JSONField(editable=False)
     """Structure
     [

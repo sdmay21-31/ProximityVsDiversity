@@ -7,7 +7,7 @@ from django.apps import apps
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
 from django.db.models import Q
@@ -29,8 +29,7 @@ def guide(request):
     
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {
-        'datasets': Dataset.objects.filter(
-            Q(status=Dataset.Statuses.COMPLETED) | Q(status=Dataset.Statuses.LEGACY))
+        'datasets': Dataset.objects.all()
         })
 
 def dataset(request, slug, *args, **kwargs):
@@ -91,11 +90,16 @@ def upload(request):
     return redirect('/add')
 
 @login_required
-def dataset_seeding(request, slug):
+def dataset_status(request, slug):
     dataset = Dataset.objects.get(slug=slug)
     return render(request, 'dataset_status.html', {
         'dataset': dataset
         })
+
+class UpdateDatasetView(LoginRequiredMixin, UpdateView):
+    template_name = "edit_dataset.html"
+    model = Dataset
+    fields = ['name', 'description']
 
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
@@ -114,4 +118,4 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         dataset = form.save()
         seed_dataset.delay(dataset.id)
-        return redirect('dataset_seeding', dataset.slug)
+        return redirect('dataset_status', dataset.slug)

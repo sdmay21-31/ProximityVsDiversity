@@ -7,7 +7,7 @@ urlpatterns = [
     
     path('datasets/<slug:slug>/', views.dataset, name="dataset"),
     path('datasets/<slug:slug>/process/', views.process, name="process"),
-    path('add/<slug:slug>/seeding/', views.dataset_seeding, name="dataset_seeding"),
+    path('add/<slug:slug>/edit/', views.UpdateDatasetView.as_view(), name="edit"),
 
     path('guide/',views.guide, name="guide"),
 
