@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
+from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -28,7 +29,8 @@ def guide(request):
     
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {
-        'datasets': Dataset.objects.all()
+        'datasets': Dataset.objects.filter(
+            Q(status=Dataset.Statuses.COMPLETED) | Q(status=Dataset.Statuses.LEGACY))
         })
 
 def dataset(request, slug, *args, **kwargs):
@@ -88,6 +90,13 @@ def upload(request):
             handle_uploaded_file(request.FILES['file'])
     return redirect('/add')
 
+@login_required
+def dataset_seeding(request, slug):
+    dataset = Dataset.objects.get(slug=slug)
+    return render(request, 'dataset_status.html', {
+        'dataset': dataset
+        })
+
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
     form_class = SetupDatasetForm
@@ -104,5 +113,5 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         dataset = form.save()
-        seed_dataset(dataset)
-        return redirect('dataset-processing', dataset)
+        seed_dataset.delay(dataset.id)
+        return redirect('dataset_seeding', dataset.slug)

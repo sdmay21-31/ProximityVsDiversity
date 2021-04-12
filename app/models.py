@@ -5,9 +5,17 @@ from app.shims import DatasetShim
 from django.core.validators import FileExtensionValidator
 
 class Dataset(DatasetShim, models.Model):
+    class Statuses(models.IntegerChoices):
+        CREATED = 0, 'Created'
+        SEEDING = 1, 'Seeding'
+        COMPLETED = 2, 'Completed'
+        ERROR = 3, 'Error'
+        LEGACY = 4, 'Legacy'
+
     name = models.CharField(max_length=250, unique=True, help_text="Name of the dataset")
     slug = AutoSlugField(unique=True, populate_from='name')
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
+    status = models.IntegerField(choices=Statuses.choices, default=Statuses.LEGACY)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,6 +38,18 @@ class Dataset(DatasetShim, models.Model):
 
     class Meta:
         db_table = "dataset"
+
+    def set_created(self):
+        self.status = Dataset.Statuses.CREATED
+
+    def set_seeding(self):
+        self.status = Dataset.Statuses.SEEDING
+
+    def set_completed(self):
+        self.status = Dataset.Statuses.COMPLETED
+
+    def set_error(self):
+        self.status = Dataset.Statuses.ERROR
 
 class Simulation(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
