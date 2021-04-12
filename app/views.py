@@ -105,5 +105,8 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         dataset = form.save()
-        seed_dataset.delay(dataset.id)
+        if settings.CELERY:
+            seed_dataset.delay(dataset.id)
+        else:
+            seed_dataset(dataset.id)
         return redirect('edit', dataset.slug)
