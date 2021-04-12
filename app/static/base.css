@@ -10,7 +10,7 @@ nav {
     align-items: center;
 }
 
-/* .button {
+.button {
     position: relative;
     width: 100%;
     padding: 0.5rem 1rem;
@@ -46,4 +46,4 @@ nav {
 .button-text {
     display: inline-block;
     margin-right: 0.5rem;
-} */
+}

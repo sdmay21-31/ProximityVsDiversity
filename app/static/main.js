@@ -32,13 +32,13 @@ const paramToInputInfo = Object.freeze({
   },
   "branchingFactor": {
     [INSTRUCTION]: "",
-    [MIN]: ,
-    [MAX]: 
+    [MIN]: 0,
+    [MAX]: 0
   },
   "threshold": {
     [INSTRUCTION]: "",
-    [MIN]: ,
-    [MAX]: 
+    [MIN]: 0,
+    [MAX]: 0
   }
 });
 
@@ -132,9 +132,7 @@ function controlInput(event) {
   }
 }
 
-function controlDynamicInputs(event) {
-  
-}
+function controlDynamicInputs(event) {}
 
 function toggleAlgoDropdown(ddButton) {
   document.querySelector(".algo-dropdown-options").classList.toggle("show");
@@ -143,14 +141,6 @@ function toggleAlgoDropdown(ddButton) {
 function handleAlgoDropdownSelect(event) {}
 
 function process() {
-  /*let chart = document.querySelector("#chart");
-  chart.style.maxHeight = document.querySelector(".data-input-container").clientHeight;
-  chart.src = `data:image/png;base64,${imgPath}`;
-  let referenceImg = new Image();
-  referenceImg.onload = () => {
-    chart.style.maxWidth = document.querySelector(".data-input-container").clientHeight * referenceImg.width / referenceImg.height;
-  }
-  referenceImg.src = `data:image/png;base64,${imgPath}`;*/
   /* Request the data and chart */
   const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
   const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
@@ -236,4 +226,15 @@ function isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights)
     errorSomewhere = true;
   }
   return !errorSomewhere;
+}
+
+function fakeProcess() {
+  let chart = document.querySelector("#chart");
+  chart.style.maxHeight = document.querySelector(".data-input-container").clientHeight;
+  chart.src = `data:image/png;base64,${imgPath}`;
+  let referenceImg = new Image();
+  referenceImg.onload = () => {
+    chart.style.maxWidth = document.querySelector(".data-input-container").clientHeight * referenceImg.width / referenceImg.height;
+  }
+  referenceImg.src = `data:image/png;base64,${imgPath}`;
 }

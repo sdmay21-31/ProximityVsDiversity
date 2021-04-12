@@ -1,3 +1,52 @@
+.route-options-container {
+    margin: 2rem;
+}
+.route-options {
+    position: relative;
+    width: min(100%, 500px);
+    margin: 0 auto 0.2rem auto;
+}
+.route-option {
+    position: relative;
+    padding: 0.5rem 1rem;
+    margin-top: 0.2rem;
+    font-size: 1.25rem;
+    word-wrap: break-word;
+    border-radius: 0.2rem;
+    text-align: center;
+}
+.route-option.route-category {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+}
+.route-option.route-category:first-child {
+    margin-top: 0;
+}
+.route-option:not(.route-category) {
+    width: auto;
+    border: 1px solid lightslategrey;
+    margin-top: 0.5rem;
+}
+.route-option:not(.route-category, .disabled):hover {
+    cursor: pointer;
+    background-color: lightgrey;
+}
+.route-option.route-category.anchor {
+    cursor: pointer;
+}
+
+
+
+
+
+
 .dropdown-container {
     position: relative;
     width: 100%;
