@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block content %}
-    <div class="container mx-auto px-4">
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_ul }}
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+  <div class="container mx-auto px-4">
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_ul }}
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 {% endblock content %}

@@ -9,3 +9,41 @@ nav {
 .content-container {
     align-items: center;
 }
+
+.button {
+    position: relative;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    font-size: 1.25rem;
+}
+.button.success {
+    background-color: #28a745;
+    color: white;
+}
+.button.warn {
+    background-color: #ffc107;
+    color: black;
+}
+.button:focus {
+    outline: 0;
+}
+.button.success:focus {
+    box-shadow: 0 0 0 0.2rem rgb(40 167 69 / 50%);
+}
+.button.warn:focus {
+    box-shadow: 0 0 0 0.2rem rgb(255 193 7 / 50%);
+}
+.button.success:not(:disabled):hover {
+    background-color: #1e7e34;
+}
+.button.warn:not(:disabled):hover {
+    background-color: #d39e00;
+}
+.button:disabled {
+    background-color: lightgrey;
+}
+.button-text {
+    display: inline-block;
+    margin-right: 0.5rem;
+}
