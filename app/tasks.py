@@ -65,7 +65,7 @@ def seed_dataset(dataset_id):
     try:
         dataset.set_seeding()
         dataset.save()
-        with open(os.path.join(settings.BASE_DIR, 'datasets', dataset.file_name)) as file:
+        with open(dataset.datafile.file.path) as file:
             reader = csv.DictReader(file)
 
             headers = reader.fieldnames
@@ -84,4 +84,5 @@ def seed_dataset(dataset_id):
             dataset.save()
     except Exception as e:
         dataset.set_error()
+        dataset.save()
         raise e

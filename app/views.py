@@ -7,16 +7,17 @@ from django.apps import apps
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import FormView, UpdateView, CreateView
+from django.views.generic import FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.urls import reverse_lazy
 
 from app.forms import SetupDatasetForm, UploadFileForm
 
-from app.models import Dataset, DatasetFile
+from app.models import Dataset, DataFile
 from collections import Counter
 from app.matplot import plot_to_uri
 
@@ -62,21 +63,31 @@ def process(request, slug):
         'data': {}
         })
 
-class DatasetFileView(LoginRequiredMixin, CreateView):
-    template_name = "add_dataset.html"
-    model = DatasetFile
-    fields = ['name', 'file']
-    success_url = '/add'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['dataset_files'] = DatasetFile.objects.all()
-        return context
-
 class UpdateDatasetView(LoginRequiredMixin, UpdateView):
     template_name = "edit_dataset.html"
     model = Dataset
     fields = ['name', 'description']
+
+class DeleteDatasetView(LoginRequiredMixin, DeleteView):
+    template_name = "delete.html"
+    model = Dataset
+    success_url = reverse_lazy('datafiles')
+
+class DeleteDataFileView(LoginRequiredMixin, DeleteView):
+    template_name = "delete.html"
+    model = DataFile
+    success_url = reverse_lazy('datafiles')
+
+class DatasetFileView(LoginRequiredMixin, CreateView):
+    template_name = "datafiles.html"
+    model = DataFile
+    fields = ['name', 'file']
+    success_url = reverse_lazy('datafiles')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dataset_files'] = DataFile.objects.all()
+        return context
 
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
@@ -89,10 +100,10 @@ class SetupDatasetView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['file'] = DatasetFile.objects.get(slug=self.kwargs.get('slug'))
+        context['file'] = DataFile.objects.get(slug=self.kwargs.get('slug'))
         return context
 
     def form_valid(self, form):
         dataset = form.save()
         seed_dataset.delay(dataset.id)
-        return redirect('dataset_status', dataset.slug)
+        return redirect('edit', dataset.slug)

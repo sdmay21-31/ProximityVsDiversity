@@ -11,7 +11,16 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="block mt-3 text-white bg-blue-500 text-lg rounded-md p-2">Submit</button>
+                <div class="flex justify-end space-x-3">
+                    {% if dataset.is_processable %}
+                        
+                    <a href="{% url 'delete_dataset' dataset.slug %}">
+                        <button type="button" class="block mt-3 text-white bg-red-500 text-lg rounded-md p-2">Delete</button>
+                    </a>
+                    
+                    {% endif %}
+                    <button type="submit" class="block mt-3 text-white bg-blue-500 text-lg rounded-md p-2">Submit</button>
+                </div>
             </form>
         </div>
     </div>

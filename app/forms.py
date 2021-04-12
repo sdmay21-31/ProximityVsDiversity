@@ -1,5 +1,5 @@
 from django import forms
-from app.models import Dataset
+from app.models import Dataset, DataFile
 
 
 class UploadFileForm(forms.Form):
@@ -8,7 +8,7 @@ class UploadFileForm(forms.Form):
 class SetupDatasetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        self.filename = kwargs.pop('filename')
+        self.datafile = DataFile.objects.get(slug=kwargs.pop('file_slug'))
         super(SetupDatasetForm, self).__init__(*args, **kwargs)
 
         self.add_dynamic_fields()
@@ -21,14 +21,14 @@ class SetupDatasetForm(forms.ModelForm):
         instance = super().save(commit=False)
         instance.attributes = self.cleaned_data['attributes']
         instance.simulation_fields = self.cleaned_data['simulation_fields']
-        instance.file_name = self.filename
+        instance.datafile = self.datafile
         instance.set_created()
         if commit:
             instance.save()
         return instance
 
     def add_dynamic_fields(self):
-        with open(f'datasets/{ self.filename }') as file:
+        with open(self.datafile.file.path) as file:
             header = file.readline()
             headers = header.split(',')
 

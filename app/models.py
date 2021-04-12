@@ -6,11 +6,14 @@ from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
 
 
-class DatasetFile(models.Model):
+class DataFile(models.Model):
     name = models.CharField(max_length=250)
     slug = AutoSlugField(unique=True, populate_from="name")
     file = models.FileField(upload_to="datasets",
         validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls'])])
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "dataset_file"
@@ -27,7 +30,7 @@ class Dataset(DatasetShim, models.Model):
                             help_text="Name of the dataset")
     description = models.CharField(max_length=250, default='')
     slug = AutoSlugField(unique=True, populate_from='name')
-    file = models.ForeignKey(DatasetFile, on_delete=models.SET_NULL,
+    datafile = models.ForeignKey(DataFile, on_delete=models.SET_NULL,
         null=True, blank=True)
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
     status = models.IntegerField(
@@ -54,6 +57,9 @@ class Dataset(DatasetShim, models.Model):
 
     class Meta:
         db_table = "dataset"
+
+    def __str__(self):
+        return self.name
 
     def get_absolute_url(self):
         return reverse_lazy('edit', args=(self.slug, ))
@@ -86,6 +92,9 @@ class Simulation(models.Model):
         ['attr1', 'attr2', 'attr3']
     ]
     """
+
+    def __str__(self):
+        return self.dataset.name + "-" + self.id
 
     class Meta:
         db_table = "simulation"
