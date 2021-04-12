@@ -1,5 +1,6 @@
 .guide-container {
     margin: 2rem 4rem;
+    text-align: left;
 }
 .guide-header {
     margin-bottom: 2rem;
@@ -18,12 +19,9 @@
     width: 100%;
     padding: 1rem 1.25rem;
     background-color: #60A5FA;
-    cursor: pointer;
     border: none;
     border-radius: 0.2rem;
-    outline: none;
     color: #000000;
-    vertical-align: baseline;
     text-align: left;
     text-decoration: none;
     font-weight: 700;

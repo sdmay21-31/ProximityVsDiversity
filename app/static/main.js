@@ -6,6 +6,7 @@ const CHECKBOX = "cb",
   TEXTAREA = "ta";
 const TIME = "time",
   CLUSTER = "cluster";
+let inputTimeState = "";
 let inputState = {
   [TIME]: "0",
   [CLUSTER]: "3"
@@ -16,6 +17,31 @@ let inputWeightState = {
   [PROX]: [],
   [DIV]: []
 };
+const INSTRUCTION = "instruction",
+  MIN = "min", MAX = "max";
+const paramToInputInfo = Object.freeze({
+  "clusters": {
+    [INSTRUCTION]: "Enter number of clusters between 1 and 20, inclusive",
+    [MIN]: 1,
+    [MAX]: 20
+  },
+  "neighborhoodSize": {
+    [INSTRUCTION]: "Enter the target neighborhood size",
+    [MIN]: 1,
+    [MAX]: 20
+  },
+  "branchingFactor": {
+    [INSTRUCTION]: "",
+    [MIN]: ,
+    [MAX]: 
+  },
+  "threshold": {
+    [INSTRUCTION]: "",
+    [MIN]: ,
+    [MAX]: 
+  }
+});
+
 const urlProcess = "process/";
 var notyf = new Notyf({
   duration: 10000,
@@ -106,13 +132,23 @@ function controlInput(event) {
   }
 }
 
+function controlDynamicInputs(event) {
+  
+}
+
+function toggleAlgoDropdown(ddButton) {
+  document.querySelector(".algo-dropdown-options").classList.toggle("show");
+}
+
+function handleAlgoDropdownSelect(event) {}
+
 function process() {
   /*let chart = document.querySelector("#chart");
-  chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
+  chart.style.maxHeight = document.querySelector(".data-input-container").clientHeight;
   chart.src = `data:image/png;base64,${imgPath}`;
   let referenceImg = new Image();
   referenceImg.onload = () => {
-    chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
+    chart.style.maxWidth = document.querySelector(".data-input-container").clientHeight * referenceImg.width / referenceImg.height;
   }
   referenceImg.src = `data:image/png;base64,${imgPath}`;*/
   /* Request the data and chart */
@@ -141,19 +177,18 @@ function process() {
     diversity_attributes: divWeights.map(x => x[0]),
     diversity_weights: divWeights.map(x => x[1])
   });
-  axios.get('process/?' + params).then(response => {
+  axios.get(`process/?${params}`).then(response => {
     let json = response.data
     // Update chart
     let chart = document.querySelector("#chart");
-    chart.style.maxHeight = document.querySelector(".data-input-outer-container").clientHeight;
+    chart.style.maxHeight = document.querySelector(".data-input-container").clientHeight;
     chart.src = `data:image/png;base64,${json.chart}`;
     // create a reference image from which to take the width and height to calculate maxHeight
     let referenceImg = new Image();
     referenceImg.onload = () => {
-      chart.style.maxWidth = document.querySelector(".data-input-outer-container").clientHeight * referenceImg.width / referenceImg.height;
+      chart.style.maxWidth = document.querySelector(".data-input-container").clientHeight * referenceImg.width / referenceImg.height;
     }
     referenceImg.src = `data:image/png;base64,${json.chart}`;
-    // document.querySelector(".chart-container").appendChild(chart);
     notyf.success("Processing successful.");
   }).catch(function(reason) {
     console.error("Issue with the Process request.");

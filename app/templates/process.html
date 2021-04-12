@@ -24,6 +24,7 @@
   <div class="data-input-outer-container">
     <div class="data-input-container">
       <p class="data-input-container-title"><strong>{{ dataset.name }} Dataset</strong></p>
+      <div class="horizontal-divider"></div>
       <div class="data-cards" id="data-cards">
         <div class="card" id="card-prox">
           <div class="list-item card-header">
@@ -62,20 +63,35 @@
             </div>
             <!-- warning svg -->
             <i id="cb_div_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
-            <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
             <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
           </div>
           {% endfor %}
         </div>
       </div>
-      <div class="input-outer-container">
-        <div class="input-container" id="input-time-container">
+      <div class="input-container" id="input-container-constant">
+        <div class="input-block" id="input-time-block">
           <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
-          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
         </div>
-        <div class="input-container" id="input-cluster-container">
+      </div>
+      <div class="input-container" id="input-container-dynamic">
+        <div class="horizontal-divider"></div>
+        <div class="input-block">
+          <button class="algo-dropdown-button" onclick="toggleAlgoDropdown(this)">
+            <span>Select an Algorithm</span>
+            <i class="fas fa-chevron-down algo-dropdown-button-icon"></i>
+          </button>
+          <div class="algo-dropdown-options">
+            {% for algo in algorithms %}
+            <p class="algo-dropdown-option" id="algo_option_{{forloop.counter0}}" name="{{algo.name}}" onclick="handleAlgoDropdownSelect(event)">
+              {{algo.name}}
+            </p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="input-block" id="input-cluster-block">
           <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
         </div>
       </div>
       <div class="process-button-container">
@@ -106,6 +122,7 @@
 <div class="plotly-container"></div>
 {# TODO: PLEASE LORD REMOVE THIS #}
 <script>
-const attrList = {{ dataset.attributes | safe }}
+  const attrList = {{ dataset.attributes | safe }};
+  const dataset = {{ algorithms | safe }};
 </script>
 {% endblock %}

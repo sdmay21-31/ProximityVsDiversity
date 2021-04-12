@@ -28,6 +28,13 @@
     font-size: 1.75rem;
     margin: 0 1rem;
 }
+
+.horizontal-divider {
+    width: calc(100% - 2rem);
+    border-top: 1px solid lightgrey;
+    margin: 1rem;
+}
+
 .data-cards {
     display: flex;
     flex-direction: row;
@@ -59,6 +66,7 @@
     float: start;
     padding: 0.6rem 1rem;
 }
+
 .list-item {
     display: flex;
     flex-direction: row;
@@ -137,20 +145,20 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     width: 100%;
     margin: 0 auto 0 auto;
-    justify-content: space-between;
-}
-.input-container {
-    flex: 1;
-    min-width: 400px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
     align-items: center;
 }
-.input-container.show {
+.input-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    position: relative;
+    margin: 0.25rem auto;
+    align-items: center;
+}
+.input-block.show {
     margin-top: 2rem;
 }
 .input-instruction {
@@ -158,9 +166,8 @@
     color: lightslategrey;
 }
 .input {
-    width: 100%;
+    width: 350px;
     min-width: 0;
-    max-width: 350px;
     padding: 0.25rem 0.5rem;
     line-height: 1.5;
     border: 1px solid lightslategrey;
@@ -182,6 +189,68 @@
 }
 .input-warning.show {
     display: block;
+}
+
+.algo-dropdown-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 350px;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    background-color: #ffffff;
+    color: #212529;
+    border: 1px solid #212529;
+    font-size: 1rem;
+    text-align: start;
+}
+.algo-dropdown-button.show > svg {
+    transform: rotate(180deg);
+}
+.algo-dropdown-button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(33 37 41 / 50%);
+}
+.algo-dropdown-button:hover {
+    background-color: #212529;
+    color: #ffffff;
+}
+.algo-dropdown-options {
+    position: absolute;
+    transform: translateY(2.75rem);
+    z-index: 100;
+    display: none;
+    width: 350px;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: .2rem;
+    transition: all 0.25s ease;
+}
+.algo-dropdown-options.show {
+    display: block;
+}
+.algo-dropdown-option {
+    width: 100%;
+    padding: 0.25rem 1rem;
+    cursor: pointer;
+}
+.algo-dropdown-option:hover {
+    background-color: lightgrey;
+}
+.algo-dropdown-option:first-child {
+	border-top-left-radius: 0.2rem;
+	border-top-right-radius: 0.2rem;
+}
+.algo-dropdown-option:last-child {
+	margin-bottom: 0;
+	border-bottom-left-radius: 0.2rem;
+	border-bottom-right-radius: 0.2rem;
+}
+.algo-dropdown-option.selected {
+    background-color: #007bff;
+    color: white;
 }
 
 .process-button-container {

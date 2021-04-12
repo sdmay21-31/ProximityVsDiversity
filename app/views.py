@@ -23,14 +23,19 @@ def guide(request):
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {
         'datasets': Dataset.objects.all()
-        })
+    })
 
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
     dataset = Dataset.objects.get(slug=slug)
     return render(request, 'process.html', {
-        'dataset': dataset
-        })
+        'dataset': dataset,
+        'algorithms': [
+            {'name': 'K-Means', 'parameters': ['clusters']},
+            {'name': 'DBSCAN', 'parameters': ['neighborhoodSize']},
+            {'name': 'Birch', 'parameters': ['branchingFactor', 'threshold']}
+        ]
+    })
 
 @login_required
 def add_dataset(request):
@@ -58,18 +63,18 @@ def process(request, slug):
     params = request.query_params
     # TODO: validate data
     data = dataset.process(
-            int(params.get('time')),
-            int(params.get('clusters')),
-            proximity={
-                'attributes': params.getlist('proximity_attributes'),
-                'weights': params.getlist('proximity_weights')
-            },
-            diversity={
-                'attributes': params.getlist('diversity_attributes'),
-                'weights': params.getlist('diversity_weights')
-            },
-            )
+        int(params.get('time')),
+        int(params.get('clusters')),
+        proximity={
+            'attributes': params.getlist('proximity_attributes'),
+            'weights': params.getlist('proximity_weights')
+        },
+        diversity={
+            'attributes': params.getlist('diversity_attributes'),
+            'weights': params.getlist('diversity_weights')
+        },
+    )
     return Response({
         'chart': plot_to_uri(data),
         'data': {}
-        })
+    })
