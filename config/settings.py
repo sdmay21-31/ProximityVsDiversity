@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'fontawesome-free',
     'rest_framework',
     'crispy_forms',
-    'crispy_tailwind'
+    'crispy_tailwind',
+    # Must be last
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 MIDDLEWARE = [
