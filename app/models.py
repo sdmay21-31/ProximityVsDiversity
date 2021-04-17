@@ -1,7 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.conf import settings
-from app.shims import DatasetShim
+from app.shims import DatasetShim, TimeFrameShim
 from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
 
@@ -78,6 +78,17 @@ class Dataset(DatasetShim, models.Model):
 
     def is_processable(self):
         return self.status == Dataset.Statuses.COMPLETED or self.status == Dataset.Statuses.LEGACY
+
+
+class TimeFrame(TimeFrameShim, models.Model):
+    time_percentage = models.FloatField(editable=False)
+    dataset = models.ForeignKey(
+        Dataset, on_delete=models.CASCADE, editable=False)
+    relativised_nodes = models.JSONField(editable=False)
+
+    class Meta:
+        db_table = "timeframe"
+        unique_together = ('dataset', 'time_percentage')
 
 
 class Simulation(models.Model):
