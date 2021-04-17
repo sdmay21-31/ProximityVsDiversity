@@ -41,6 +41,15 @@ class DatasetShim:
             self.get_attribute_index(attr)
             for attr in attributes]
 
+        print(diversity)
+
+        # diversity_indexes = [
+        #     self.get_attribute_index(div)
+        #     for div in diversity
+        # ]
+
+        # print(diversity_indexes)
+
         weights = [
             float(weight)
             for weight in proximity.get('weights')
