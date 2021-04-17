@@ -1,26 +1,27 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="{% static 'help.css' %}">
+{% block head-extra %}
+<link rel="stylesheet" type="text/css" href="{% static 'guide.css' %}">
+<script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
 {% endblock %}
-{% block scripts %} 
-<script src="{% static 'help.js' %}"></script>
+{% block body-extra %}
+<script src="{% static 'guide.js' %}"></script>
 {% endblock %}
 
-{% block title %}Help{% endblock %}
+{% block title %}Guide{% endblock %}
 
 {% block content %}
-<div class="help-container">
-	<header class="help-header">
-		<h2 class="help-title">User Guide</h1>	
+<div class="guide-container">
+	<header class="guide-header">
+		<h2 class="guide-title">User Guide</h2>	
 	</header>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
-			<span>What is this website and why was this website created?</span>
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
+			<span>What is this website and why was it created?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				Astronomy researchers have difficulty visualizing the large heterogeneous datasets of binary stellar trajectories. 
 				With the vast number of publicly available datasets retrieved from astronomical observations and simulation, 
@@ -36,12 +37,12 @@
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>What is proximity and diversity?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				Proximity and diversity, in the context of this project, are how close and far two or more things are to each other. 
 				If you select mass in the proximity attributes and rad in the diversity attributes then you are looking for a clustering that is 
@@ -49,40 +50,40 @@
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I select a database?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can select a database by clicking on the orange dropdown at the top of the page labeled DB. You may switch databases at any time.
 			</p>
-			<p class="help-item-img-outer" style="width: 624.00px; height: 56.00px;">
-				<img class="help-item-img" src="{% static 'images/image2.png' %}">
+			<p class="guide-item-img-outer" style="width: 624.00px; height: 56.00px;">
+				<img class="guide-item-img" src="{% static 'images/image2.png' %}">
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I select attributes for proximity and diversity?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can select attributes from the two tables labeled proximity attributes and diversity attributes by clicking on the check box next to the attribute name.
 			</p>
-			<p class="help-item-img-outer" style="width: 624.00px; height: 176.00px;">
-				<img class="help-item-img" src="{% static 'images/image1.png' %}">
+			<p class="guide-item-img-outer" style="width: 624.00px; height: 176.00px;">
+				<img class="guide-item-img" src="{% static 'images/image1.png' %}">
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I attach a weight to an attribute and what is the weight attribute?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can attach a weight to an attribute by typing a whole number into the &ldquo;weight&rdquo; section of the table 
 				corresponding to the attribute that is selected. Weight in this case will dictate the importance of an attribute 
@@ -90,53 +91,53 @@
 				In the case below Kstar has a weight of 1 however it will have an actual weight of 0.167, since Mass0 and Lumin have a weight of 2 and 3. 
 				The actual weight of Mass0 and Lumin are 0.333 and 0.5 respectively.
 			</p>
-			<p class="help-item-img-outer" style="width: 624.00px; height: 181.33px;">
-				<img class="help-item-img" src="{% static 'images/image5.png' %}">
+			<p class="guide-item-img-outer" style="width: 624.00px; height: 181.33px;">
+				<img class="guide-item-img" src="{% static 'images/image5.png' %}">
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I select the time I want the attributes clustered at?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can select the time you would like the attributes to be clustered at by typing a whole number between 0 and 3000
 					in the &ldquo;time&rdquo; box that is directly below the proximity attribute table.
 			</p>
-			<p class="help-item-img-outer" style="width: 249.00px; height: 114.00px;">
-				<img class="help-item-img" src="{% static 'images/image3.png' %}">
+			<p class="guide-item-img-outer" style="width: 249.00px; height: 114.00px;">
+				<img class="guide-item-img" src="{% static 'images/image3.png' %}">
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I select the number of clusters?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can select the amount of clusters you would like to see in the graph by typing a whole number between 1 and 20 in the 
 				“Cluster” box that is directly below the diversity attribute table.
 			</p>
-			<p class="help-item-img-outer" style="width: 267.00px; height: 103.00px;">
-				<img class="help-item-img" src="{% static 'images/image6.png' %}">
+			<p class="guide-item-img-outer" style="width: 267.00px; height: 103.00px;">
+				<img class="guide-item-img" src="{% static 'images/image6.png' %}">
 			</p>
 		</div>
 	</div>
-	<div class="help-item">
-		<button type="button" class="help-item-title" onclick="handleHelpTitleClick(this)">
+	<div class="guide-item">
+		<button type="button" class="guide-item-title" onclick="handleGuideTitleClick(this)">
 			<span>How do I view the chart generated by the clustering algorithm?</span>
 			<i class="fas fa-chevron-down"></i>
 		</button>
-		<div class="help-item-response">
+		<div class="guide-item-response">
 			<p>
 				You can view the chart generated by the clustering algorithm by clicking on the green &ldquo;Process&rdquo; button and 
 				then scrolling to the Chart section.
 			</p>
-			<p class="help-item-img-outer" style="width: 624.00px; height: 440.00px;">
-				<img class="help-item-img" src="{% static 'images/image4.png' %}">
+			<p class="guide-item-img-outer" style="width: 624.00px; height: 440.00px;">
+				<img class="guide-item-img" src="{% static 'images/image4.png' %}">
 			</p>
 		</div>
 	</div>

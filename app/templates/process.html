@@ -5,107 +5,124 @@
 {% block title %}Proximity Vs. Diversity{% endblock %}
 
 {% block head-extra %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.rawgit.com/khalidsalomao/simple-query-string/22cc5bbe/src/simplequerystring.min.js"></script>
-{% endblock head-extra %}
+{% endblock %}
 
 {% block body-extra %}
+<script src="{% static 'extra.js' %}"></script>
 <script src="{% static 'main.js' %}"></script>
-{% endblock body-extra %}
+{% endblock %}
 
 {% block content %}
 <div class="columns">
-    <h1>{{ dataset.name }}</h1>
-    <p>{{ dataset.description }}</p>
-    <div class="data-input-outer-container">
-        <div class="data-input-container">
-            <div class="data-cards" id="data-cards">
-                <div class="card" id="card-prox">
-                    <div class="list-item card-header">
-                        <p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
-                    </div>
-                    <div>
-                        {% for attribute in dataset.attributes %}
-                        <div id="row_prox_{{forloop.counter0}}" class="list-item attr-item">
-                            <!-- checkbox & attribute -->
-                            <div class="list-item-cbattr">
-                                <label class="list-item-cbattr-label">
-                                    <input id="cb_prox_{{forloop.counter0}}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(true)(this)">
-                                    <span><strong style="font-size:1rem;">{{ attribute }}</strong></span>
-                                </label>
-                            </div>
-                            <!-- warning svg -->
-                            <i id="cb_prox_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
-                            <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-                            <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="card" id="card-div">
-                    <div class="list-item card-header">
-                        <p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
-                    </div>
-                    {% for attribute in dataset.attributes %}
-                    <div id="row_div_{{forloop.counter0}}" class="list-item attr-item">
-                        <!-- checkbox & attribute -->
-                        <div class="list-item-cbattr">
-                            <label class="list-item-cbattr-label">
-                                <input id="cb_div_{{forloop.counter0}}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(false)(this)">
-                                <span><strong style="font-size:1rem;">{{ attribute }}</strong></span>
-                            </label>
-                        </div>
-                        <!-- warning svg -->
-                        <i id="cb_div_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
-                        <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-                        <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
-                    </div>
-                    {% endfor %}
-                </div>
+  <div class="data-input-outer-container">
+    <div class="data-input-container">
+      <p class="data-input-container-title"><strong>{{ dataset.name }} Dataset</strong></p>
+      <p>{{ dataset.description }}</p>
+      <div class="horizontal-divider"></div>
+      <div class="data-cards" id="data-cards">
+        <div class="card" id="card-prox">
+          <div class="list-item card-header">
+            <p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
+          </div>
+          <div>
+            {% for attribute in dataset.attributes %}
+            <div id="row_prox_{{forloop.counter0}}" class="list-item attr-item">
+              <!-- checkbox & attribute -->
+              <div class="list-item-cbattr">
+                <label class="list-item-cbattr-label">
+                  <input id="cb_prox_{{forloop.counter0}}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(true)(this)">
+                  <span><strong style="font-size:1rem;">{{ attribute }}</strong></span>
+                </label>
+              </div>
+              <!-- warning svg -->
+              <i id="cb_prox_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
+              <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
+              <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
             </div>
-            <div class="input-outer-container">
-                <div class="input-container" id="input-time-container">
-                    <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
-                    <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" value="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
-                </div>
-
-                <div class="input-container" id="input-cluster-container">
-                    <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-                    <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" value="3" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
-                </div>
-            </div>
-            <div class="process-button-container">
-                <div class="process-warning process-time-warning" style="color: red">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Time is required</span>
-                </div>
-                <div class="process-warning process-cluster-warning" style="color: red">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Clusters is required</span>
-                </div>
-                <div class="process-warning process-attribute-warning" style="color: red">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Select at least 1 attribute</span>
-                </div>
-                <p class="select-three">Select up to 3 attributes</p>
-                <button class="process-button" onclick="process()">
-                    <div class="process-button-text"><strong>Process</strong></div>
-                    <div class="process-button-spinner"></div>
-                </button>
-            </div>
+            {% endfor %}
+          </div>
         </div>
+        <div class="card" id="card-div">
+          <div class="list-item card-header">
+            <p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
+          </div>
+          {% for attribute in dataset.attributes %}
+          <div id="row_div_{{forloop.counter0}}" class="list-item attr-item">
+            <!-- checkbox & attribute -->
+            <div class="list-item-cbattr">
+              <label class="list-item-cbattr-label">
+                <input id="cb_div_{{forloop.counter0}}" class="list-item-cb" type="checkbox" onclick="handleAttrClick(false)(this)">
+                <span><strong style="font-size:1rem;">{{ attribute }}</strong></span>
+              </label>
+            </div>
+            <!-- warning svg -->
+            <i id="cb_div_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
+            <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="input-container" id="input-container-constant">
+        <div class="input-block" id="input-time-block">
+          <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
+          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+        </div>
+      </div>
+      <div class="input-container" id="input-container-dynamic">
+        <div class="horizontal-divider"></div>
+        <div class="input-block">
+          <button class="algo-dropdown-button" onclick="toggleAlgoDropdown(this)">
+            <span>Select an Algorithm</span>
+            <i class="fas fa-chevron-down algo-dropdown-button-icon"></i>
+          </button>
+          <div class="algo-dropdown-options">
+            {% for algo in algorithms %}
+            <p class="algo-dropdown-option" id="algo_option_{{forloop.counter0}}" name="{{algo.name}}" onclick="handleAlgoDropdownSelect(event)">
+              {{algo.name}}
+            </p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="input-block" id="input-cluster-block">
+          <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
+          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+        </div>
+      </div>
+      <div class="process-button-container">
+        <div class="process-warning process-time-warning" style="color: red">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Time is required</span>
+        </div>
+        <div class="process-warning process-cluster-warning" style="color: red">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Clusters is required</span>
+        </div>
+        <div class="process-warning process-attribute-warning" style="color: red">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Select at least 1 attribute</span>
+        </div>
+        <p class="select-three">Select up to 3 attributes</p>
+        <button class="process-button" onclick="process()">
+          <div class="process-button-text"><strong>Process</strong></div>
+          <div class="process-button-spinner"></div>
+        </button>
+      </div>
     </div>
-    <div class="chart-container">
-        <img id="chart">
-    </div>
+  </div>
+  <div class="chart-container">
+    <img id="chart">
+  </div>
 </div>
 <div class="plotly-container"></div>
 {# TODO: PLEASE LORD REMOVE THIS #}
 <script>
-const attrList = {{ dataset.attributes | safe }}
+  const attrList = {{ dataset.attributes | safe }};
+  const dataset = {{ algorithms | safe }};
 </script>
 {% endblock %}
