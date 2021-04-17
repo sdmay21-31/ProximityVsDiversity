@@ -64,7 +64,17 @@ class DatasetShim:
 
         time_percentage = float(time_value) / self.max_simulation_nodes
         nodes = self.get_timeframe(time_percentage).relativised_nodes
-        
+
+        def filter_threshold(node):
+            """For each node: find all distances between proximity attributes
+            find all distances between distance attributes
+
+            for every distance in both:
+                if abs(dis1 / dis2 ) < threshold:
+                    ignore it
+            """
+            pass
+
         def get_specific_nodes(n):
             return [
                 n[a] for a in attribute_indexes
@@ -75,10 +85,10 @@ class DatasetShim:
         # Prepare initial centers using K-Means++ method.
         metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
         initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()
-         
+
         # Create instance of K-Means algorithm with prepared centers.
         kmeans_instance = kmeans(nodes, initial_centers, metric=metric)
-         
+
         # Run cluster analysis and obtain results.
         kmeans_instance.process()
         clusters = kmeans_instance.get_clusters()
