@@ -14,10 +14,10 @@
 {% block content %}
 {% for dataset in datasets %}
 <a href="{% url 'dataset' dataset.id %}">
-    <button class="process-button">
-        <strong>{{ dataset.name }}</strong>
-        <i class="fas fa-chevron-down dropdown-button-icon"></i>
-    </button>
+  <button class="process-button">
+    <strong>{{ dataset.name }}</strong>
+    <i class="fas fa-chevron-down dropdown-button-icon"></i>
+  </button>
 </a>
 {% endfor %}
 {% endblock %}

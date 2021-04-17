@@ -20,7 +20,8 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
-    CACHE=(bool, False)
+    CACHE=(bool, False),
+    CELERY=(bool, False)
 )
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -32,6 +33,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+
+CELERY = env('CELERY')
 
 ALLOWED_HOSTS = [env('HOST'), 'localhost']
 
@@ -48,7 +51,11 @@ INSTALLED_APPS = [
     'config',
     'app',
     'fontawesome-free',
-    'rest_framework'
+    'rest_framework',
+    'crispy_forms',
+    'crispy_tailwind',
+    # Must be last
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 MIDDLEWARE = [
@@ -140,6 +147,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 if not DEBUG:
     LOGGING = {

@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load tailwind_filters %}
 {% block content %}
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto p-4">
+        <a href="/datafiles/" class="hover:text-blue-500">Back</a>
+        <h2 class="text-xl my-3 underline">{{ filename }}</h2>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_ul }}
-            <button type="submit">Submit</button>
+            {{ form|crispy }}
+            <button type="submit" class="block mt-3 text-white bg-blue-500 text-lg rounded-md p-2">Submit</button>
         </form>
     </div>
 {% endblock content %}
