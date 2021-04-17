@@ -6,6 +6,7 @@ from pyclustering.samples.definitions import FCPS_SAMPLES
 from pyclustering.utils import read_sample
 from pyclustering.utils.metric import distance_metric, type_metric
 
+
 def relativise(value, mmax, mmin):
     return (value - mmin) / (mmax - mmin)
 
@@ -24,7 +25,6 @@ def weighted_euclidean_distance(weights):
     return euclidean_distance
 
 class DatasetShim:
-
     def get_attribute_index(self, attr):
         return self.attributes.index(attr)
 

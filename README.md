@@ -58,6 +58,7 @@ Other useful django commands:
 $ python3 manage.py createsuperuser # Create a super user for Django
 $ python3 manage.py check # See if your project is running correctly
 $ python3 manage.py seed # Seed 10,000 nodes into your database
+$ celery -A config worker -l INFO # Start celery
 ```
 Project Structure
 =====

@@ -16,21 +16,21 @@
 			<strong>Select a Dataset</strong>
 			<i class="fas fa-chevron-down"></i>
 		</div>
-		{% if datasets %}
-			{% for dataset in datasets %}
-				<div class="route-option" onclick="window.location='{% url 'dataset' dataset.slug %}';">{{ dataset.name }}</div>
-			{% endfor %}
-		{% else %}
+		{% for dataset in datasets %}
+			{% if dataset.is_processable %}
+				<a href="{% url 'dataset' dataset.slug %}" class="route-option block">{{ dataset.name }}</a>
+			{% endif %}
+			{% empty %}
 			<div class="route-option disabled">No Datasets Available</div>
-		{% endif %}
-		<div class="route-option route-category anchor" onclick="window.location='{% url 'add_dataset' %}';">
+		{% endfor %}
+		<a class="route-option route-category anchor" href="{% url 'datafiles' %}">
 			<strong>Add a New Dataset</strong>
 			<i class="fas fa-arrow-right"></i>
-		</div>
-		<div class="route-option route-category anchor" onclick="window.location='{% url 'guide' %}';">
+		</a>
+		<a class="route-option route-category anchor" href="{% url 'guide' %}">
 			<strong>View our Help Guide</strong>
 			<i class="fas fa-arrow-right"></i>
-		</div>
+		</a>
 	</div>
 </div>
 {% endblock %}
