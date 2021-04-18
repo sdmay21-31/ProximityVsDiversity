@@ -5,7 +5,7 @@
 {% block title %}Proximity Vs. Diversity{% endblock %}
 
 {% block head-extra %}
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'datasets.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
@@ -15,7 +15,7 @@
 
 {% block body-extra %}
 <script src="{% static 'extra.js' %}"></script>
-<script src="{% static 'main.js' %}"></script>
+<script src="{% static 'datasets.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -76,7 +76,7 @@
       </div>
       <div class="input-container" id="input-container-dynamic">
         <div class="horizontal-divider"></div>
-        {% comment "Hiding algorithsm drop down because not implemented" %}
+        {% comment "Hiding algorithms drop down because not implemented" %}
         <div class="input-block">
           <button class="algo-dropdown-button" onclick="toggleAlgoDropdown(this)">
             <span>Select an Algorithm</span>

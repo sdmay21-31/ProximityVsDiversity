@@ -28,6 +28,10 @@
     font-size: 1.75rem;
     margin: 0 1rem;
 }
+.data-input-container-desc {
+    font-size: 1.25rem;
+    margin: 0 1rem;
+}
 
 .horizontal-divider {
     width: calc(100% - 2rem);
