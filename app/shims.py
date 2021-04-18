@@ -55,8 +55,12 @@ class DatasetShim:
             for weight in proximity.get('weights')
         ]
 
-        time_percentage = float(time_value) / self.max_simulation_nodes
-        nodes = Node.objects.get_timeframe(time_percentage)
+        time_percentage = float(time_value) / 1001
+        # time_percentage = float(time_value) / self.max_simulation_nodes
+        # TODO: add back in
+        nodes = Node.objects.filter(dataset=self).filter_timeframe(time_percentage)
+
+        nodes = list(map(lambda x: x.relativised_data, nodes))
 
         def filter_threshold(n):
             threshold_values = [n[a] for a in threshold_indexes]

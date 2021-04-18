@@ -5,6 +5,7 @@ from app.shims import DatasetShim
 from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
+from django.db.models import F, Count
 
 
 class DataFile(models.Model):
@@ -85,12 +86,20 @@ class Dataset(DatasetShim, models.Model):
             self.status == Dataset.Statuses.LEGACY
 
 
+class NodeQuerySet(models.QuerySet):
+    def filter_timeframe(self, time_percentage):
+        return self.annotate(total_nodes=Count('simulation')) \
+            .filter(simulation_index=F('total_nodes') * time_percentage)
+
+
 class Node(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
     simulation = models.PositiveIntegerField()
     simulation_index = models.PositiveIntegerField()
     data = ArrayField(models.FloatField())
     relativised_data = ArrayField(models.FloatField())
+
+    objects = NodeQuerySet.as_manager()
 
     class Meta:
         db_table = "node"
