@@ -23,6 +23,17 @@
 			{% empty %}
 			<div class="route-option disabled">No Datasets Available</div>
 		{% endfor %}
+		<div class="route-option route-category">
+			<strong>Edit a Dataset</strong>
+			<i class="fas fa-chevron-down"></i>
+		</div>
+		{% for dataset in datasets %}
+			{% if dataset.is_processable %}
+				<a href="{% url 'edit' dataset.slug %}" class="route-option block">{{ dataset.name }}</a>
+			{% endif %}
+			{% empty %}
+			<div class="route-option disabled">No Datasets Available</div>
+		{% endfor %}
 		<a class="route-option route-category anchor" href="{% url 'datafiles' %}">
 			<strong>Add a New Dataset</strong>
 			<i class="fas fa-arrow-right"></i>
