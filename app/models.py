@@ -1,7 +1,8 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.conf import settings
-from app.shims import DatasetShim, TimeFrameShim
+from app.shims import DatasetShim
+from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
 
@@ -9,7 +10,8 @@ from django.core.validators import FileExtensionValidator
 class DataFile(models.Model):
     name = models.CharField(max_length=250)
     slug = AutoSlugField(unique=True, populate_from="name")
-    file = models.FileField(upload_to="datasets",
+    file = models.FileField(
+        upload_to="datasets",
         validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls'])])
 
     def __str__(self):
@@ -17,6 +19,7 @@ class DataFile(models.Model):
 
     class Meta:
         db_table = "dataset_file"
+
 
 class Dataset(DatasetShim, models.Model):
     class Statuses(models.IntegerChoices):
@@ -30,7 +33,8 @@ class Dataset(DatasetShim, models.Model):
                             help_text="Name of the dataset")
     description = models.CharField(max_length=250, default='')
     slug = AutoSlugField(unique=True, populate_from='name')
-    datafile = models.ForeignKey(DataFile, on_delete=models.SET_NULL,
+    datafile = models.ForeignKey(
+        DataFile, on_delete=models.SET_NULL,
         null=True, blank=True)
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
     status = models.IntegerField(
@@ -77,35 +81,16 @@ class Dataset(DatasetShim, models.Model):
         self.status = Dataset.Statuses.ERROR
 
     def is_processable(self):
-        return self.status == Dataset.Statuses.COMPLETED or self.status == Dataset.Statuses.LEGACY
+        return self.status == Dataset.Statuses.COMPLETED or \
+            self.status == Dataset.Statuses.LEGACY
 
 
-class TimeFrame(TimeFrameShim, models.Model):
-    time_percentage = models.FloatField(editable=False)
-    dataset = models.ForeignKey(
-        Dataset, on_delete=models.CASCADE, editable=False)
-    relativised_nodes = models.JSONField(editable=False)
-
-    class Meta:
-        db_table = "timeframe"
-        unique_together = ('dataset', 'time_percentage')
-
-
-class Simulation(models.Model):
-    dataset = models.ForeignKey(
-        Dataset, on_delete=models.CASCADE, editable=False)
-    total_nodes = models.IntegerField(editable=False)
-
-    data = models.JSONField(editable=False)
-    """Structure
-    [
-        ['attr1', 'attr2', ...],
-        ['attr1', 'attr2', 'attr3']
-    ]
-    """
-
-    def __str__(self):
-        return self.dataset.name + "-" + self.id
+class Node(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
+    simulation = models.PositiveIntegerField()
+    simulation_index = models.PositiveIntegerField()
+    data = ArrayField(models.FloatField())
+    relativised_data = ArrayField(models.FloatField())
 
     class Meta:
-        db_table = "simulation"
+        db_table = "node"

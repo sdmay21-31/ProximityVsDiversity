@@ -1,57 +1,85 @@
-import os
 from celery import shared_task
 import csv
-from app.models import Dataset, Simulation
+from app.models import Dataset, Node
 from django.db.models import Sum, Max, Min
-from django.conf import settings
 
 
-def get_simulations(reader, dataset, chunk_size=500):
+def relativise(value, mmax, mmin):
+    try:
+        return (value - mmin) / (mmax - mmin)
+    except ZeroDivisionError:
+        return 0
+
+
+def get_nodes(reader, dataset, chunk_size=5000):
+    simulation_number = 1
+    number_of_attributes = len(dataset.attributes)
     simulation = []
-    simulations = []
+    nodes = []
     line = next(reader)
     current_simulation_values = []
-    current_file_id = line['file_id']
 
     def is_new_simulation():
+        nonlocal current_simulation_values
         for index, v in enumerate(current_simulation_values):
             if v != line[dataset.simulation_fields[index]]:
                 return True
         return False
 
-    def add_simulation():
-        simulations.append(Simulation(
-            dataset=dataset,
-            total_nodes=len(simulation),
-            data=simulation
-        ))
+    def process_simulation():
+        nonlocal simulation_number
+        maxs = [0 for n in range(number_of_attributes)]
+        mins = [float('inf') for n in range(number_of_attributes)]
+
+        # Find the min and max
+        for node in simulation:
+            for index in range(number_of_attributes):
+                if node[index] > maxs[index]:
+                    maxs[index] = node[index]
+                if node[index] < mins[index]:
+                    mins[index] = node[index]
+
+        for index, n in enumerate(simulation):
+            relativised_data = [
+                relativise(n[index], maxs[index], mins[index])
+                for index in range(number_of_attributes)
+            ]
+            node = Node(
+                dataset=dataset,
+                simulation=simulation_number,
+                simulation_index=index,
+                data=n,
+                relativised_data=relativised_data
+            )
+            simulation_number += 1
+            nodes.append(node)
 
     current_simulation_values = [
         line[attr] for attr in dataset.simulation_fields
     ]
 
     while True:
-        # Return simulations chunk
-        if len(simulations) >= chunk_size:
-            yield simulations
-            simulations = []
+        # Return nodes chunk
+        if len(nodes) >= chunk_size:
+            yield nodes
+            nodes = []
         # Finished
         if line is None:
-            if len(simulation) > 0:
-                add_simulation()
-            if len(simulations) > 0:
-                yield simulations
+            if len(nodes) > 0:
+                process_simulation()
+            if len(nodes) > 0:
+                yield nodes
             return None
 
         # If moving on to next simulation
         if is_new_simulation():
-            add_simulation()
+            process_simulation()
             current_simulation_values = [
                 line[attr] for attr in dataset.simulation_fields
             ]
             simulation = []
 
-        simulation.append([line[col] for col in dataset.attributes])
+        simulation.append([float(line[col]) for col in dataset.attributes])
         # Increment line
         try:
             line = next(reader)
@@ -68,18 +96,10 @@ def seed_dataset(dataset_id):
         with open(dataset.datafile.file.path) as file:
             reader = csv.DictReader(file)
 
-            headers = reader.fieldnames
+            for nodes in get_nodes(reader, dataset):
+                Node.objects.bulk_create(nodes)
 
-            for simulations in get_simulations(reader, dataset):
-                Simulation.objects.bulk_create(simulations)
-
-            aggs = dataset.simulation_set.aggregate(
-                Sum('total_nodes'), Max('total_nodes'), Min('total_nodes'))
-
-            dataset.total_simulations = dataset.simulation_set.count()
-            dataset.total_nodes = aggs['total_nodes__sum']
-            dataset.max_simulation_nodes = aggs['total_nodes__max']
-            dataset.min_simulation_nodes = aggs['total_nodes__min']
+            dataset.total_nodes = dataset.node_set.count()
             dataset.set_completed()
             dataset.save()
     except Exception as e:

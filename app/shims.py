@@ -10,6 +10,7 @@ from django.apps import apps
 def relativise(value, mmax, mmin):
     return (value - mmin) / (mmax - mmin)
 
+
 def weighted_euclidean_distance(weights):
     def euclidean_distance_square(point1, point2):
         distance = 0.0
@@ -29,17 +30,11 @@ class DatasetShim:
     def get_attribute_index(self, attr):
         return self.attributes.index(attr)
 
-    def get_timeframe(self, time_percentage):
-        TimeFrame = apps.get_model('app', 'TimeFrame')
-        try:
-            return TimeFrame.objects.get(dataset=self, time_percentage=time_percentage)
-        except TimeFrame.DoesNotExist:
-            return TimeFrame.create_timeframe(self, time_percentage)
-
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
         attributes = proximity.get('attributes')
         threshold_attributes = diversity.get('attributes')
         threshold_weights = diversity.get('weights')
+        Node = apps.get_model('app', 'Node')
 
         if len(attributes) not in [2, 3]:
             raise ValueError
@@ -54,14 +49,14 @@ class DatasetShim:
             self.get_attribute_index(attr)
             for attr in threshold_attributes
         ]
-        
+
         weights = [
             float(weight)
             for weight in proximity.get('weights')
         ]
 
         time_percentage = float(time_value) / self.max_simulation_nodes
-        nodes = self.get_timeframe(time_percentage).relativised_nodes
+        nodes = Node.objects.get_timeframe(time_percentage)
 
         def filter_threshold(n):
             threshold_values = [n[a] for a in threshold_indexes]
@@ -69,7 +64,7 @@ class DatasetShim:
 
             for threshold_index, threshold in enumerate(threshold_values):
                 for proximity in proximity_values:
-                    if abs(threshold - proximity) < float(threshold_weights[threshold_index]):
+                    if abs(threshold - proximity) < float(threshold_weights[threshold_index]):  # noqa: E501
                         return False
             return True
 
@@ -84,15 +79,16 @@ class DatasetShim:
             )
 
         # Prepare initial centers using K-Means++ method.
-        metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
-        initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()
+        metric = distance_metric(
+            type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
+        initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()  # noqa: E501
 
         # Create instance of K-Means algorithm with prepared centers.
         kmeans_instance = kmeans(nodes, initial_centers, metric=metric)
 
         # Run cluster analysis and obtain results.
         kmeans_instance.process()
-        clusters = kmeans_instance.get_clusters()
+        kmeans_instance.get_clusters()
         final_centers = np.array(kmeans_instance.get_centers())
 
         # Add points for graph
@@ -114,11 +110,11 @@ class DatasetShim:
 
         if is_3d:
             ax.scatter(xs, ys, zs, s=1)
-            ax.scatter(final_centers[:,0], final_centers[:,1], final_centers[:,2], c='black')
+            ax.scatter(final_centers[:, 0], final_centers[:, 1], final_centers[:, 2], c='black')  # noqa: E501
             ax.set_zlabel(attributes[2])
-        else: #Is 2D
+        else:   # Is 2D
             ax.scatter(xs, ys, s=1)
-            ax.scatter(final_centers[:,0], final_centers[:,1], c='black')
+            ax.scatter(final_centers[:, 0], final_centers[:, 1], c='black')
 
         return plt
 
