@@ -1,25 +1,17 @@
-from os import walk
-import os
-
 from django.conf import settings
 
-from django.apps import apps
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.text import slugify
-from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.urls import reverse_lazy
 
-from app.forms import SetupDatasetForm, UploadFileForm
+from app.forms import SetupDatasetForm
 
 from app.models import Dataset, DataFile
-from collections import Counter
 from app.matplot import plot_to_uri
+from django.http import HttpResponseRedirect
 
 from app.tasks import seed_dataset
 
@@ -28,10 +20,12 @@ from app.tasks import seed_dataset
 def guide(request):
     return render(request, 'guide.html')
 
+
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {
         'datasets': Dataset.objects.all()
     })
+
 
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
@@ -44,6 +38,7 @@ def dataset(request, slug, *args, **kwargs):
             {'name': 'Birch', 'parameters': ['branchingFactor', 'threshold']}
         ]
     })
+
 
 @api_view(['GET'])
 def process(request, slug):
@@ -68,20 +63,24 @@ def process(request, slug):
         'data': {}
         })
 
+
 class UpdateDatasetView(LoginRequiredMixin, UpdateView):
     template_name = "edit_dataset.html"
     model = Dataset
     fields = ['name', 'description']
+
 
 class DeleteDatasetView(LoginRequiredMixin, DeleteView):
     template_name = "delete.html"
     model = Dataset
     success_url = reverse_lazy('datafiles')
 
+
 class DeleteDataFileView(LoginRequiredMixin, DeleteView):
     template_name = "delete.html"
     model = DataFile
     success_url = reverse_lazy('datafiles')
+
 
 class DatasetFileView(LoginRequiredMixin, CreateView):
     template_name = "datafiles.html"
@@ -93,6 +92,14 @@ class DatasetFileView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['dataset_files'] = DataFile.objects.all()
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        with open(self.object.file.path) as f:
+            self.object.number_of_lines = sum(1 for line in f)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
 
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
