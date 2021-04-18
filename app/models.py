@@ -14,6 +14,7 @@ class DataFile(models.Model):
     file = models.FileField(
         upload_to="datasets",
         validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls'])])
+    number_of_lines = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name

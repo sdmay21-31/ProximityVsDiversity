@@ -2,9 +2,6 @@ from django import forms
 from app.models import Dataset, DataFile
 
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
-
 class SetupDatasetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):

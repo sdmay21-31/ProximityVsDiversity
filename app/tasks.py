@@ -99,7 +99,11 @@ def seed_dataset(dataset_id):
             for nodes in get_nodes(reader, dataset):
                 Node.objects.bulk_create(nodes)
 
+            aggs = dataset.node_set.aggregate(
+                Max('simulation')
+            )
             dataset.total_nodes = dataset.node_set.count()
+            dataset.total_simulations = aggs['simulation__max']
             dataset.set_completed()
             dataset.save()
     except Exception as e:
