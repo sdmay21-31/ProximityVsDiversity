@@ -10,7 +10,6 @@ from django.apps import apps
 def relativise(value, mmax, mmin):
     return (value - mmin) / (mmax - mmin)
 
-
 def weighted_euclidean_distance(weights):
     def euclidean_distance_square(point1, point2):
         distance = 0.0
@@ -40,6 +39,7 @@ class DatasetShim:
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
         attributes = proximity.get('attributes')
         threshold_attributes = diversity.get('attributes')
+        threshold_weights = diversity.get('weights')
 
         if len(attributes) not in [2, 3]:
             raise ValueError
@@ -54,9 +54,7 @@ class DatasetShim:
             self.get_attribute_index(attr)
             for attr in threshold_attributes
         ]
-
-        print(threshold_indexes)
-
+        
         weights = [
             float(weight)
             for weight in proximity.get('weights')
@@ -65,22 +63,25 @@ class DatasetShim:
         time_percentage = float(time_value) / self.max_simulation_nodes
         nodes = self.get_timeframe(time_percentage).relativised_nodes
 
-        def filter_threshold(node):
-            """For each node: find all distances between proximity attributes
-            find all distances between distance attributes
+        def filter_threshold(n):
+            threshold_values = [n[a] for a in threshold_indexes]
+            proximity_values = [n[a] for a in attribute_indexes]
 
-            for every distance in both:
-                if abs(dis1 / dis2 ) < threshold:
-                    ignore it
-            """
-            pass
+            for threshold_index, threshold in enumerate(threshold_values):
+                for proximity in proximity_values:
+                    if abs(threshold - proximity) < float(threshold_weights[threshold_index]):
+                        return False
+            return True
 
         def get_specific_nodes(n):
             return [
                 n[a] for a in attribute_indexes
             ]
 
-        nodes = list(map(get_specific_nodes, nodes))
+        nodes = list(
+            map(get_specific_nodes,
+                filter(filter_threshold, nodes))
+            )
 
         # Prepare initial centers using K-Means++ method.
         metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
