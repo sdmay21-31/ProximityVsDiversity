@@ -95,8 +95,8 @@ class NodeQuerySet(models.QuerySet):
 
 class Node(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
-    simulation = models.PositiveIntegerField()
-    simulation_index = models.PositiveIntegerField()
+    simulation = models.PositiveIntegerField(db_index=True)
+    simulation_index = models.PositiveIntegerField(db_index=True)
     data = ArrayField(models.FloatField())
     relativised_data = ArrayField(models.FloatField())
 
