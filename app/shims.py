@@ -1,10 +1,10 @@
 from app.matplot import get_plt
 import numpy as np
-from pyclustering.cluster.kmeans import kmeans, kmeans_visualizer
+from pyclustering.cluster.kmeans import kmeans
 from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
-from pyclustering.samples.definitions import FCPS_SAMPLES
-from pyclustering.utils import read_sample
+
 from pyclustering.utils.metric import distance_metric, type_metric
+from django.apps import apps
 
 
 def relativise(value, mmax, mmin):
@@ -24,13 +24,22 @@ def weighted_euclidean_distance(weights):
 
     return euclidean_distance
 
+
 class DatasetShim:
     def get_attribute_index(self, attr):
         return self.attributes.index(attr)
 
+    def get_timeframe(self, time_percentage):
+        TimeFrame = apps.get_model('app', 'TimeFrame')
+        try:
+            return TimeFrame.objects.get(dataset=self, time_percentage=time_percentage)
+        except TimeFrame.DoesNotExist:
+            return TimeFrame.create_timeframe(self, time_percentage)
+
     def process(self, time_value, number_of_clusters, proximity=None, diversity=None):
-        simulations = self.simulation_set.iterator(1000)
         attributes = proximity.get('attributes')
+        threshold_attributes = diversity.get('attributes')
+        threshold_weights = diversity.get('weights')
 
         if len(attributes) not in [2, 3]:
             raise ValueError
@@ -41,49 +50,46 @@ class DatasetShim:
             self.get_attribute_index(attr)
             for attr in attributes]
 
+        threshold_indexes = [
+            self.get_attribute_index(attr)
+            for attr in threshold_attributes
+        ]
+        
         weights = [
             float(weight)
             for weight in proximity.get('weights')
         ]
 
         time_percentage = float(time_value) / self.max_simulation_nodes
-        nodes = []
-        for simulation in simulations:
-            # Get the linearly interpolated node
-            node_time_index = int(simulation.total_nodes * time_percentage)
-            maxs = [0 for n in attribute_indexes]
-            mins = [float('inf') for n in attribute_indexes]
+        nodes = self.get_timeframe(time_percentage).relativised_nodes
 
-            # Find the min and max
-            for n in simulation.data:
-                node = [float(n[attr_index]) for attr_index in attribute_indexes]
+        def filter_threshold(n):
+            threshold_values = [n[a] for a in threshold_indexes]
+            proximity_values = [n[a] for a in attribute_indexes]
 
-                for index in range(len(attribute_indexes)):
-                    if node[index] > maxs[index]:
-                        maxs[index] = node[index]
-                    if node[index] < mins[index]:
-                        mins[index] = node[index]
+            for threshold_index, threshold in enumerate(threshold_values):
+                for proximity in proximity_values:
+                    if abs(threshold - proximity) < float(threshold_weights[threshold_index]):
+                        return False
+            return True
 
-            # Get the nodes for the specific time instance
-            node = [
-                float(simulation.data[node_time_index][attr_index])
-                for attr_index in attribute_indexes]
-            # Relativise
-            try:
-                nodes.append([
-                    relativise(node[index], maxs[index], mins[index])
-                    for index in range(len(attribute_indexes))
-                ])
-            except ZeroDivisionError:
-                pass
+        def get_specific_nodes(n):
+            return [
+                n[a] for a in attribute_indexes
+            ]
+
+        nodes = list(
+            map(get_specific_nodes,
+                filter(filter_threshold, nodes))
+            )
 
         # Prepare initial centers using K-Means++ method.
         metric = distance_metric(type_metric.USER_DEFINED, func=weighted_euclidean_distance(weights))
         initial_centers = kmeans_plusplus_initializer(nodes, number_of_clusters).initialize()
-         
+
         # Create instance of K-Means algorithm with prepared centers.
         kmeans_instance = kmeans(nodes, initial_centers, metric=metric)
-         
+
         # Run cluster analysis and obtain results.
         kmeans_instance.process()
         clusters = kmeans_instance.get_clusters()
@@ -103,7 +109,6 @@ class DatasetShim:
         fig = plt.figure()
         ax = fig.add_subplot(projection=projection)
 
-
         ax.set_xlabel(attributes[0])
         ax.set_ylabel(attributes[1])
 
@@ -118,3 +123,44 @@ class DatasetShim:
         return plt
 
 
+class TimeFrameShim:
+    @classmethod
+    def create_timeframe(cls, dataset, time_percentage):
+        simulations = dataset.simulation_set.iterator(1000)
+        attributes = dataset.attributes
+        nodes = []
+        for simulation in simulations:
+            # Get the linearly interpolated node
+            node_time_index = int(simulation.total_nodes * time_percentage)
+            maxs = [0 for n in attributes]
+            mins = [float('inf') for n in attributes]
+
+            # Find the min and max
+            for n in simulation.data:
+                node = [float(attr) for attr in n]
+
+                for index in range(len(node)):
+                    if node[index] > maxs[index]:
+                        maxs[index] = node[index]
+                    if node[index] < mins[index]:
+                        mins[index] = node[index]
+
+            # Get the nodes for the specific time instance
+            node = [
+                float(simulation.data[node_time_index][attr_index])
+                for attr_index in range(len(attributes))]
+            # Relativise
+            try:
+                nodes.append([
+                    relativise(node[index], maxs[index], mins[index])
+                    for index in range(len(attributes))
+                ])
+            except ZeroDivisionError:
+                pass
+        timeframe = cls(
+            dataset=dataset,
+            time_percentage=time_percentage,
+            relativised_nodes=nodes
+        )
+        timeframe.save()
+        return timeframe

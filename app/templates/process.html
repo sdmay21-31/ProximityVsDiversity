@@ -30,7 +30,7 @@
           <div class="list-item card-header">
             <p class="card-title"><strong>PROXIMITY ATTRIBUTES</strong></p>
           </div>
-          <div>
+          <div id="proximity_attributes">
             {% for attribute in dataset.attributes %}
             <div id="row_prox_{{forloop.counter0}}" class="list-item attr-item">
               <!-- checkbox & attribute -->
@@ -43,14 +43,14 @@
               <!-- warning svg -->
               <i id="cb_prox_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
               <!-- input -- if you wanted to accept decimal points event.charCode == 46-->
-              <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+              <input id="ta_prox_{{forloop.counter0}}" class="list-item-weight" type="number" placeholder="Weight" disabled=true oninput="controlInputWeight(event)" />
             </div>
             {% endfor %}
           </div>
         </div>
         <div class="card" id="card-div">
           <div class="list-item card-header">
-            <p class="card-title"><strong>DIVERSITY ATTRIBUTES</strong></p>
+            <p class="card-title"><strong>DIVERSITY THRESHOLDS</strong></p>
           </div>
           {% for attribute in dataset.attributes %}
           <div id="row_div_{{forloop.counter0}}" class="list-item attr-item">
@@ -63,19 +63,20 @@
             </div>
             <!-- warning svg -->
             <i id="cb_div_{{forloop.counter0}}" class="fas fa-exclamation-triangle list-item-warning"></i>
-            <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="text" placeholder="Weight" disabled=true onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13 || event.charCode == 46) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInputWeight(event)" />
+            <input id="ta_div_{{forloop.counter0}}" class="list-item-weight" type="number" step=".1" placeholder="%" disabled=true oninput="controlInputWeight(event)" />
           </div>
           {% endfor %}
         </div>
       </div>
       <div class="input-container" id="input-container-constant">
         <div class="input-block" id="input-time-block">
-          <p class="input-instruction">Enter a time between 0 and 3000, inclusive</p>
-          <input class="input input-time" type="text" placeholder="Time (Required)" min=0 max=3000 inputType="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <p class="input-instruction">Enter a time between 0 and {{ dataset.max_simulation_nodes }}, inclusive</p>
+          <input class="input input-time" type="number" placeholder="Time (Required)" min=0 max={{ dataset.max_simulation_nodes }} inputType="time" oninput="controlInput(event)" />
         </div>
       </div>
       <div class="input-container" id="input-container-dynamic">
         <div class="horizontal-divider"></div>
+        {% comment "Hiding algorithsm drop down because not implemented" %}
         <div class="input-block">
           <button class="algo-dropdown-button" onclick="toggleAlgoDropdown(this)">
             <span>Select an Algorithm</span>
@@ -89,9 +90,11 @@
             {% endfor %}
           </div>
         </div>
+        {% endcomment %}
         <div class="input-block" id="input-cluster-block">
+          <h2 class="text-lg">KMeans</h2>
           <p class="input-instruction">Enter number of clusters between 1 and 20, inclusive</p>
-          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=0 max=20 inputType="div" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" oninput="controlInput(event)" />
+          <input class="input input-cluster" type="text" placeholder="Clusters (Required)" min=1 inputType="div" type="number" step="1" value="3" />
         </div>
       </div>
       <div class="process-button-container">

@@ -75,21 +75,20 @@ function handleAttrClick(forProx) {
       arr.delete(taIdInd);
       textarea.setAttribute("disabled", "true");
     } else {
-      if (proxIdsSelected.size + divIdsSelected.size >= 3) {
-        console.error("Why is handleAttrClick called when proxIdsSelected.size + divIdsSelected.size >= 3?");
-        return 0;
-      }
       arr.add(taIdInd);
       textarea.removeAttribute("disabled");
       if (textarea.value === "") {
-        textarea.value = "1";
+        if(forProx)
+          textarea.value = "1";
+        else
+          textarea.value = ".1"
         inputWeightState[taId[1]][taId[2]] = "1";
       }
       document.querySelectorAll(`.attr-item .list-item-cb[id$='_${taIdInd}']:not(:checked)`).forEach(function(e) {
         e.setAttribute("disabled", true);
       });
-      if (proxIdsSelected.size + divIdsSelected.size === 3) {
-        document.querySelectorAll(".attr-item .list-item-cb:not(:checked)").forEach(function(e) {
+      if (proxIdsSelected.size === 3) {
+        document.querySelectorAll("#proximity_attributes .attr-item .list-item-cb:not(:checked)").forEach(function(e) {
           e.setAttribute("disabled", true);
         });
       }
@@ -102,12 +101,6 @@ function controlInputWeight(event) {
   const [, type, ind] = event.target.id.toLowerCase().split("_");
   const value = event.target.value;
   if (isNaN(value)) {
-    event.target.value = inputWeightState[type][ind];
-  } else if (parseInt(value) >= 1) {
-    inputWeightState[type][ind] = value;
-  } else if (value === "") {
-    inputWeightState[type][ind] = value;
-  } else {
     event.target.value = inputWeightState[type][ind];
   }
 }
@@ -142,8 +135,8 @@ function handleAlgoDropdownSelect(event) {}
 
 function process() {
   /* Request the data and chart */
-  const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
-  const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseInt(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
+  const proxIdsAndWeights = [...proxIdsSelected].map(e => [e, parseFloat(document.querySelector(`#row_prox_${e} .list-item-weight`).value)]);
+  const divIdsAndWeights = [...divIdsSelected].map(e => [e, parseFloat(document.querySelector(`#row_div_${e} .list-item-weight`).value)]);
   const time = parseInt(document.querySelector(`.input-time`).value);
   const clusters = parseInt(document.querySelector(`.input-cluster`).value);
   if (!isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights)) return;
@@ -199,32 +192,13 @@ function isValidProcessData(time, clusters, proxIdsAndWeights, divIdsAndWeights)
   } else if (document.querySelector(".process-attribute-warning").classList.contains("show")) {
     document.querySelector(".process-attribute-warning").classList.remove("show");
   }
-  const proxNaN = proxIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
-  const divNaN = divIdsAndWeights.filter(function(pair) { return isNaN(pair[1]); });
+  
   document.querySelectorAll(".attr-item .list-item-warning").forEach(function(e) { e.classList.remove("show"); });
   document.querySelector(".input-time").classList.remove("error");
   document.querySelector(".process-time-warning").classList.remove("show");
   document.querySelector(".input-cluster").classList.remove("error");
   document.querySelector(".process-cluster-warning").classList.remove("show");
-  if (proxNaN.length + divNaN.length !== 0) {
-    proxNaN.forEach(function(pair) {
-      document.querySelector(`#row_prox_${pair[0]} .list-item-warning`).classList.add("show");
-    });
-    divNaN.forEach(function(pair) {
-      document.querySelector(`#row_div_${pair[0]} .list-item-warning`).classList.add("show");
-    });
-    errorSomewhere = true;
-  }
-  if (isNaN(time)) {
-    document.querySelector(".process-time-warning").classList.add("show");
-    document.querySelector(".input-time").classList.add("error");
-    errorSomewhere = true;
-  }
-  if (isNaN(clusters)) {
-    document.querySelector(".process-cluster-warning").classList.add("show");
-    document.querySelector(".input-cluster").classList.add("error");
-    errorSomewhere = true;
-  }
+
   return !errorSomewhere;
 }
 
