@@ -39,7 +39,7 @@ class Dataset(DatasetShim, models.Model):
         DataFile, on_delete=models.SET_NULL,
         null=True, blank=True)
     file_name = models.CharField(max_length=255, default='main_table_1.csv')
-    status = models.IntegerField(
+    status = models.PositiveIntegerField(
         choices=Statuses.choices, default=Statuses.LEGACY)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -50,10 +50,10 @@ class Dataset(DatasetShim, models.Model):
         null=True, blank=True
     )
 
-    total_simulations = models.IntegerField(editable=False, default=0)
-    total_nodes = models.IntegerField(editable=False, default=0)
-    max_simulation_nodes = models.IntegerField(editable=False, default=0)
-    min_simulation_nodes = models.IntegerField(editable=False, default=0)
+    total_simulations = models.PositiveIntegerField(editable=False, default=0)
+    total_nodes = models.PositiveIntegerField(editable=False, default=0)
+
+    number_of_nodes_added = models.PositiveIntegerField(default=0)
 
     simulation_fields = models.JSONField(editable=False, default=dict)
     attributes = models.JSONField(editable=False)

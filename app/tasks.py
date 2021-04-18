@@ -11,7 +11,7 @@ def relativise(value, mmax, mmin):
         return 0
 
 
-def get_nodes(reader, dataset, chunk_size=5000):
+def get_nodes(reader, dataset, chunk_size=1000):
     simulation_number = 1
     number_of_attributes = len(dataset.attributes)
     simulation = []
@@ -59,10 +59,6 @@ def get_nodes(reader, dataset, chunk_size=5000):
     ]
 
     while True:
-        # Return nodes chunk
-        if len(nodes) >= chunk_size:
-            yield nodes
-            nodes = []
         # Finished
         if line is None:
             if len(nodes) > 0:
@@ -78,6 +74,10 @@ def get_nodes(reader, dataset, chunk_size=5000):
                 line[attr] for attr in dataset.simulation_fields
             ]
             simulation = []
+            # Return nodes chunk
+            if len(nodes) >= chunk_size:
+                yield nodes
+                nodes = []
 
         simulation.append([float(line[col]) for col in dataset.attributes])
         # Increment line
@@ -97,7 +97,9 @@ def seed_dataset(dataset_id):
             reader = csv.DictReader(file)
 
             for nodes in get_nodes(reader, dataset):
-                Node.objects.bulk_create(nodes)
+                n = Node.objects.bulk_create(nodes)
+                dataset.number_of_nodes_added += len(n)
+                dataset.save()
 
             aggs = dataset.node_set.aggregate(
                 Max('simulation')
