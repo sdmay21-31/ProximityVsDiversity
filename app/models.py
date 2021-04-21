@@ -5,7 +5,8 @@ from app.shims import DatasetShim
 from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse_lazy
 from django.core.validators import FileExtensionValidator
-from django.db.models import F, Count
+from django.db.models import F, Count, Max, ExpressionWrapper, PositiveIntegerField, IntegerField
+from django.db.models.functions import Cast
 
 
 class DataFile(models.Model):
@@ -86,17 +87,23 @@ class Dataset(DatasetShim, models.Model):
         return self.status == Dataset.Statuses.COMPLETED or \
             self.status == Dataset.Statuses.LEGACY
 
+    def max_simulation_nodes(self):
+        return self.node_set.aggregate(
+            Max('simulation_total_nodes'))['simulation_total_nodes__max']
+
 
 class NodeQuerySet(models.QuerySet):
     def filter_timeframe(self, time_percentage):
-        return self.annotate(total_nodes=Count('simulation')) \
-            .filter(simulation_index=F('total_nodes') * time_percentage)
+        return self.filter(simulation_index=Cast(
+                F('simulation_total_nodes') * time_percentage,
+                output_field=PositiveIntegerField()))
 
 
 class Node(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, editable=False)
     simulation = models.PositiveIntegerField(db_index=True)
     simulation_index = models.PositiveIntegerField(db_index=True)
+    simulation_total_nodes = models.PositiveIntegerField(db_index=True, default=0)
     data = ArrayField(models.FloatField())
     relativised_data = ArrayField(models.FloatField())
 
