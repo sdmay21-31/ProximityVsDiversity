@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 
 from app.forms import SetupDatasetForm
 
@@ -13,7 +14,11 @@ from app.models import Dataset, DataFile
 from app.matplot import plot_to_uri
 from django.http import HttpResponseRedirect
 
+from django.views.decorators.cache import never_cache
+
 from app.tasks import seed_dataset
+
+decorators = [never_cache, ]
 
 
 # Create your views here.
@@ -21,12 +26,14 @@ def guide(request):
     return render(request, 'guide.html')
 
 
+@never_cache
 def index(request, *args, **kwargs):
     return render(request, 'index.html', {
         'datasets': Dataset.objects.all()
     })
 
 
+@never_cache
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
     dataset = Dataset.objects.get(slug=slug)
@@ -64,24 +71,28 @@ def process(request, slug):
         })
 
 
+@method_decorator(decorators, name='dispatch')
 class UpdateDatasetView(LoginRequiredMixin, UpdateView):
     template_name = "edit_dataset.html"
     model = Dataset
     fields = ['name', 'description']
 
 
+@method_decorator(decorators, name='dispatch')
 class DeleteDatasetView(LoginRequiredMixin, DeleteView):
     template_name = "delete.html"
     model = Dataset
     success_url = reverse_lazy('datafiles')
 
 
+@method_decorator(decorators, name='dispatch')
 class DeleteDataFileView(LoginRequiredMixin, DeleteView):
     template_name = "delete.html"
     model = DataFile
     success_url = reverse_lazy('datafiles')
 
 
+@method_decorator(decorators, name='dispatch')
 class DatasetFileView(LoginRequiredMixin, CreateView):
     template_name = "datafiles.html"
     model = DataFile
@@ -101,6 +112,7 @@ class DatasetFileView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+@method_decorator(decorators, name='dispatch')
 class SetupDatasetView(LoginRequiredMixin, FormView):
     template_name = "setup_dataset.html"
     form_class = SetupDatasetForm
