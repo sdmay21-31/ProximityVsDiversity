@@ -37,7 +37,7 @@ def index(request, *args, **kwargs):
 def dataset(request, slug, *args, **kwargs):
     """Datasets page"""
     dataset = Dataset.objects.get(slug=slug)
-    return render(request, 'process.html', {
+    return render(request, 'datasets.html', {
         'dataset': dataset,
         'algorithms': [
             {'name': 'K-Means', 'parameters': ['clusters']},
