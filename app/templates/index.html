@@ -12,8 +12,20 @@
 {% block content %}
 <div class="route-options-container">
 	<div class="route-options">
+		<a class="route-option route-category anchor" href="{% url 'datafiles' %}">
+			<strong>Add a New Dataset</strong>
+			<i class="fas fa-arrow-right"></i>
+		</a>
+		<a class="route-option route-category anchor" href="{% url 'guide' %}">
+			<strong>View our Help Guide</strong>
+			<i class="fas fa-arrow-right"></i>
+		</a>
+		<a class="route-option route-category anchor" href="/admin">
+			<strong>Admin</strong>
+			<i class="fas fa-arrow-right"></i>
+		</a>
 		<div class="route-option route-category">
-			<strong>Select a Dataset</strong>
+			<strong>Use a Dataset</strong>
 			<i class="fas fa-chevron-down"></i>
 		</div>
 		{% for dataset in datasets %}
@@ -32,14 +44,6 @@
 			{% empty %}
 			<div class="route-option disabled">No Datasets Available</div>
 		{% endfor %}
-		<a class="route-option route-category anchor" href="{% url 'datafiles' %}">
-			<strong>Add a New Dataset</strong>
-			<i class="fas fa-arrow-right"></i>
-		</a>
-		<a class="route-option route-category anchor" href="{% url 'guide' %}">
-			<strong>View our Help Guide</strong>
-			<i class="fas fa-arrow-right"></i>
-		</a>
 	</div>
 </div>
 {% endblock %}
