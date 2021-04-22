@@ -12,7 +12,7 @@ def relativise(value, mmax, mmin):
 
 
 def get_nodes(reader, dataset, chunk_size=1000):
-    simulation_number = 1
+    simulation_number = 0
     number_of_attributes = len(dataset.attributes)
     simulation = []
     nodes = []
@@ -28,8 +28,10 @@ def get_nodes(reader, dataset, chunk_size=1000):
 
     def process_simulation():
         nonlocal simulation_number
+        simulation_number += 1
         maxs = [0 for n in range(number_of_attributes)]
         mins = [float('inf') for n in range(number_of_attributes)]
+        total_nodes = len(simulation)
 
         # Find the min and max
         for node in simulation:
@@ -48,10 +50,10 @@ def get_nodes(reader, dataset, chunk_size=1000):
                 dataset=dataset,
                 simulation=simulation_number,
                 simulation_index=index,
+                simulation_total_nodes=total_nodes,
                 data=n,
                 relativised_data=relativised_data
             )
-            simulation_number += 1
             nodes.append(node)
 
     current_simulation_values = [
