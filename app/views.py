@@ -112,6 +112,7 @@ class DatasetFileView(LoginRequiredMixin, CreateView):
         self.object.save()
         with open(self.object.file.path) as f:
             self.object.number_of_lines = sum(1 for line in f)
+        self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
