@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from app.forms import SetupDatasetForm
 
@@ -47,6 +48,7 @@ def dataset(request, slug, *args, **kwargs):
     })
 
 
+@cache_page(60 * 24)
 @api_view(['GET'])
 def process(request, slug):
     """Return the algorithm function"""
