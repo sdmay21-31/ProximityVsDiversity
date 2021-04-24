@@ -108,9 +108,10 @@ class DatasetFileView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.number_of_lines = 0
+        self.object.save()
         with open(self.object.file.path) as f:
             self.object.number_of_lines = sum(1 for line in f)
-        self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
